@@ -48,6 +48,7 @@ namespace SUPERCharacter
         public float verticalRotationRange = 170f;
         [Tooltip("Invert vertical look axis.")]
         public bool invertY = false;
+        public bool invertX = false;
 
         // Internal
         Image crosshairImg;
@@ -490,8 +491,9 @@ namespace SUPERCharacter
             }
 
             // Yaw – rotate the whole rigidbody around Y
-            float newYaw = p_Rigidbody.rotation.eulerAngles.y + delta.x;
-            p_Rigidbody.MoveRotation(Quaternion.Euler(0f, newYaw, 0f));
+        float newYaw = p_Rigidbody.rotation.eulerAngles.y + (invertX ? -delta.x : delta.x);
+        p_Rigidbody.MoveRotation(Quaternion.Euler(0f, newYaw, 0f));
+
 
             // Pitch – rotate the pivot child (camera follows it)
             float pitchDelta = invertY ? delta.y : -delta.y;
@@ -499,7 +501,8 @@ namespace SUPERCharacter
                 _cameraPitch + pitchDelta,
                 -verticalRotationRange * 0.5f,
                  verticalRotationRange * 0.5f);
-
+            float roll = invertX ? -delta.x : delta.x;
+            
             if (_cameraPitchPivot != null)
                 _cameraPitchPivot.localRotation = Quaternion.Euler(_cameraPitch, 0f, 0f);
         }
@@ -1249,6 +1252,7 @@ namespace SUPERCharacter
                 new GUIContent("Vertical Rotation Range", "Gesamte vertikale Gradzahl (z.B. 170 = ±85°)."),
                 t.verticalRotationRange, 10f, 180f);
             t.invertY = EditorGUILayout.ToggleLeft("Invert Y", t.invertY);
+            t.invertX = EditorGUILayout.ToggleLeft("Invert X", t.invertX);
             EditorGUILayout.HelpBox(
                 "Setup: Add a CinemachineCamera as child of the player, assign a CinemachineFollow component, " +
                 "set Follow = player transform. The script drives the Follow Offset X/Y for headbob.",
@@ -1437,3 +1441,4 @@ namespace SUPERCharacter
     #endregion
 
 } // namespace SUPERCharacter
+//actual version 

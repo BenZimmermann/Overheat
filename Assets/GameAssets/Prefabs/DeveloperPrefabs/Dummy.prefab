@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1589190371644902535}
   - component: {fileID: 6987700464883162045}
   - component: {fileID: 2289222217752341937}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -686,7 +686,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8843371812978456408}
-  m_Layer: 0
+  - component: {fileID: 6755575600412830084}
+  m_Layer: 10
   m_Name: Dummy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -714,6 +715,19 @@ Transform:
   - {fileID: 9127040121173470722}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6755575600412830084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254093591465906120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5aa68d1b83b1b9449aa163c58020b571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDummy
+  damageText: {fileID: 6654739113592440651}
 --- !u!1 &3517088809865617793
 GameObject:
   m_ObjectHideFlags: 0
@@ -728,7 +742,7 @@ GameObject:
   - component: {fileID: 8395069802318134383}
   - component: {fileID: 2717897973142266711}
   - component: {fileID: 443004804108222122}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34826,7 +34840,7 @@ GameObject:
   - component: {fileID: 2414630354444999969}
   - component: {fileID: 726142737632073606}
   - component: {fileID: 5662717953154267103}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cylinder (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35503,7 +35517,7 @@ GameObject:
   - component: {fileID: 5315196347700203230}
   - component: {fileID: 5425388874768809151}
   - component: {fileID: 1987318088450382807}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PolyShape
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36005,7 +36019,7 @@ GameObject:
   - component: {fileID: 9127040121173470722}
   - component: {fileID: 2946590874437319852}
   - component: {fileID: 6654739113592440651}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HitText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36189,7 +36203,7 @@ GameObject:
   - component: {fileID: 782428411659880466}
   - component: {fileID: 4004744065920215054}
   - component: {fileID: 6843324148151399771}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

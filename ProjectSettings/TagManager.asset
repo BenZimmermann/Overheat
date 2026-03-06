@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - weaponPivot
   layers:
   - Default
   - TransparentFX
@@ -16,8 +17,8 @@ TagManager:
   - Box
   - Enemy
   - Dummy
-  - 
-  - 
+  - Shop
+  - Activate
   - 
   - 
   - 

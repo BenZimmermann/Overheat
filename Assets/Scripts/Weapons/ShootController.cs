@@ -42,7 +42,9 @@ public class ShootController : MonoBehaviour
     //}
     private void Start()
     {
+        _currentAmmo = Wdata.magazineSize;
         aimCamera = GameObject.FindWithTag("Camera")?.GetComponent<Camera>();
+
     }
     void BindInputActions()
     {

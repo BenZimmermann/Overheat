@@ -4,9 +4,15 @@ using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
+    /// <summary>
+    /// TODO
+    /// -reset the text position of the credits when opening the credits menu
+    /// -create a credits menu prefab and use that instead of the current one, which is a placeholder
+    /// </summary>
     [SerializeField] private GameObject MainMenu;
     [SerializeField] private GameObject SettingsMenu;
     [SerializeField] private GameObject CreditsMenu;
+    [SerializeField] private SettingsController settingsController; 
 
     [SerializeField] private GameObject CreditsText;
     [SerializeField] private float scrollSpeed = 20f;
@@ -56,8 +62,7 @@ public class MainMenuController : MonoBehaviour
     }
     public void OpenSettings()
     {
-        MainMenu.SetActive(false);
-        SettingsMenu.SetActive(true);
+        settingsController.OpenMenu(SettingsMenu); 
     }
     public void QuitGame()
     {

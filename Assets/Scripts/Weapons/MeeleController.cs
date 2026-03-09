@@ -39,7 +39,7 @@ public class MeleeController : MonoBehaviour
 
     void Update()
     {
-        if(!Wdata.isMelee) return; // Prevent melee logic if it's not a melee weapon
+        if(!Wdata.isMelee) return; 
         if (_attackAction != null && _attackAction.WasPressedThisFrame())
             Attack();
     }
@@ -60,7 +60,6 @@ public class MeleeController : MonoBehaviour
         {
             if ((Ignore.value & (1 << col.gameObject.layer)) != 0) continue;
 
-            // Root-Objekt als Schlüssel – jedes Objekt nur einmal treffen
             GameObject root = col.transform.root.gameObject;
             if (!already.Add(root)) continue;
 

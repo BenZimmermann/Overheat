@@ -69,7 +69,7 @@ public class ShootController : MonoBehaviour
 
     public void Update()
     {
-    if(Wdata.isMelee) return; // Prevent shooting if it's a melee weapon
+    if(Wdata.isMelee) return; 
         if (Wdata.isAutomatic)
         {
             if (_shootAction != null && _shootAction.IsPressed())

@@ -7,13 +7,13 @@ public class SettingsController : MonoBehaviour
     /// TODO
     /// -save and load settings
     /// -control scheme
-    /// -setting for disable specific UI elements
     /// </summary>
     [Header("Menu References")]
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject settingsMenu;
     [SerializeField] private GameObject soundMenu;
     [SerializeField] private GameObject mouseMenu;
+    [SerializeField] private GameObject keybindsMenu;
 
     private Stack<GameObject> _menuStack = new Stack<GameObject>();
     private GameObject _currentMenu;
@@ -24,6 +24,7 @@ public class SettingsController : MonoBehaviour
         settingsMenu.SetActive(false);
         soundMenu.SetActive(false);
         mouseMenu.SetActive(false);
+        keybindsMenu.SetActive(false);
         ShowMenu(mainMenu, false);
     }
 

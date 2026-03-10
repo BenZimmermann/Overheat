@@ -9,7 +9,7 @@ public class HUDController : MonoBehaviour
     /// This is a singleton class that can be accessed from anywhere in the code to update the HUD. 
     /// It should be refactored to use events and listeners for better performance and decoupling.
     /// </summary>
-    public static HUDController Instance { get; set; }
+    //public static HUDController Instance { get; set; }
     //[Header("Stats")]
     //[SerializeField] public TextMeshProUGUI LevelName;
     //[SerializeField] public TextMeshProUGUI Time;
@@ -29,15 +29,6 @@ public class HUDController : MonoBehaviour
     [Header("Ammo")]
     [SerializeField] public TextMeshProUGUI Ammo;
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        DontDestroyOnLoad(gameObject);
-    }
     //Temporary method to update the HUD, should be replaced with events and listeners for better performance and decoupling
     private void Start()
     {

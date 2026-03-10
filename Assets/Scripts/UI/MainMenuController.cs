@@ -6,12 +6,12 @@ public class MainMenuController : MonoBehaviour
 {
     /// <summary>
     /// TODO
-    /// -reset the text position of the credits when opening the credits menu
     /// -create a credits menu prefab and use that instead of the current one, which is a placeholder
     /// </summary>
     [SerializeField] private GameObject MainMenu;
     [SerializeField] private GameObject SettingsMenu;
     [SerializeField] private GameObject CreditsMenu;
+    [SerializeField] private GameObject StatsMenu;
     [SerializeField] private SettingsController settingsController; 
 
     [SerializeField] private GameObject CreditsText;
@@ -21,8 +21,13 @@ public class MainMenuController : MonoBehaviour
 
     private bool fadeout = false;
     private bool fadein = false;
+    private Vector3 _creditsStartPosition;
+    private bool _statsVisible = false;
 
-
+    private void Start()
+    {
+        _creditsStartPosition = CreditsText.transform.localPosition;
+    }
 
     private void Update()
     {
@@ -58,10 +63,12 @@ public class MainMenuController : MonoBehaviour
     }
     public void StartGame()
     {
+        HideStats();
         GameManager.Instance.StartGame();
     }
     public void OpenSettings()
     {
+        HideStats();
         settingsController.OpenMenu(SettingsMenu); 
     }
     public void QuitGame()
@@ -74,7 +81,13 @@ public class MainMenuController : MonoBehaviour
     }
     public void Stats()
     {
-
+        _statsVisible = !_statsVisible;
+        StatsMenu.SetActive(_statsVisible);
+    }
+    private void HideStats()
+    {
+        _statsVisible = false;
+        StatsMenu.SetActive(false);
     }
     public void CreditsBack()
     {
@@ -82,6 +95,9 @@ public class MainMenuController : MonoBehaviour
     }
     public void Credits()
     {
+        HideStats();
+        // Credits-Text auf Startposition zurücksetzen
+        CreditsText.transform.localPosition = _creditsStartPosition;
         fadeout = true;
         ScrollCredits();
 

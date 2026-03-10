@@ -7,7 +7,6 @@ public class SettingsManager : MonoBehaviour
     public static SettingsManager Instance { get; private set; }
 
     [SerializeField] private AudioMixer _audioMixer;
-    //[SerializeField] private SaveManager saveManager; //later via singleton
 
     public event System.Action OnSettingsChanged;
 
@@ -20,7 +19,6 @@ public class SettingsManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
     private void Start()
     {
@@ -72,45 +70,45 @@ public class SettingsManager : MonoBehaviour
         OnSettingsChanged?.Invoke();
     }
 
-    public void SetMouseSensitivity(float value)
+    public void SetMouseSensitivity(Slider caller)
     {
-        SaveManager.Instance.Data.MouseSensitivity = value;
+        SaveManager.Instance.Data.MouseSensitivity = caller.value;
 
         SaveManager.Instance.SaveSettings();
         OnSettingsChanged?.Invoke();
     }
 
-    public void ToggleInvertX(bool value)
+    public void ToggleInvertX(Toggle value)
     {
-        SaveManager.Instance.Data.InvertX = value;
+        SaveManager.Instance.Data.InvertX = value.isOn;
 
         SaveManager.Instance.SaveSettings();
         OnSettingsChanged?.Invoke();
     }
 
-    public void ToggleInvertY(bool value)
+    public void ToggleInvertY(Toggle value)
     {
-        SaveManager.Instance.Data.InvertY = value;
+        SaveManager.Instance.Data.InvertY = value.isOn;
 
         SaveManager.Instance.SaveSettings();
         OnSettingsChanged?.Invoke();
     }
 
-    public void ToggleShowUpgrades(bool value)
+    public void ToggleShowUpgrades(Toggle value)
     {
-        SaveManager.Instance.Data.showUpgrades = value;
+        SaveManager.Instance.Data.showUpgrades = value.isOn;
         SaveManager.Instance.SaveSettings();
         OnSettingsChanged?.Invoke();
     }
-    public void ToggleShowStats(bool value)
+    public void ToggleShowStats(Toggle value)
     {
-        SaveManager.Instance.Data.showStats = value;
+        SaveManager.Instance.Data.showStats = value.isOn;
         SaveManager.Instance.SaveSettings();
         OnSettingsChanged?.Invoke();
     }
-    public void ToggleShowHealth(bool value)
+    public void ToggleShowHealth(Toggle value)
     {
-        SaveManager.Instance.Data.showHealth = value;
+        SaveManager.Instance.Data.showHealth = value.isOn;
         SaveManager.Instance.SaveSettings();
         OnSettingsChanged?.Invoke();
     }

@@ -31,14 +31,33 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         //spawn saveManager
-        //spawn GameManager
+        //spawn GameStateManager
     }
     public void QuitGame()
     {
         Application.Quit();
     }
+    public void QuitToMainMenu()
+    {        
+        SceneManager.LoadScene("StartScreen");
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
     public void StartGame()
     {
+        Debug.Log("Starting Game...");
+        Cursor.lockState = CursorLockMode.Locked;
         SceneManager.LoadScene("TestScene");
+    }
+    public void PauseGame()
+    {     
+        Cursor.lockState = CursorLockMode.None;
+        Time.timeScale = 0f;
+    }
+    public void ResumeGame()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Time.timeScale = 1f;
     }
 }

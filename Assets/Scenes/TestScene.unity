@@ -8496,6 +8496,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4810fc9e8cbbd904b8b329ff4df199d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDController
+  healthUI: {fileID: 735953302}
+  statsUI: {fileID: 854332006}
+  upgradesUI: {fileID: 1651456550}
   Ammo: {fileID: 1691127620}
 --- !u!43 &771602275
 Mesh:

@@ -26,13 +26,29 @@ public class HUDController : MonoBehaviour
     //[SerializeField] public Slider Shild;
     //[SerializeField] public GameObject Item;
 
+    [Header("UI Panels")]
+    public GameObject healthUI;
+    public GameObject statsUI;
+    public GameObject upgradesUI;
+
     [Header("Ammo")]
     [SerializeField] public TextMeshProUGUI Ammo;
 
+    void OnEnable()
+    {
+        SettingsManager.Instance.OnSettingsChanged += ApplySettings;
+    }
+
+    void OnDisable()
+    {
+        SettingsManager.Instance.OnSettingsChanged -= ApplySettings;
+    }
     //Temporary method to update the HUD, should be replaced with events and listeners for better performance and decoupling
+
     private void Start()
     {
         FindAnyObjectByType<ShootController>()?.GetComponent<ShootController>();
+        ApplySettings();
 
     }
     private void Update()
@@ -46,6 +62,14 @@ public class HUDController : MonoBehaviour
                 Ammo.text = "Reloading...";
             }
         }
+    }
+    void ApplySettings()
+    {
+        var data = SaveManager.Instance.Data;
+
+        healthUI.SetActive(data.showHealth);
+        statsUI.SetActive(data.showStats);
+        upgradesUI.SetActive(data.showUpgrades);
     }
     private void UpdateHealth(float currentHealth, float maxHealth)
     {

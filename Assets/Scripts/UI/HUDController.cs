@@ -12,10 +12,10 @@ public class HUDController : MonoBehaviour
     //public static HUDController Instance { get; set; }
     //[Header("Stats")]
     //[SerializeField] public TextMeshProUGUI LevelName;
-    //[SerializeField] public TextMeshProUGUI Time;
-    //[SerializeField] public TextMeshProUGUI EnemiesKilled;
-    //[SerializeField] public TextMeshProUGUI Money;
-    //[SerializeField] public TextMeshProUGUI FinalScore;
+    [SerializeField] public TextMeshProUGUI RunTime;
+    [SerializeField] public TextMeshProUGUI EnemiesKilled;
+    [SerializeField] public TextMeshProUGUI Money;
+    [SerializeField] public TextMeshProUGUI FinalScore;
 
     //[Header("Upgrades")]
     //[SerializeField] public GameObject[] Upgrades;
@@ -37,17 +37,20 @@ public class HUDController : MonoBehaviour
     void OnEnable()
     {
         SettingsManager.Instance.OnSettingsChanged += ApplySettings;
+        GameManager.Instance.Data.OnDataChanged += RefreshHUD;
     }
 
     void OnDisable()
     {
         SettingsManager.Instance.OnSettingsChanged -= ApplySettings;
+        GameManager.Instance.Data.OnDataChanged -= RefreshHUD;
     }
     //Temporary method to update the HUD, should be replaced with events and listeners for better performance and decoupling
 
     private void Start()
     {
         FindAnyObjectByType<ShootController>()?.GetComponent<ShootController>();
+        FindAnyObjectByType<MeleeController>()?.GetComponent<MeleeController>();
         ApplySettings();
 
     }
@@ -61,6 +64,12 @@ public class HUDController : MonoBehaviour
             {
                 Ammo.text = "Reloading...";
             }
+            
+        }
+        else if (FindAnyObjectByType<MeleeController>() != null)
+        {
+            MeleeController meleeController = FindAnyObjectByType<MeleeController>();
+            Ammo.text = "";
         }
     }
     void ApplySettings()
@@ -71,22 +80,44 @@ public class HUDController : MonoBehaviour
         statsUI.SetActive(data.showStats);
         upgradesUI.SetActive(data.showUpgrades);
     }
-    private void UpdateHealth(float currentHealth, float maxHealth)
+    private void RefreshHUD()
     {
+        var data = GameManager.Instance.Data;
+        Money.text = FormatUI(data.Money);
+        EnemiesKilled.text = FormatUI(data.EnemiesKilled);
+        RunTime.text = FormatTime(data.RunTime);
+        FinalScore.text = FormatUI(data.OverallScore);
     }
-    private void UpdateShield(float currentShield, float maxShield)
+    private string FormatUI(float amount)
     {
+        if (amount >= 1000000f) return $"{amount / 1000000f:0.#}M";
+        if (amount >= 1000f) return $"{amount / 1000f:0.#}K";
+        return amount.ToString("0");
     }
-    private void UpdateStats(string levelName, float time, int enemiesKilled, int money, int finalScore)
+    private string FormatTime(float time)
     {
+        int hours = Mathf.FloorToInt(time / 3600f);
+        int minutes = Mathf.FloorToInt((time % 3600f) / 60f); // Nur verbleibende Minuten
+        int seconds = Mathf.FloorToInt(time % 60f);
+        return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
     }
-    private void UpdateUpgrades(List<string> upgrades)
-    {
-    }
-    private void UpdateItem(string itemName)
-    {
-    }
-    private void UpdateAmmo(int currentAmmo, int magazineSize, bool isReloading)
-    {
-    }
+    //private void UpdateHealth(float currentHealth, float maxHealth)
+    //{
+    //}
+    //private void UpdateShield(float currentShield, float maxShield)
+    //{
+    //}
+    //private void UpdateStats(string levelName, float time, int enemiesKilled, int money, int finalScore)
+    //{
+
+    //}
+    //private void UpdateUpgrades(List<string> upgrades)
+    //{
+    //}
+    //private void UpdateItem(string itemName)
+    //{
+    //}
+    //private void UpdateAmmo(int currentAmmo, int magazineSize, bool isReloading)
+    //{
+    //}
 }

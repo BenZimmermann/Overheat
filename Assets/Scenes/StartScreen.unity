@@ -1802,6 +1802,10 @@ MonoBehaviour:
   settingsController: {fileID: 4111654893379844475}
   CreditsText: {fileID: 1069644805}
   scrollSpeed: 50
+  MoneyStats: {fileID: 1890197169}
+  TimeStats: {fileID: 326312496}
+  EnemiesKilledStats: {fileID: 1209672954}
+  OverallStats: {fileID: 642853290}
   backgroundGroup: {fileID: 386386350}
 --- !u!1 &351592910
 GameObject:
@@ -5810,6 +5814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 890723dd5ee1ace44949f464100e7f0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  _runTime: 0
 --- !u!43 &1717372506
 Mesh:
   m_ObjectHideFlags: 0

@@ -22,15 +22,41 @@ public class SaveManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        LoadStats();
+        LoadSettings();
     }
     public void SaveStats()
-    { 
+    {
+        var run = GameManager.Instance.Data;
+
+        if (run.Money > _data.Money) _data.Money = run.Money;
+        if (run.OverallScore > _data.FinalScore) _data.FinalScore = run.OverallScore;
+        if (run.RunTime > _data.Time) _data.Time = run.RunTime;
+        if (run.EnemiesKilled > _data.EnemiesKilled) _data.EnemiesKilled = (int)run.EnemiesKilled;
+
         string json = JsonUtility.ToJson(_data, prettyPrint: true);
         File.WriteAllText(SavePath, json);
-        Debug.Log("Gespeichert nach: " + SavePath);
+        Debug.Log("Stats saved.");
     }
     public void LoadStats()
+    {
+        if (File.Exists(SavePath))
+        {
+            string json = File.ReadAllText(SavePath);
+            _data = JsonUtility.FromJson<SaveData>(json);
+
+            var run = GameManager.Instance.Data;
+            run.Money = _data.Money;
+            run.OverallScore = _data.FinalScore;
+            run.RunTime = _data.Time;
+            run.EnemiesKilled = _data.EnemiesKilled;
+        }
+        else
+        {
+            _data = new SaveData();
+        }
+    }
+
+    public void LoadSettings() 
     {
         if (File.Exists(SavePath))
         {
@@ -45,8 +71,8 @@ public class SaveManager : MonoBehaviour
 
     public void SaveSettings()
     {
-        SaveStats();
-        Debug.Log("Settings saved.");
+        string json = JsonUtility.ToJson(_data, prettyPrint: true);
+        File.WriteAllText(SavePath, json);
     }
 
 }

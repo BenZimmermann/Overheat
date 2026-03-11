@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
 public class GameManager : MonoBehaviour
 {
     //[SerializeField] GameObject LevelManager;
     //[SerializeField] GameObject SaveManger;
-    //[SerializeField] GameObject HUDController;
     //[SerializeField] GameObject PlayerPrefab;
 
     /// <summary>
@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static GameManager Instance { get; private set; }
 
+    public RuntimeGameData Data = new RuntimeGameData();
+
+    public float _runTime;
+    private bool _running = false;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -28,17 +32,24 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
-    private void Start()
+    void Update()
     {
-        //spawn saveManager
-        //spawn GameStateManager
+        if (_running)
+        {
+            _runTime += Time.deltaTime;
+            Data.RunTime = _runTime;
+            Highscore();
+        }
+        
     }
+    #region Pause/Resume/Quit
     public void QuitGame()
     {
         Application.Quit();
     }
     public void QuitToMainMenu()
-    {        
+    {
+        EndRun();
         SceneManager.LoadScene("StartScreen");
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.None;
@@ -46,9 +57,11 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        Debug.Log("Starting Game...");
+        //reset game data so when you start a new game, you start fresh
+        Data = new RuntimeGameData();
         Cursor.lockState = CursorLockMode.Locked;
         SceneManager.LoadScene("TestScene");
+        StartRun();
     }
     public void PauseGame()
     {     
@@ -60,4 +73,32 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Time.timeScale = 1f;
     }
+    #endregion
+
+    #region Highscore calc (short for Calculator im just using slang!)
+    public void Highscore()
+    {
+        var run = Data;
+
+        float killScore = run.EnemiesKilled * 100f;
+        float moneyScore = run.Money * 0.5f;
+
+        run.OverallScore = killScore + moneyScore;
+
+        Debug.Log($"Score: {run.OverallScore} | Kills: {killScore} | Money: {moneyScore}");
+    }
+    #endregion
+
+    #region RunTime
+    public void StartRun()
+    {
+        _runTime = 0f;
+        _running = true;
+    }
+
+    public void EndRun()
+    {
+        _running = false;
+    }
+    #endregion
 }

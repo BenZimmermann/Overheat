@@ -8,14 +8,24 @@ public class BoxController : MonoBehaviour, IDamageable
 {
     [SerializeField] ContainerData CData;
     [SerializeField] Rigidbody rb;
+    private float _currentHealth;
 
+    private void Start()
+    {
+        _currentHealth = CData.health;
+        //change later to a more dynamic solution
+        Physics.IgnoreLayerCollision(8, 13);
+    }
     private void OnCollisionEnter(Collision collision)
     {
-        float impactSpeed = collision.relativeVelocity.magnitude;
-        if (impactSpeed > CData.fallDamageThreshold)
+        if (collision.gameObject.layer == CData.floorMask)
         {
-            float damage = (impactSpeed - CData.fallDamageThreshold) * CData.fallDamageMultiplier;
-            TakeDamage(damage, "Fall");
+            float impactSpeed = collision.relativeVelocity.magnitude;
+            if (impactSpeed > CData.fallDamageThreshold)
+            {
+                float damage = (impactSpeed - CData.fallDamageThreshold) * CData.fallDamageMultiplier;
+                TakeDamage(damage, "Fall");
+            }
         }
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
@@ -38,19 +48,58 @@ public class BoxController : MonoBehaviour, IDamageable
     }
     public void TakeDamage(float amount, string Source)
     {
-        if (amount >= CData.health)
+        _currentHealth -= amount;
+        CData.hitParticles.Play();
+
+        if (_currentHealth <= 0)
         {
             Die();
         }
-        else
-        {
-            CData.health -= amount;
-            CData.destroyParticles.Play();
-        }
     }
     private void Die()
-    {         
-
+    {
+        CData.destroyParticles.transform.position = transform.position;
+        CData.destroyParticles.Play();
+        DropMoney();
         Destroy(gameObject);
+    }
+    private void DropMoney()
+    {
+        if (Random.value > CData.rewardChance) return;
+
+        int amount = Mathf.RoundToInt(CData.rewardMoney);
+
+        for (int i = 0; i < amount; i++)
+        {
+            GameObject coin = Instantiate(
+                CData.MoneyObj,
+                transform.position,
+                Random.rotation
+            );
+
+            if (coin.TryGetComponent(out Rigidbody rb))
+            {
+                Vector3 randomDirection = new Vector3(
+                    Random.Range(-1f, 1f),
+                    Random.Range(0.5f, 1f),  // immer leicht nach oben
+                    Random.Range(-1f, 1f)
+                ).normalized;
+
+                float force = Random.Range(1f, 6f);
+                rb.AddForce(randomDirection * force, ForceMode.Impulse);
+
+                float torque = Random.Range(1f, 4f);
+                rb.AddTorque(Random.insideUnitSphere * torque, ForceMode.Impulse);
+            }
+        }
+    }
+    private void DropItems()
+    {
+        //reward Money == amount of gameObjects to spawn
+        //reawrd change == the odds to spawn the money
+    }
+    private void DropHealth()
+    {
+
     }
 }

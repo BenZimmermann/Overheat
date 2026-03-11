@@ -7,9 +7,9 @@ public class SaveData
     // RunData
 
     public float Time;
-    public int EnemiesKilled;
-    public int Money;
-    public int FinalScore;
+    public float EnemiesKilled;
+    public float Money;
+    public float FinalScore;
 
     // Settings/Sound
     public float MasterVolume;

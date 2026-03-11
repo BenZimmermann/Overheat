@@ -17,6 +17,11 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private GameObject CreditsText;
     [SerializeField] private float scrollSpeed = 20f;
 
+    [SerializeField] private TextMeshProUGUI MoneyStats;
+    [SerializeField] private TextMeshProUGUI TimeStats;
+    [SerializeField] private TextMeshProUGUI EnemiesKilledStats;
+    [SerializeField] private TextMeshProUGUI OverallStats;
+
     public CanvasGroup backgroundGroup;
 
     private bool fadeout = false;
@@ -82,6 +87,15 @@ public class MainMenuController : MonoBehaviour
     public void Stats()
     {
         _statsVisible = !_statsVisible;
+        //load the stats from the SaveManager and show them in the StatsMenu
+
+        var data = SaveManager.Instance.Data;
+        MoneyStats.text = FormatTxt(data.Money);
+        TimeStats.text = FormatTime(data.Time);
+
+        EnemiesKilledStats.text = FormatTxt(data.EnemiesKilled);
+        OverallStats.text = FormatTxt(data.FinalScore);
+
         StatsMenu.SetActive(_statsVisible);
     }
     private void HideStats()
@@ -107,4 +121,19 @@ public class MainMenuController : MonoBehaviour
 
         CreditsText.transform.Translate(Vector3.up * scrollSpeed * Time.deltaTime);
     }
+    #region Formatting
+    private string FormatTxt(float amount)
+    {
+        if (amount >= 1000000f) return $"{amount / 1000000f:0.#}M";
+        if (amount >= 1000f) return $"{amount / 1000f:0.#}K";
+        return amount.ToString("0");
+    }
+    private string FormatTime(float time)
+    {
+        int hours = Mathf.FloorToInt(time / 3600f);
+        int minutes = Mathf.FloorToInt((time % 3600f) / 60f); // Nur verbleibende Minuten
+        int seconds = Mathf.FloorToInt(time % 60f);
+        return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
+    }
+    #endregion
 }

@@ -220,6 +220,8 @@ namespace SUPERCharacter
         #endregion // Variables
 
         // =======================================================================
+
+
         #region Input Binding
 
         void BindInputActions()
@@ -246,8 +248,16 @@ namespace SUPERCharacter
             map.Enable();
         }
 
-        void OnEnable() { BindInputActions(); }
-        void OnDisable() { inputActionAsset?.FindActionMap(actionMapName, false)?.Disable(); }
+        void OnEnable() 
+        {
+            SettingsManager.Instance.OnSettingsChanged += ApplySettings;
+            BindInputActions(); 
+        }
+        void OnDisable() 
+        { 
+            inputActionAsset?.FindActionMap(actionMapName, false)?.Disable();
+            SettingsManager.Instance.OnSettingsChanged -= ApplySettings;
+        }
 
         #endregion
 
@@ -320,8 +330,16 @@ namespace SUPERCharacter
             };
 
             playerAudioSource = GetComponent<AudioSource>();
+            ApplySettings();
         }
+        void ApplySettings()
+        {
+            var data = SaveManager.Instance.Data;
 
+            invertY = data.InvertY;
+            invertX = data.InvertX;
+            sensitivity = data.MouseSensitivity;
+        }
         // =======================================================================
         void Update()
         {

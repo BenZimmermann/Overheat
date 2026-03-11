@@ -14,13 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ContainerData
   containerName: box
   containerID: 4
+  floorMask:
+    serializedVersion: 2
+    m_Bits: 23
   health: 1
-  rewardChance: 0.5
+  rewardChance: 75
   rewardMoney: 10
   rewardhealth: 0.5
   ItemDropChance: 0.3
   ItemsToDrop: []
   fallDamageMultiplier: 1
   fallDamageThreshold: 5
-  hitParticles: {fileID: 0}
-  destroyParticles: {fileID: 0}
+  MoneyObj: {fileID: 3349673070715546300, guid: 9f0e01ae3b54d2e4280d33385fe937b0, type: 3}
+  HealObj: {fileID: 0}
+  hitParticles: {fileID: 7024303965198524714, guid: c69aee12676d88b45adc1d0aa638e5a0, type: 3}
+  destroyParticles: {fileID: 7024303965198524714, guid: c69aee12676d88b45adc1d0aa638e5a0, type: 3}

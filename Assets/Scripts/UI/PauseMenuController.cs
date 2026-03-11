@@ -46,6 +46,7 @@ public class PauseMenuController : MonoBehaviour
     public void QuitGame()
     {
         GameManager.Instance.QuitToMainMenu();
+        SaveManager.Instance.SaveStats();
     }
 
     public void ResumeGame()

@@ -101,4 +101,13 @@ public class GameManager : MonoBehaviour
         _running = false;
     }
     #endregion
+
+    #region gameOver
+    public void GameOver()
+    {
+        EndRun();
+        Debug.Log("Game Over!");
+        //invoke game over event for GameOverMenu
+    }
+    #endregion
 }

@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2565425558361100410}
   - component: {fileID: 1595534818302395813}
+  - component: {fileID: 3937790125907514364}
+  - component: {fileID: 8319536072230032003}
   m_Layer: 9
   m_Name: Enemy
   m_TagString: Untagged
@@ -54,6 +56,54 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TestEnemy
   HealthText: {fileID: 6817157007564701233}
   MaxHealth: 50
+--- !u!54 &3937790125907514364
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2831016888360623809}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &8319536072230032003
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2831016888360623809}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.7692196, y: 2.052071, z: 1.3290955}
+  m_Center: {x: -0.49788308, y: -0.5260352, z: -0.16454768}
 --- !u!1 &3736073713654516644
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,9 +21,10 @@ public class HUDController : MonoBehaviour
     //[SerializeField] public GameObject[] Upgrades;
 
     //[Header("Health")]
-    //[SerializeField] public Slider HealthBar;
-    //[SerializeField] public TextMeshProUGUI HealthText;
-    //[SerializeField] public Slider Shild;
+    [SerializeField] public Slider HealthBar;
+    [SerializeField] public TextMeshProUGUI HealthText;
+    [SerializeField] public Slider ShieldBar;
+    [SerializeField] public TextMeshProUGUI ShieldText;
     //[SerializeField] public GameObject Item;
 
     [Header("UI Panels")]
@@ -34,21 +35,24 @@ public class HUDController : MonoBehaviour
     [Header("Ammo")]
     [SerializeField] public TextMeshProUGUI Ammo;
 
+
     void OnEnable()
     {
         SettingsManager.Instance.OnSettingsChanged += ApplySettings;
-        GameManager.Instance.Data.OnDataChanged += RefreshHUD;
+        GameManager.Instance.Data.OnDataChanged += RefreshStats;
+
     }
 
     void OnDisable()
     {
         SettingsManager.Instance.OnSettingsChanged -= ApplySettings;
-        GameManager.Instance.Data.OnDataChanged -= RefreshHUD;
+        GameManager.Instance.Data.OnDataChanged -= RefreshStats;
     }
     //Temporary method to update the HUD, should be replaced with events and listeners for better performance and decoupling
 
     private void Start()
     {
+
         FindAnyObjectByType<ShootController>()?.GetComponent<ShootController>();
         FindAnyObjectByType<MeleeController>()?.GetComponent<MeleeController>();
         ApplySettings();
@@ -80,13 +84,18 @@ public class HUDController : MonoBehaviour
         statsUI.SetActive(data.showStats);
         upgradesUI.SetActive(data.showUpgrades);
     }
-    private void RefreshHUD()
+    private void RefreshStats()
     {
         var data = GameManager.Instance.Data;
         Money.text = FormatUI(data.Money);
         EnemiesKilled.text = FormatUI(data.EnemiesKilled);
         RunTime.text = FormatTime(data.RunTime);
         FinalScore.text = FormatUI(data.OverallScore);
+
+        HealthBar.value = data.PlayerHealth;
+        HealthText.text = $"{data.PlayerHealth} %";
+        ShieldBar.value = data.PlayerShild;
+        ShieldText.text = $"{data.PlayerShild} %";
     }
     private string FormatUI(float amount)
     {
@@ -97,7 +106,7 @@ public class HUDController : MonoBehaviour
     private string FormatTime(float time)
     {
         int hours = Mathf.FloorToInt(time / 3600f);
-        int minutes = Mathf.FloorToInt((time % 3600f) / 60f); // Nur verbleibende Minuten
+        int minutes = Mathf.FloorToInt((time % 3600f) / 60f); 
         int seconds = Mathf.FloorToInt(time % 60f);
         return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
     }

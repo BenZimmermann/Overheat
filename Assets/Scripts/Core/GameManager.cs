@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
 
     public RuntimeGameData Data = new RuntimeGameData();
 
+    public event System.Action OnGameOver;
+
     public float _runTime;
     private bool _running = false;
     private void Awake()
@@ -59,8 +61,8 @@ public class GameManager : MonoBehaviour
     {
         //reset game data so when you start a new game, you start fresh
         Data = new RuntimeGameData();
-        Cursor.lockState = CursorLockMode.Locked;
         SceneManager.LoadScene("TestScene");
+        ResumeGame();
         StartRun();
     }
     public void PauseGame()
@@ -106,7 +108,8 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         EndRun();
-        Debug.Log("Game Over!");
+        PauseGame();
+        OnGameOver?.Invoke();
         //invoke game over event for GameOverMenu
     }
     #endregion

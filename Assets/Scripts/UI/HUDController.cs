@@ -35,11 +35,14 @@ public class HUDController : MonoBehaviour
     [Header("Ammo")]
     [SerializeField] public TextMeshProUGUI Ammo;
 
+    [Header("GameOver")]
+    [SerializeField] public GameObject GameOverMenu;
 
     void OnEnable()
     {
         SettingsManager.Instance.OnSettingsChanged += ApplySettings;
         GameManager.Instance.Data.OnDataChanged += RefreshStats;
+        GameManager.Instance.OnGameOver += RefreshGameOver;
 
     }
 
@@ -47,6 +50,7 @@ public class HUDController : MonoBehaviour
     {
         SettingsManager.Instance.OnSettingsChanged -= ApplySettings;
         GameManager.Instance.Data.OnDataChanged -= RefreshStats;
+        GameManager.Instance.OnGameOver -= RefreshGameOver;
     }
     //Temporary method to update the HUD, should be replaced with events and listeners for better performance and decoupling
 
@@ -56,6 +60,8 @@ public class HUDController : MonoBehaviour
         FindAnyObjectByType<ShootController>()?.GetComponent<ShootController>();
         FindAnyObjectByType<MeleeController>()?.GetComponent<MeleeController>();
         ApplySettings();
+
+        GameOverMenu.SetActive(false);
 
     }
     private void Update()
@@ -110,6 +116,19 @@ public class HUDController : MonoBehaviour
         int seconds = Mathf.FloorToInt(time % 60f);
         return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
     }
+     void RefreshGameOver()
+    {
+        GameOverMenu.SetActive(true);
+    }
+    // Only for GameOverMenu
+    public void Retry()
+    {
+        GameManager.Instance.StartGame();
+    }
+
+
+
+
     //private void UpdateHealth(float currentHealth, float maxHealth)
     //{
     //}

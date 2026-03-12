@@ -16,6 +16,7 @@ public class EnviormentDamage : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (_useTrigger) return;
+
         TryApplyDamage(collision.gameObject);
     }
 

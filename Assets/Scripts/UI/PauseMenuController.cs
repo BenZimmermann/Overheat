@@ -12,6 +12,7 @@ public class PauseMenuController : MonoBehaviour
     public string actionMapName = "Player";
     public string pauseActionName = "Pause";
 
+    private bool _gameOver;
     InputAction _pauseAction;
 
     void BindInputActions()
@@ -25,8 +26,17 @@ public class PauseMenuController : MonoBehaviour
         map.Enable();
     }
 
-    private void OnEnable() { BindInputActions(); }
-    private void OnDisable() { inputActionAsset?.FindActionMap(actionMapName, false)?.Disable(); }
+    private void OnEnable() 
+    { 
+        BindInputActions();
+        GameManager.Instance.OnGameOver += DisablePauseGame;
+    }
+    private void OnDisable() 
+    { 
+
+        inputActionAsset?.FindActionMap(actionMapName, false)?.Disable();
+        GameManager.Instance.OnGameOver -= DisablePauseGame;
+    }
 
 
     void Update()
@@ -39,12 +49,18 @@ public class PauseMenuController : MonoBehaviour
     }
     public void PauseGame()
     {
+        if (_gameOver) return;
         PauseMenu.SetActive(true);
         GameManager.Instance.PauseGame();
         //gamestateManager.SetState(GameState.Paused);
     }
+    private void DisablePauseGame()
+    {
+        _gameOver = true;
+    }
     public void QuitGame()
     {
+        _gameOver = false;
         GameManager.Instance.QuitToMainMenu();
         SaveManager.Instance.SaveStats();
     }

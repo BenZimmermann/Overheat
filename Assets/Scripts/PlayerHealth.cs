@@ -38,6 +38,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     }
     public void Die()
     {
+        SaveManager.Instance.SaveStats();
         GameManager.Instance.GameOver();
     }
 

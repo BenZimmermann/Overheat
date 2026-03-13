@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnviormentDamage : MonoBehaviour
@@ -11,12 +12,13 @@ public class EnviormentDamage : MonoBehaviour
     [SerializeField] private bool _useTrigger;
 
     private IDamageable _currentTarget;
+
+    private HashSet<IDamageable> _currentTargets = new HashSet<IDamageable>();
     private float _dotTimer;
 
     private void OnCollisionEnter(Collision collision)
     {
         if (_useTrigger) return;
-
         TryApplyDamage(collision.gameObject);
     }
 
@@ -25,6 +27,7 @@ public class EnviormentDamage : MonoBehaviour
         if (_useTrigger) return;
         ClearTarget();
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!_useTrigger) return;

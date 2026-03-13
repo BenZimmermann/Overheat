@@ -1,3 +1,4 @@
+using Mono.Cecil.Cil;
 using System;
 using UnityEngine;
 
@@ -12,8 +13,15 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     void Start()
     {
-        GameManager.Instance.Data.PlayerHealth = (int)_maxHealth;
-        GameManager.Instance.Data.PlayerShild = (int)_maxShield;
+        //GameManager.Instance.Data.PlayerHealth = (int)_maxHealth;
+        //GameManager.Instance.Data.PlayerShild = (int)_maxShield;
+        var data = GameManager.Instance.Data;
+
+        if (data.PlayerHealth <= 0)
+            data.PlayerHealth = (int)_maxHealth;
+
+        if (data.PlayerShild <= 0)
+            data.PlayerShild = (int)_maxShield;
     }
 
 
@@ -50,6 +58,20 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void AddShield(float amount)
     {
+        var data = GameManager.Instance.Data;
+        data.PlayerShild = (int)Mathf.Min(_maxShield, data.PlayerShild + amount);
+    }
+
+    //upgrades
+    public void AddMaxHealth(float amount)
+    {
+        _maxHealth += amount;
+       var data = GameManager.Instance.Data;
+        data.PlayerHealth = (int)Mathf.Min(_maxHealth, data.PlayerHealth + amount);
+    }
+    public void AddMaxShield(float amount)
+    {
+        _maxShield += amount;
         var data = GameManager.Instance.Data;
         data.PlayerShild = (int)Mathf.Min(_maxShield, data.PlayerShild + amount);
     }

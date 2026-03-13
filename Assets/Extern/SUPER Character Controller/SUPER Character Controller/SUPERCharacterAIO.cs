@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.InputSystem;
 using Unity.Cinemachine;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -331,6 +332,16 @@ namespace SUPERCharacter
 
             playerAudioSource = GetComponent<AudioSource>();
             ApplySettings();
+            RefreshPlayerStats();
+        }
+        void RefreshPlayerStats()
+        {
+            var data = GameManager.Instance.Data;
+            jumpPower += data.JumpPowerBonus;
+            walkingSpeed += data.SpeedBonus;
+            dashDuration += data.DashBonus;
+            slidingDeceleration += data.SlideBonus;
+
         }
         void ApplySettings()
         {

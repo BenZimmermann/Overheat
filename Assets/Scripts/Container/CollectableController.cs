@@ -11,7 +11,8 @@ public class CollectableController : MonoBehaviour, ICollectable
     private Transform _player;
     private bool _attracting = false;
     private float _spawnTime;
-    
+    public float _attractRadius => collectData.attractRadius + GameManager.Instance.Data.AttractRadiusBonus;
+
 
     private void Start()
     {
@@ -28,7 +29,7 @@ public class CollectableController : MonoBehaviour, ICollectable
 
         float distance = Vector3.Distance(transform.position, _player.position);
 
-        if (distance <= collectData.attractRadius)
+        if (distance <= _attractRadius)
         {
             _attracting = true;
         }

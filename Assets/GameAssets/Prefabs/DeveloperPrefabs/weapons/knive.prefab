@@ -853,10 +853,10 @@ MonoBehaviour:
   ImpactParticleSystem: {fileID: 7024303965198524714, guid: c69aee12676d88b45adc1d0aa638e5a0, type: 3}
   Ignore:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   Damageable:
     serializedVersion: 2
-    m_Bits: 7680
+    m_Bits: 7936
   inputActionAsset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   actionMapName: Player
   attackActionName: Attack

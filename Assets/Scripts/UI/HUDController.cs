@@ -17,8 +17,9 @@ public class HUDController : MonoBehaviour
     [SerializeField] public TextMeshProUGUI Money;
     [SerializeField] public TextMeshProUGUI FinalScore;
 
-    //[Header("Upgrades")]
-    //[SerializeField] public GameObject[] Upgrades;
+    [Header("Upgrades")]
+    [SerializeField] public GameObject UpgradeHolder;
+    [SerializeField] private GameObject _upgradeIconPrefab;
 
     //[Header("Health")]
     [SerializeField] public Slider HealthBar;
@@ -42,6 +43,7 @@ public class HUDController : MonoBehaviour
     {
         SettingsManager.Instance.OnSettingsChanged += ApplySettings;
         GameManager.Instance.Data.OnDataChanged += RefreshStats;
+        GameManager.Instance.Data.OnUpgradeAdded += RefreshUpgrade;
         GameManager.Instance.OnGameOver += RefreshGameOver;
 
     }
@@ -50,6 +52,7 @@ public class HUDController : MonoBehaviour
     {
         SettingsManager.Instance.OnSettingsChanged -= ApplySettings;
         GameManager.Instance.Data.OnDataChanged -= RefreshStats;
+        GameManager.Instance.Data.OnUpgradeAdded -= RefreshUpgrade;
         GameManager.Instance.OnGameOver -= RefreshGameOver;
     }
     //Temporary method to update the HUD, should be replaced with events and listeners for better performance and decoupling
@@ -62,6 +65,12 @@ public class HUDController : MonoBehaviour
         ApplySettings();
 
         GameOverMenu.SetActive(false);
+
+        RefreshStats();
+
+        foreach (UpgradeData upgrade in GameManager.Instance.Data.Upgrades)
+        RefreshUpgrade(upgrade);
+
 
     }
     private void Update()
@@ -81,6 +90,7 @@ public class HUDController : MonoBehaviour
             MeleeController meleeController = FindAnyObjectByType<MeleeController>();
             Ammo.text = "";
         }
+        Debug.LogError("heallth" + GameManager.Instance.Data.PlayerHealth);
     }
     void ApplySettings()
     {
@@ -89,6 +99,7 @@ public class HUDController : MonoBehaviour
         healthUI.SetActive(data.showHealth);
         statsUI.SetActive(data.showStats);
         upgradesUI.SetActive(data.showUpgrades);
+
     }
     private void RefreshStats()
     {
@@ -102,6 +113,14 @@ public class HUDController : MonoBehaviour
         HealthText.text = $"{data.PlayerHealth} %";
         ShieldBar.value = data.PlayerShild;
         ShieldText.text = $"{data.PlayerShild} %";
+    }
+    private void RefreshUpgrade(UpgradeData upgrade)
+    {
+        GameObject iconObj = Instantiate(_upgradeIconPrefab, UpgradeHolder.transform);
+        Image iconImage = iconObj.GetComponent<Image>();
+
+        if (iconImage != null)
+            iconImage.sprite = upgrade.upgradeIcon;
     }
     private string FormatUI(float amount)
     {

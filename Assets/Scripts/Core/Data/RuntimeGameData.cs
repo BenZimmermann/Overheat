@@ -81,6 +81,9 @@ public class RuntimeGameData
     public float SlideBonus;
     public float FastReload;
     public float FastFire;
+    public float LessMeeleCooldown;
+    public float MoreMeeleDistance;
+    public float LifestealPercent;
 
     //later no gameobjects -> will be destroyed by scene switch
     public GameObject Item;

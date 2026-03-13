@@ -23,6 +23,14 @@ public class MeleeController : MonoBehaviour
     private float _lastAttackTime;
     private bool _gizmoActive;
 
+    private float _baseMeeleCooldown;
+    private float _baseMeeleDistance;
+
+    private float CurrentCooldown =>
+    Mathf.Max(0.1f,  _baseMeeleCooldown - GameManager.Instance.Data.LessMeeleCooldown);
+    private float CurrentRadius =>
+    Mathf.Max( _baseMeeleDistance + GameManager.Instance.Data.MoreMeeleDistance);
+
     void BindInputActions()
     {
         if (inputActionAsset == null) return;
@@ -36,7 +44,11 @@ public class MeleeController : MonoBehaviour
 
     private void OnEnable() { BindInputActions(); }
     private void OnDisable() { inputActionAsset?.FindActionMap(actionMapName, false)?.Disable(); }
-
+    private void Start()
+    {
+        _baseMeeleCooldown = Wdata.CooldownTime;
+        _baseMeeleDistance = Wdata.attackRadius;
+    }
     void Update()
     {
         if(!Wdata.isMelee) return; 
@@ -46,25 +58,27 @@ public class MeleeController : MonoBehaviour
     
     private void Attack()
     {
-        if (Time.time < _lastAttackTime + Wdata.ShootDelay) return;
+        if (Time.time < _lastAttackTime + CurrentCooldown) return;
         _lastAttackTime = Time.time;
 
         Transform origin = attackOrigin != null ? attackOrigin : transform;
         Vector3 center = origin.position + origin.forward * (Wdata.range * 0.5f);
 
-        Collider[] hits = Physics.OverlapSphere(center, Wdata.attackRadius, Damageable);
+        Collider[] hits = Physics.OverlapSphere(center, CurrentRadius, Damageable);
 
-        HashSet<GameObject> already = new HashSet<GameObject>();
+        HashSet<IDamageable> already = new HashSet<IDamageable>();
 
         foreach (Collider col in hits)
         {
             if ((Ignore.value & (1 << col.gameObject.layer)) != 0) continue;
 
-            GameObject root = col.transform.root.gameObject;
-            if (!already.Add(root)) continue;
+            IDamageable target = col.GetComponentInParent<IDamageable>();
+            if (target == null) continue;
+            if (!already.Add(target)) continue;
 
             Damage(col, center);
         }
+
 
         _gizmoActive = true;
         CancelInvoke(nameof(ResetGizmo));
@@ -92,6 +106,6 @@ public class MeleeController : MonoBehaviour
         Vector3 center = origin.position + origin.forward * (Wdata.range * 0.5f);
 
         Gizmos.color = _gizmoActive ? Color.red : new Color(1f, 0.5f, 0f, 0.4f);
-        Gizmos.DrawWireSphere(center, Wdata.attackRadius);
+        Gizmos.DrawWireSphere(center, CurrentRadius);
     }
 }

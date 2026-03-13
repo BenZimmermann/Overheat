@@ -13,8 +13,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     void Start()
     {
-        //GameManager.Instance.Data.PlayerHealth = (int)_maxHealth;
-        //GameManager.Instance.Data.PlayerShild = (int)_maxShield;
         var data = GameManager.Instance.Data;
 
         if (data.PlayerHealth <= 0)
@@ -29,6 +27,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         var data = GameManager.Instance.Data;
 
+        amount = ApplyDamageReduction(amount, data);
+
         if (data.PlayerShild > 0)
         {
             data.PlayerShild = (int)Mathf.Max(0, data.PlayerShild - _shieldDamageMultiplier);
@@ -39,10 +39,23 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             data.PlayerHealth = (int)(data.PlayerHealth - amount);
         }
 
+        Lifesteal(amount);
+
         if (data.PlayerHealth <= 0)
-        {
             Die();
-        }
+    }
+
+
+    private float ApplyDamageReduction(float amount, RuntimeGameData data)
+    {
+        if (data.LifestealPercent <= 0f) return amount;
+
+        //UnityEngine.Random.value was made by AI
+        bool triggered = UnityEngine.Random.value <= 0.2f;
+        if (!triggered) return amount;
+
+        float reduced = amount * (1f - data.LifestealPercent);
+        return reduced;
     }
     public void Die()
     {
@@ -74,5 +87,17 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         _maxShield += amount;
         var data = GameManager.Instance.Data;
         data.PlayerShild = (int)Mathf.Min(_maxShield, data.PlayerShild + amount);
+    }
+    public void Lifesteal(float incomingDamage)
+    {
+        float percent = GameManager.Instance.Data.LifestealPercent;
+        if (percent <= 0f) return;       
+
+        float healAmount = incomingDamage * percent;
+        Heal(healAmount);
+    }
+    public void AddLifesteal(float percent)
+    {
+        GameManager.Instance.Data.LifestealPercent += percent;
     }
 }

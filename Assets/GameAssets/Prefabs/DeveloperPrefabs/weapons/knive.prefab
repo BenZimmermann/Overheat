@@ -853,7 +853,7 @@ MonoBehaviour:
   ImpactParticleSystem: {fileID: 7024303965198524714, guid: c69aee12676d88b45adc1d0aa638e5a0, type: 3}
   Ignore:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
   Damageable:
     serializedVersion: 2
     m_Bits: 7936

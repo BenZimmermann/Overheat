@@ -104,6 +104,18 @@ public class UpgradeController : MonoBehaviour, IDamageable
                 if(runtimeData != null)
                     runtimeData.FastFire += _data.value;
                 break;
+            case UpgradeType.lessMeeleCooldown:
+                if(runtimeData != null)
+                    runtimeData.LessMeeleCooldown += _data.value;
+                break;
+            case UpgradeType.moreMeeleDistance:
+                if(runtimeData != null)
+                    runtimeData.MoreMeeleDistance += _data.value;
+                break;
+            case UpgradeType.lifesteal:
+                if (playerHealth != null)
+                    playerHealth.AddLifesteal(_data.value); ;
+                break;
             default:
                 Debug.Log("nothing to apply");
                 break;

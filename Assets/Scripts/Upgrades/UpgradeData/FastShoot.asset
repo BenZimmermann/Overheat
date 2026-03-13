@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99f75a0ebb8b3f9499c305f36822a170, type: 3}
-  m_Name: FastReload
+  m_Name: FastShoot
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
-  upgradeName: Fash Reload
+  upgradeName: Fast Shoot
   id: 
   upgradeDescription: 
   upgradeIcon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
   UpgradeObj: {fileID: 3429704375467712301, guid: dc5246f391106884993c71a9f53f2c0d, type: 3}
   cost: 0
   Rarity: 0
-  type: 1
-  value: 1
+  type: 0
+  value: 0.15

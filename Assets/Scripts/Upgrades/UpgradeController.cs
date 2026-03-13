@@ -96,6 +96,14 @@ public class UpgradeController : MonoBehaviour, IDamageable
                 if(playerController != null)
                     playerController.slidingDeceleration += _data.value;
                 break;
+            case UpgradeType.fastReload:
+                if (runtimeData != null)
+                    runtimeData.FastReload += _data.value;
+                break;
+            case UpgradeType.fastFire:
+                if(runtimeData != null)
+                    runtimeData.FastFire += _data.value;
+                break;
             default:
                 Debug.Log("nothing to apply");
                 break;

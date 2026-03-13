@@ -127,4 +127,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f59e0c3627fe16842aec724c9ec3b6ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeController
-  _data: {fileID: 11400000, guid: 619ad4b5e2b16f443ae305b6fda25de0, type: 2}
+  _data: {fileID: 11400000, guid: c9d4e4a7817043743aaffc5bc74d75cb, type: 2}

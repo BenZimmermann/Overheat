@@ -24,6 +24,9 @@ public class ShootController : MonoBehaviour
     private bool _isReloading;
     private Coroutine _reloadCoroutine;
 
+    private float _baseReloadTime;
+    private float _baseShootDelay;
+
     [Header("Input Actions")]
     public InputActionAsset inputActionAsset;
 
@@ -42,10 +45,17 @@ public class ShootController : MonoBehaviour
     //}
     private void Start()
     {
+        _baseReloadTime = Wdata.reloadTime;
+        _baseShootDelay = Wdata.fireRate;
         _currentAmmo = Wdata.magazineSize;
         aimCamera = GameObject.FindWithTag("Camera")?.GetComponent<Camera>();
 
     }
+    private float CurrentReloadTime =>
+        Mathf.Max(0.1f, _baseReloadTime - GameManager.Instance.Data.FastReload);
+    private float CurrentShootDelay =>
+        Mathf.Max( _baseShootDelay - GameManager.Instance.Data.FastFire);
+
     void BindInputActions()
     {
         if (inputActionAsset == null)
@@ -93,7 +103,7 @@ public class ShootController : MonoBehaviour
             StartReload();
             return;
         }
-        if (_lastShootTime + Wdata.ShootDelay < Time.time)
+        if (_lastShootTime + CurrentShootDelay < Time.time)
         {
             //animator.SetBool("IsShooting", true);
             ShootingSystem.Play();
@@ -174,7 +184,7 @@ public class ShootController : MonoBehaviour
     private IEnumerator ReloadCoroutine()
     {
         _isReloading = true;
-        yield return new WaitForSeconds(Wdata.reloadTime);
+        yield return new WaitForSeconds(CurrentReloadTime);
         _currentAmmo = Wdata.magazineSize;
         _isReloading = false;
     }

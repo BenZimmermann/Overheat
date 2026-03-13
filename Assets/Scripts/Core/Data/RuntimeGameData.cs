@@ -79,6 +79,8 @@ public class RuntimeGameData
     public float SpeedBonus;
     public float DashBonus;
     public float SlideBonus;
+    public float FastReload;
+    public float FastFire;
 
     //later no gameobjects -> will be destroyed by scene switch
     public GameObject Item;

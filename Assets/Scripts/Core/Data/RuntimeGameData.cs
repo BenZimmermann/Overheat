@@ -88,5 +88,5 @@ public class RuntimeGameData
     //later no gameobjects -> will be destroyed by scene switch
     public GameObject Item;
 
-    public GameObject Weapon;
+    public WeaponData CurrentWeapon;
 }

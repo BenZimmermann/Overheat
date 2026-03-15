@@ -13,6 +13,11 @@ public interface IHealable
 {
     void GiveHeal(float amount);
 }
+public interface IShopEntry
+{
+    float Cost { get; }
+    RarityType Rarity { get; }
+    }
 public enum DamageType
 {
     Player,

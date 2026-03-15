@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99f75a0ebb8b3f9499c305f36822a170, type: 3}
+  m_Name: LessMeeleCooldown
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeName: Less meele cooldown
+  id: 
+  upgradeDescription: Your Meele cooldown time is halfed
+  upgradeIcon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  UpgradeObj: {fileID: 4588607063662546363, guid: de633b99404314e4d88aca870354880a, type: 3}
+  cost: 0
+  Rarity: 0
+  type: 2
+  value: 0.4

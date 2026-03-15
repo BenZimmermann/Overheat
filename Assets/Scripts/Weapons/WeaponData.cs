@@ -1,4 +1,5 @@
 using Unity.Cinemachine;
+using Unity.Hierarchy;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Weapons/Weapon Data")]
@@ -26,5 +27,9 @@ public class WeaponData : ScriptableObject
     public float ShootDelay = 0.2f;
     public bool AddBulletSpread = false;
     public Vector3 BulletSpreadVariance = new Vector3(0.1f, 0.1f, 0.1f);
+
+    public RarityType Rarity;
+    public float cost;
+    public GameObject WeaponObj;
 
 }

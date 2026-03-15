@@ -27,3 +27,6 @@ MonoBehaviour:
   ShootDelay: 0
   AddBulletSpread: 0
   BulletSpreadVariance: {x: 0.1, y: 0.1, z: 0.1}
+  Rarity: 0
+  cost: 0
+  WeaponObj: {fileID: 7856189994000703166, guid: c5f1d55841173e04b84e196793351d05, type: 3}

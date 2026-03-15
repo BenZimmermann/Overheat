@@ -17,6 +17,7 @@ MonoBehaviour:
   isMelee: 0
   damage: 10
   range: 30
+  attackRadius: 0.5
   fireRate: 0.2
   recoil: 0
   reloadTime: 2
@@ -26,3 +27,6 @@ MonoBehaviour:
   ShootDelay: 0.05
   AddBulletSpread: 1
   BulletSpreadVariance: {x: 0.05, y: 0.05, z: 0.05}
+  Rarity: 0
+  cost: 0
+  WeaponObj: {fileID: 4132249122035548106, guid: 67ad5ef163689a447a43c200ad528dd2, type: 3}

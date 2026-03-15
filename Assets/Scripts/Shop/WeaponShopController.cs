@@ -6,6 +6,7 @@ public class WeaponShopController : MonoBehaviour, IDamageable, IShopEntry
 
     private float _currentHealth = 1;
     private Transform _weaponPivot;
+    private static bool _isPurchasing;
 
     public float Cost => _data.cost;
     public RarityType Rarity => _data.Rarity ;
@@ -26,12 +27,14 @@ public class WeaponShopController : MonoBehaviour, IDamageable, IShopEntry
     private void TryBuyWeapon()
     {
         if (_data == null) return;
+        if (_isPurchasing) return;
 
+        _isPurchasing = true;
         RuntimeGameData runtimeData = GameManager.Instance.Data;
 
         if (runtimeData.Money < _data.cost)
         {
-
+            _isPurchasing = false;
             _currentHealth = 1;
             return;
         }
@@ -65,5 +68,9 @@ public class WeaponShopController : MonoBehaviour, IDamageable, IShopEntry
         GameObject newWeapon = Instantiate(_data.WeaponObj, _weaponPivot);
         newWeapon.transform.localPosition = _data.WeaponObj.transform.localPosition;
         newWeapon.transform.localRotation = _data.WeaponObj.transform.localRotation;
+    }
+    private void OnDestroy()
+    {
+        _isPurchasing = false;
     }
 }

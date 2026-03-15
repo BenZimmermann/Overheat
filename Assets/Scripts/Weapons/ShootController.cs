@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
 //[RequireComponent(typeof(Animator))]
@@ -154,15 +155,47 @@ public class ShootController : MonoBehaviour
         ShootingSystem.Play();
         _lastShootTime = Time.time;
 
+        // Schaden pro IDamageable akkumulieren – nah treffen mehr Pellets = mehr Schaden
+        Dictionary<IDamageable, float> damageAccum = new Dictionary<IDamageable, float>();
+        Dictionary<IDamageable, RaycastHit> hitInfo = new Dictionary<IDamageable, RaycastHit>();
+
         Vector3 baseDir = GetGunDirection();
+
         for (int i = 0; i < Wdata.shotgunPellets; i++)
         {
             Vector3 pelletDir = (baseDir + new Vector3(
                 Random.Range(-Wdata.shotgunSpread, Wdata.shotgunSpread),
                 Random.Range(-Wdata.shotgunSpread, Wdata.shotgunSpread),
                 Random.Range(-Wdata.shotgunSpread, Wdata.shotgunSpread))).normalized;
-            FireRay(pelletDir);
+
+            RaycastHit pelletHit;
+            Camera cam = aimCamera != null ? aimCamera : Camera.main;
+            Ray screenRay = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+
+            bool didHit = Physics.Raycast(BulletSpawnPoint.position, pelletDir, out pelletHit, Wdata.range, Mask)
+                       || Physics.Raycast(screenRay, out pelletHit, Wdata.range, Mask);
+
+            if (!didHit) continue;
+
+            // Trail spawnen
+            TrailRenderer trail = Instantiate(BulletTrail, BulletSpawnPoint.position, Quaternion.identity);
+            StartCoroutine(SpawnTrail(trail, pelletHit, skipDamage: true));
+
+            IDamageable target = pelletHit.collider.GetComponentInParent<IDamageable>();
+            if (target == null) continue;
+
+            if (damageAccum.ContainsKey(target))
+                damageAccum[target] += Wdata.damage;
+            else
+            {
+                damageAccum[target] = Wdata.damage;
+                hitInfo[target] = pelletHit;
+            }
         }
+
+        // Gesamtschaden einmal pro Ziel anwenden
+        foreach (var kvp in damageAccum)
+            kvp.Key.TakeDamage(kvp.Value, Wdata.name);
     }
 
     private void FireShot()
@@ -208,14 +241,13 @@ public class ShootController : MonoBehaviour
         bool didHit = Physics.Raycast(BulletSpawnPoint.position, direction, out finalHit, Wdata.range, Mask)
                    || Physics.Raycast(screenRay, out finalHit, Wdata.range, Mask);
 
-        if (didHit)
-        {
-            TrailRenderer trail = Instantiate(BulletTrail, BulletSpawnPoint.position, Quaternion.identity);
-            StartCoroutine(SpawnTrail(trail, finalHit));
-        }
+        if (!didHit) return;
+
+        TrailRenderer trail = Instantiate(BulletTrail, BulletSpawnPoint.position, Quaternion.identity);
+        StartCoroutine(SpawnTrail(trail, finalHit));
     }
 
-    private IEnumerator SpawnTrail(TrailRenderer Trail, RaycastHit Hit)
+    private IEnumerator SpawnTrail(TrailRenderer Trail, RaycastHit Hit, bool skipDamage = false)
     {
         float time = 0f;
         Vector3 startPosition = Trail.transform.position;
@@ -225,16 +257,12 @@ public class ShootController : MonoBehaviour
             time += Time.deltaTime / Trail.time;
             yield return null;
         }
-        //animator.SetBool("IsShooting", false);
         Trail.transform.position = Hit.point;
         Instantiate(ImpactParticleSystem, Hit.point, Quaternion.LookRotation(Hit.normal));
-
         Destroy(Trail.gameObject, Trail.time);
 
-        if ((Mask.value & (1 << Hit.collider.gameObject.layer)) > 0)
-        {
+        if (!skipDamage && (Mask.value & (1 << Hit.collider.gameObject.layer)) > 0)
             Damage(Hit);
-        }
     }
     private void Reload()
     {

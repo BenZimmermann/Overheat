@@ -27,6 +27,10 @@ public class ShootController : MonoBehaviour
     private float _baseReloadTime;
     private float _baseShootDelay;
 
+    private bool _isSalveActive;
+    private int _salveRemaining;
+    private float _salveTimer;
+
     [Header("Input Actions")]
     public InputActionAsset inputActionAsset;
 
@@ -54,7 +58,7 @@ public class ShootController : MonoBehaviour
     private float CurrentReloadTime =>
         Mathf.Max(0.1f, _baseReloadTime - GameManager.Instance.Data.FastReload);
     private float CurrentShootDelay =>
-        Mathf.Max( _baseShootDelay - GameManager.Instance.Data.FastFire);
+        Mathf.Max(_baseShootDelay - GameManager.Instance.Data.FastFire);
 
     void BindInputActions()
     {
@@ -79,7 +83,7 @@ public class ShootController : MonoBehaviour
 
     public void Update()
     {
-    if(Wdata.isMelee) return; 
+        if (Wdata.isMelee) return;
         if (Wdata.isAutomatic)
         {
             if (_shootAction != null && _shootAction.IsPressed())
@@ -93,7 +97,10 @@ public class ShootController : MonoBehaviour
         if (_reloadAction != null && _reloadAction.WasPressedThisFrame())
             Reload();
     }
-
+    private void FixedUpdate()
+    {
+        TickSalve();
+    }
     public void Shoot()
     {
         if (_isReloading || _currentAmmo <= 0) return;
@@ -105,45 +112,106 @@ public class ShootController : MonoBehaviour
         }
         if (_lastShootTime + CurrentShootDelay < Time.time)
         {
-            //animator.SetBool("IsShooting", true);
-            ShootingSystem.Play();
             _lastShootTime = Time.time;
-            _currentAmmo--;
 
+            if (Wdata.isSalve && !_isSalveActive)
+                StartSalve();
+            else if (Wdata.isShotgun)
+                ShootShotgun();
+            else
+                FireShot();
+        }
+    }
 
-            Camera cam = aimCamera != null ? aimCamera : Camera.main;
-            Ray screenRay = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+    private void StartSalve()
+    {
+        _salveRemaining = Wdata.salveCount;
+        _isSalveActive = true;
+        _salveTimer = 0f;
+    }
 
-            bool screenHitFound = Physics.Raycast(screenRay, out RaycastHit screenHit, Wdata.range, Mask);
-            Vector3 gunDir = screenRay.direction;
+    private void TickSalve()
+    {
+        if (!_isSalveActive) return;
 
-            if (screenHitFound)
-            {
-                Vector3 toHit = screenHit.point - BulletSpawnPoint.position;
-                if (Vector3.Dot(toHit, screenRay.direction) > 0f)
-                    gunDir = toHit.normalized;
-            }
-            if (Wdata.AddBulletSpread)
-            {
-                gunDir += new Vector3(
-                    Random.Range(-Wdata.BulletSpreadVariance.x, Wdata.BulletSpreadVariance.x),
-                    Random.Range(-Wdata.BulletSpreadVariance.y, Wdata.BulletSpreadVariance.y),
-                    Random.Range(-Wdata.BulletSpreadVariance.z, Wdata.BulletSpreadVariance.z));
-                gunDir.Normalize();
-            }
+        _salveTimer -= Time.fixedDeltaTime;
+        if (_salveTimer > 0f) return;
 
-            RaycastHit finalHit;
-            bool didHit = Physics.Raycast(BulletSpawnPoint.position, gunDir, out finalHit, Wdata.range, Mask)
-                       || Physics.Raycast(screenRay, out finalHit, Wdata.range, Mask);
+        if (_currentAmmo <= 0) { _isSalveActive = false; return; }
 
-            if (didHit)
-            {
-                TrailRenderer trail = Instantiate(BulletTrail, BulletSpawnPoint.position, Quaternion.identity);
-                StartCoroutine(SpawnTrail(trail, finalHit));
-            }
-            // Debugging rays
-            Debug.DrawRay(screenRay.origin, screenRay.direction * Wdata.range, Color.green, 1f);
-            Debug.DrawRay(BulletSpawnPoint.position, gunDir * Wdata.range, Color.red, 1f);
+        FireShot();
+        _salveRemaining--;
+        _salveTimer = Wdata.salveDelay;
+
+        if (_salveRemaining <= 0)
+            _isSalveActive = false;
+    }
+
+    private void ShootShotgun()
+    {
+        if (_currentAmmo <= 0) return;
+        _currentAmmo--;
+        ShootingSystem.Play();
+        _lastShootTime = Time.time;
+
+        Vector3 baseDir = GetGunDirection();
+        for (int i = 0; i < Wdata.shotgunPellets; i++)
+        {
+            Vector3 pelletDir = (baseDir + new Vector3(
+                Random.Range(-Wdata.shotgunSpread, Wdata.shotgunSpread),
+                Random.Range(-Wdata.shotgunSpread, Wdata.shotgunSpread),
+                Random.Range(-Wdata.shotgunSpread, Wdata.shotgunSpread))).normalized;
+            FireRay(pelletDir);
+        }
+    }
+
+    private void FireShot()
+    {
+        if (_currentAmmo <= 0) return;
+        _currentAmmo--;
+        ShootingSystem.Play();
+        FireRay(GetGunDirection());
+    }
+
+    private Vector3 GetGunDirection()
+    {
+        Camera cam = aimCamera != null ? aimCamera : Camera.main;
+        Ray screenRay = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        Vector3 gunDir = screenRay.direction;
+
+        if (Physics.Raycast(screenRay, out RaycastHit screenHit, Wdata.range, Mask))
+        {
+            Vector3 toHit = screenHit.point - BulletSpawnPoint.position;
+            if (Vector3.Dot(toHit, screenRay.direction) > 0f)
+                gunDir = toHit.normalized;
+        }
+
+        if (Wdata.AddBulletSpread)
+        {
+            gunDir += new Vector3(
+                Random.Range(-Wdata.BulletSpreadVariance.x, Wdata.BulletSpreadVariance.x),
+                Random.Range(-Wdata.BulletSpreadVariance.y, Wdata.BulletSpreadVariance.y),
+                Random.Range(-Wdata.BulletSpreadVariance.z, Wdata.BulletSpreadVariance.z));
+            gunDir.Normalize();
+        }
+
+        Debug.DrawRay(BulletSpawnPoint.position, gunDir * Wdata.range, Color.red, 1f);
+        return gunDir;
+    }
+
+    private void FireRay(Vector3 direction)
+    {
+        Camera cam = aimCamera != null ? aimCamera : Camera.main;
+        Ray screenRay = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+
+        RaycastHit finalHit;
+        bool didHit = Physics.Raycast(BulletSpawnPoint.position, direction, out finalHit, Wdata.range, Mask)
+                   || Physics.Raycast(screenRay, out finalHit, Wdata.range, Mask);
+
+        if (didHit)
+        {
+            TrailRenderer trail = Instantiate(BulletTrail, BulletSpawnPoint.position, Quaternion.identity);
+            StartCoroutine(SpawnTrail(trail, finalHit));
         }
     }
 
@@ -190,8 +258,8 @@ public class ShootController : MonoBehaviour
     }
     private void Damage(RaycastHit hit)
     {
-            IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
-            target?.TakeDamage(Wdata.damage, Wdata.name);
+        IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
+        target?.TakeDamage(Wdata.damage, Wdata.name);
     }
     public int CurrentAmmo => _currentAmmo;
     public int MagazineSize => Wdata.magazineSize;

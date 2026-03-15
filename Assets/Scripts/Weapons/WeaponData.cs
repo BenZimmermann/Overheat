@@ -9,6 +9,8 @@ public class WeaponData : ScriptableObject
     public string weaponID;
 
     public bool isMelee = false;
+    public bool isShotgun = false;
+    public bool isSalve = false;
 
     public float damage = 10f;
     public float range = 100f;
@@ -23,6 +25,12 @@ public class WeaponData : ScriptableObject
 
     public float CooldownTime = 0f;
     public bool isAutomatic = false;
+
+    public int shotgunPellets = 6;
+    public float shotgunSpread = 0.15f;
+
+    public int salveCount = 3;
+    public float salveDelay = 0.1f;
 
     public float ShootDelay = 0.2f;
     public bool AddBulletSpread = false;

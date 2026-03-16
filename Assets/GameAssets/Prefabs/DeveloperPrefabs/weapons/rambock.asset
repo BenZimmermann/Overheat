@@ -15,6 +15,8 @@ MonoBehaviour:
   weaponName: Rambock
   weaponID: 2
   isMelee: 0
+  isShotgun: 0
+  isSalve: 0
   damage: 15
   range: 200
   attackRadius: 0.5
@@ -24,9 +26,13 @@ MonoBehaviour:
   magazineSize: 15
   CooldownTime: 0
   isAutomatic: 0
+  shotgunPellets: 6
+  shotgunSpread: 0.15
+  salveCount: 3
+  salveDelay: 0.1
   ShootDelay: 0.3
   AddBulletSpread: 0
   BulletSpreadVariance: {x: 0.1, y: 0.1, z: 0.1}
   Rarity: 0
-  cost: 0
+  cost: 7
   WeaponObj: {fileID: 3986184995958675055, guid: 15569f1ac7bc5554c9d35d7e0e706a8a, type: 3}

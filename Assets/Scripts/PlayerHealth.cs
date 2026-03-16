@@ -27,6 +27,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         var data = GameManager.Instance.Data;
 
+        if (data.MagneticFieldActive) return;
+
         amount = ApplyDamageReduction(amount, data);
 
         if (data.PlayerShild > 0)

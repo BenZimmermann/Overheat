@@ -10,7 +10,7 @@ public class HUDController : MonoBehaviour
     /// It should be refactored to use events and listeners for better performance and decoupling.
     /// </summary>
     //public static HUDController Instance { get; set; }
-    //[Header("Stats")]
+    [Header("Stats")]
     //[SerializeField] public TextMeshProUGUI LevelName;
     [SerializeField] public TextMeshProUGUI RunTime;
     [SerializeField] public TextMeshProUGUI EnemiesKilled;
@@ -26,7 +26,8 @@ public class HUDController : MonoBehaviour
     [SerializeField] public TextMeshProUGUI HealthText;
     [SerializeField] public Slider ShieldBar;
     [SerializeField] public TextMeshProUGUI ShieldText;
-    //[SerializeField] public GameObject Item;
+    [SerializeField] public GameObject Item;
+    [SerializeField] private Sprite DefaultItemSprite;
 
     [Header("UI Panels")]
     public GameObject healthUI;
@@ -44,6 +45,7 @@ public class HUDController : MonoBehaviour
         SettingsManager.Instance.OnSettingsChanged += ApplySettings;
         GameManager.Instance.Data.OnDataChanged += RefreshStats;
         GameManager.Instance.Data.OnUpgradeAdded += RefreshUpgrade;
+        GameManager.Instance.Data.OnItemChanged += RefreshItem;
         GameManager.Instance.OnGameOver += RefreshGameOver;
 
     }
@@ -53,6 +55,7 @@ public class HUDController : MonoBehaviour
         SettingsManager.Instance.OnSettingsChanged -= ApplySettings;
         GameManager.Instance.Data.OnDataChanged -= RefreshStats;
         GameManager.Instance.Data.OnUpgradeAdded -= RefreshUpgrade;
+        GameManager.Instance.Data.OnItemChanged -= RefreshItem;
         GameManager.Instance.OnGameOver -= RefreshGameOver;
     }
     //Temporary method to update the HUD, should be replaced with events and listeners for better performance and decoupling
@@ -70,6 +73,8 @@ public class HUDController : MonoBehaviour
 
         foreach (UpgradeData upgrade in GameManager.Instance.Data.Upgrades)
         RefreshUpgrade(upgrade);
+
+        RefreshItem(GameManager.Instance.Data.CurrentItem);
 
 
     }
@@ -90,7 +95,6 @@ public class HUDController : MonoBehaviour
             MeleeController meleeController = FindAnyObjectByType<MeleeController>();
             Ammo.text = "";
         }
-        Debug.LogError("heallth" + GameManager.Instance.Data.PlayerHealth);
     }
     void ApplySettings()
     {
@@ -113,6 +117,18 @@ public class HUDController : MonoBehaviour
         HealthText.text = $"{data.PlayerHealth} %";
         ShieldBar.value = data.PlayerShild;
         ShieldText.text = $"{data.PlayerShild} %";
+    }
+    private void RefreshItem(ItemData item)
+    {
+        if (Item == null) return;
+
+        Image icon = Item.GetComponent<Image>();
+        if (icon == null) return;
+
+        if (item != null && item.itemIcon != null)
+            icon.sprite = item.itemIcon;
+        else
+            icon.sprite = DefaultItemSprite;
     }
     private void RefreshUpgrade(UpgradeData upgrade)
     {

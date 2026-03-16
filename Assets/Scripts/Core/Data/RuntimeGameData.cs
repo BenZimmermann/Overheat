@@ -5,7 +5,7 @@ public class RuntimeGameData
 {
     public event System.Action OnDataChanged;
     public event System.Action<UpgradeData> OnUpgradeAdded;
-
+    public event System.Action<ItemData> OnItemChanged;
 
     public int Level;
     public string LevelName;
@@ -85,8 +85,23 @@ public class RuntimeGameData
     public float MoreMeeleDistance;
     public float LifestealPercent;
 
-    //later no gameobjects -> will be destroyed by scene switch
-    public GameObject Item;
-
     public WeaponData CurrentWeapon;
+
+    private ItemData _currentItem;
+
+    public bool MagneticFieldActive;
+    public bool GoldenGunActive;
+
+    public ItemData CurrentItem
+    {
+        get => _currentItem;
+        set { _currentItem = value; }
+    }
+
+    public void SetItem(ItemData item)
+    {
+        _currentItem = item;
+        OnItemChanged?.Invoke(item);
+        OnDataChanged?.Invoke();
+    }
 }

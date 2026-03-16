@@ -107,10 +107,24 @@ public class GameManager : MonoBehaviour
     #region gameOver
     public void GameOver()
     {
+        if (TryRevive()) return;
+
         EndRun();
         PauseGame();
         OnGameOver?.Invoke();
         //invoke game over event for GameOverMenu
     }
     #endregion
+    private bool TryRevive()
+    {
+        ItemData item = Data.CurrentItem;
+        if (item == null || item.itemType != ItemType.Revive) return false;
+
+        ItemController itemUsage = FindAnyObjectByType<ItemController>();
+        if (itemUsage == null) return false;
+
+        itemUsage.UseRevive(item);
+        Debug.Log("[GameManager] Spieler wiederbelebt!");
+        return true;
+    }
 }

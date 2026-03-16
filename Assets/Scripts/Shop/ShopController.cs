@@ -107,7 +107,7 @@ public class ShopController : MonoBehaviour
             weighted.Add((obj, w));
             totalWeight += w;
         }
-
+        //not my idea
         float roll = UnityEngine.Random.Range(0f, totalWeight);
         float cumulative = 0f;
 

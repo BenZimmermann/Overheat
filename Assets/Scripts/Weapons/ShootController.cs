@@ -287,7 +287,13 @@ public class ShootController : MonoBehaviour
     private void Damage(RaycastHit hit)
     {
         IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
-        target?.TakeDamage(Wdata.damage, Wdata.name);
+        if (target == null) return;
+
+        float damage = GameManager.Instance.Data.GoldenGunActive
+            ? float.MaxValue
+            : Wdata.damage;
+
+        target.TakeDamage(damage, Wdata.name);
     }
     public int CurrentAmmo => _currentAmmo;
     public int MagazineSize => Wdata.magazineSize;

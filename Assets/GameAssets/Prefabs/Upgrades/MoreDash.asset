@@ -15,7 +15,7 @@ MonoBehaviour:
   upgradeName: MoreDash
   id: 
   upgradeDescription: 
-  upgradeIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  upgradeIcon: {fileID: 114013110, guid: ff71a0b0363c1304ab827c4240fbc101, type: 3}
   UpgradeObj: {fileID: 3429704375467712301, guid: dc5246f391106884993c71a9f53f2c0d, type: 3}
   cost: 0
   Rarity: 0

@@ -15,7 +15,7 @@ MonoBehaviour:
   upgradeName: More Meele Distance
   id: 
   upgradeDescription: 
-  upgradeIcon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  upgradeIcon: {fileID: -46303929, guid: ff71a0b0363c1304ab827c4240fbc101, type: 3}
   UpgradeObj: {fileID: 2694360173292012142, guid: c7eeb879e6fac8e4b8ec1b5965a0b60a, type: 3}
   cost: 0
   Rarity: 0

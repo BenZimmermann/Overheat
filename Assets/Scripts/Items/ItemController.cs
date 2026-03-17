@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class ItemController : MonoBehaviour
@@ -48,7 +49,7 @@ public class ItemController : MonoBehaviour
 
         ItemData item = GameManager.Instance.Data.CurrentItem;
         if (item == null) return;
-        if (item.isAutomatic) return; // automatische Items werden nicht manuell ausgelöst
+        if (item.isAutomatic) return; 
 
         UseItem(item);
     }

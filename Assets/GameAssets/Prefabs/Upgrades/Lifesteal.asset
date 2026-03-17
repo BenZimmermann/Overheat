@@ -15,7 +15,7 @@ MonoBehaviour:
   upgradeName: Lifesteal
   id: 
   upgradeDescription: 
-  upgradeIcon: {fileID: 21300000, guid: 7e9bf67083f470f4987b09624cafae09, type: 3}
+  upgradeIcon: {fileID: -493518549, guid: ff71a0b0363c1304ab827c4240fbc101, type: 3}
   UpgradeObj: {fileID: 2694360173292012142, guid: c7eeb879e6fac8e4b8ec1b5965a0b60a, type: 3}
   cost: 0
   Rarity: 0

@@ -1,9 +1,11 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class ItemShopController : MonoBehaviour, IDamageable, IShopEntry
 {
     [SerializeField] private ItemData _data;
+    [SerializeField] private TMP_Text _itemName;
 
     private float _currentHealth = 1;
     private static bool _isPurchasing;
@@ -13,7 +15,10 @@ public class ItemShopController : MonoBehaviour, IDamageable, IShopEntry
     // IShopEntry
     public float Cost => _data.cost;
     public RarityType Rarity => _data.Rarity;
-
+    private void Start()
+    {
+        _itemName.text = _data.itemName.ToString();
+    }
     public void TakeDamage(float amount, string source)
     {
         _currentHealth -= amount;

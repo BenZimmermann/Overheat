@@ -1,8 +1,10 @@
+using TMPro;
 using UnityEngine;
 
 public class WeaponShopController : MonoBehaviour, IDamageable, IShopEntry
 {
     [SerializeField] private WeaponData _data;
+    [SerializeField] private TMP_Text _itemName;
 
     private float _currentHealth = 1;
     private Transform _weaponPivot;
@@ -14,6 +16,7 @@ public class WeaponShopController : MonoBehaviour, IDamageable, IShopEntry
     private void Start()
     {
         _weaponPivot = GameObject.FindGameObjectWithTag("weaponPivot")?.transform;
+        _itemName.text = _data.weaponName.ToString();
     }
 
     public void TakeDamage(float amount, string source)

@@ -25,7 +25,7 @@ MonoBehaviour:
   ItemsToDrop: []
   fallDamageMultiplier: 1
   fallDamageThreshold: 5
-  MoneyObj: {fileID: 3349673070715546300, guid: 9f0e01ae3b54d2e4280d33385fe937b0, type: 3}
+  MoneyObj: {fileID: 4045873163074478821, guid: d8016e98fd710af4594c663bdd069366, type: 3}
   HealObj: {fileID: 0}
   hitParticles: {fileID: 7024303965198524714, guid: c69aee12676d88b45adc1d0aa638e5a0, type: 3}
   destroyParticles: {fileID: 7024303965198524714, guid: c69aee12676d88b45adc1d0aa638e5a0, type: 3}

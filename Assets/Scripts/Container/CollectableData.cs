@@ -8,6 +8,6 @@ public class CollectableData : ScriptableObject
     public float pickupRadius = 0.4f;
     public float pickupDelay = 0.5f;
 
-    public LineRenderer floatTrail;
+    //public LineRenderer floatTrail;
     public float amount = 1f;
 }

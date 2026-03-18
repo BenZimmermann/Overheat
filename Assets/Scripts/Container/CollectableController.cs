@@ -1,11 +1,13 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 public class CollectableController : MonoBehaviour, ICollectable
 {
     //later as a ScriptableObject to allow for different types of collectables with different values and behaviors
     // how much this collectable is worth, can be set in inspector for different types of collectables
     [SerializeField] private CollectableData collectData;
+    [SerializeField] private LineRenderer _trail;
 
     private Rigidbody _rb;
     private Transform _player;
@@ -20,6 +22,9 @@ public class CollectableController : MonoBehaviour, ICollectable
         //change later to a more dynamic solution
         _player = GameObject.FindWithTag("Player").transform;
         _spawnTime = Time.time;
+
+        if (_trail != null)
+            _trail.positionCount = 0;
     }
 
     private void FixedUpdate()
@@ -42,11 +47,21 @@ public class CollectableController : MonoBehaviour, ICollectable
             Vector3 direction = (_player.position - transform.position).normalized;
             _rb.MovePosition(transform.position + direction * collectData.attractSpeed * Time.fixedDeltaTime);
 
+            UpdateTrail();
+
             if (distance <= collectData.pickupRadius)
             {
                 Collect(collectData.amount);
             }
         }
+    }
+    private void UpdateTrail()
+    {
+        if (_trail == null) return;
+
+        _trail.positionCount = 20;
+        _trail.SetPosition(0, transform.position);
+        _trail.SetPosition(1, _player.position);
     }
     public void Collect(float amount)
     {

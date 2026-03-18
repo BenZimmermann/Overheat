@@ -16,5 +16,5 @@ MonoBehaviour:
   attractSpeed: 10
   pickupRadius: 0.3
   pickupDelay: 0.5
-  floatTrail: {fileID: 0}
+  floatTrail: {fileID: 387173226053390039, guid: b2814407de0826147bb50ce39a2e11d4, type: 3}
   amount: 1

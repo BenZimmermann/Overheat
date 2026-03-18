@@ -279,6 +279,7 @@ public class ShootController : MonoBehaviour
 
     private IEnumerator ReloadCoroutine()
     {
+        //animator.SetTrigger("Reload");
         _isReloading = true;
         yield return new WaitForSeconds(CurrentReloadTime);
         _currentAmmo = Wdata.magazineSize;

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411f016aa619e6549a6ec26165177b5c, type: 3}
   m_Name: rambock
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  weaponName: Rambock
+  weaponName: Vortex
   weaponID: 2
   isMelee: 0
   isShotgun: 0
@@ -22,8 +22,8 @@ MonoBehaviour:
   attackRadius: 0.5
   fireRate: 0.3
   recoil: 0
-  reloadTime: 2
-  magazineSize: 15
+  reloadTime: 1.75
+  magazineSize: 8
   CooldownTime: 0
   isAutomatic: 0
   shotgunPellets: 6
@@ -34,5 +34,5 @@ MonoBehaviour:
   AddBulletSpread: 0
   BulletSpreadVariance: {x: 0.1, y: 0.1, z: 0.1}
   Rarity: 0
-  cost: 7
-  WeaponObj: {fileID: 3986184995958675055, guid: 15569f1ac7bc5554c9d35d7e0e706a8a, type: 3}
+  cost: 0
+  WeaponObj: {fileID: 1664919590495868262, guid: fd202aeb361a0334aac4e4b2c2a5ff24, type: 3}

@@ -44,10 +44,10 @@ public class ShootController : MonoBehaviour
     InputAction _shootAction;
     InputAction _reloadAction;
 
-    //private void Awake()
-    //{
-    //    animator = GetComponent<Animator>();
-    //}
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
     private void Start()
     {
         _baseReloadTime = Wdata.reloadTime;
@@ -279,7 +279,7 @@ public class ShootController : MonoBehaviour
 
     private IEnumerator ReloadCoroutine()
     {
-        //animator.SetTrigger("Reload");
+        animator.SetTrigger("Reload");
         _isReloading = true;
         yield return new WaitForSeconds(CurrentReloadTime);
         _currentAmmo = Wdata.magazineSize;

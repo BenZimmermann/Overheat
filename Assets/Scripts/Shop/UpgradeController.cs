@@ -2,6 +2,8 @@ using SUPERCharacter;
 using UnityEditor;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+using Unity.VisualScripting;
 public class UpgradeController : MonoBehaviour, IDamageable, IShopEntry
 {
     [SerializeField] private UpgradeData _data;
@@ -13,6 +15,8 @@ public class UpgradeController : MonoBehaviour, IDamageable, IShopEntry
 
     [SerializeField] private TMP_Text _UpgradeName;
     [SerializeField] private TMP_Text _UpgradeDescription;
+    [SerializeField] private GameObject _Icon;
+
 
 
     public UpgradeData Data => _data;
@@ -21,6 +25,10 @@ public class UpgradeController : MonoBehaviour, IDamageable, IShopEntry
     {
         _UpgradeName.text = _data.upgradeName.ToString();
         _UpgradeDescription.text = _data.upgradeDescription.ToString();
+
+        SpriteRenderer iconRenderer = _Icon.GetComponent<SpriteRenderer>();
+        if (iconRenderer != null)
+            iconRenderer.sprite = _data.upgradeIcon;
     }
     public void TakeDamage(float amount, string source)
     {

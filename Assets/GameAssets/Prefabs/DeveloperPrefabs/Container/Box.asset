@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Bits: 23
   health: 1
   rewardChance: 75
-  rewardMoney: 10
+  rewardMoney: 25
   rewardhealth: 0.5
   ItemDropChance: 0.3
   ItemsToDrop: []

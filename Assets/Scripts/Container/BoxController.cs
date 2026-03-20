@@ -8,6 +8,7 @@ public class BoxController : MonoBehaviour, IDamageable
 {
     [SerializeField] ContainerData CData;
     [SerializeField] Rigidbody rb;
+    [SerializeField] ParticleSystem DestroyParticles;
     private float _currentHealth;
 
     private void Start()
@@ -58,8 +59,12 @@ public class BoxController : MonoBehaviour, IDamageable
     }
     private void Die()
     {
-        CData.destroyParticles.transform.position = transform.position;
-        CData.destroyParticles.Play();
+        //could destroy some other particles
+        DestroyParticles.transform.SetParent(null);
+        DestroyParticles.transform.position = transform.position;
+        DestroyParticles.Play();
+        float particleDuration = DestroyParticles.main.duration + DestroyParticles.main.startLifetime.constantMax;
+        Destroy(DestroyParticles.gameObject, particleDuration);
         DropMoney();
         Destroy(gameObject);
     }

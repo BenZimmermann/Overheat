@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411f016aa619e6549a6ec26165177b5c, type: 3}
   m_Name: Burst
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  weaponName: burst
+  weaponName: Harrier
   weaponID: 
   isMelee: 0
   isShotgun: 0
@@ -35,4 +35,4 @@ MonoBehaviour:
   BulletSpreadVariance: {x: 0.1, y: 0.1, z: 0.1}
   Rarity: 0
   cost: 0
-  WeaponObj: {fileID: 1519509834998127671, guid: beaa3724e15735b4ba498186e071ffef, type: 3}
+  WeaponObj: {fileID: 5772202390202007179, guid: 85d8459e8c4dd9f45b2d10513254c325, type: 3}

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 411f016aa619e6549a6ec26165177b5c, type: 3}
+  m_Name: Hammer
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  weaponName: Hammer
+  weaponID: 
+  isMelee: 1
+  isShotgun: 0
+  isSalve: 0
+  damage: 15
+  range: -0.5
+  attackRadius: 2
+  fireRate: 0
+  recoil: 0
+  reloadTime: 0
+  magazineSize: 0
+  CooldownTime: 0.8
+  isAutomatic: 0
+  shotgunPellets: 6
+  shotgunSpread: 0.15
+  salveCount: 3
+  salveDelay: 0.1
+  ShootDelay: 0
+  AddBulletSpread: 0
+  BulletSpreadVariance: {x: 0.1, y: 0.1, z: 0.1}
+  Rarity: 0
+  cost: 0
+  WeaponObj: {fileID: 2282240317195959013, guid: 7542b1355d1827a4cba11c2ad0216c0b, type: 3}

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411f016aa619e6549a6ec26165177b5c, type: 3}
   m_Name: Knive
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  weaponName: knive
+  weaponName: Sword
   weaponID: 3
   isMelee: 1
   isShotgun: 0
@@ -24,7 +24,7 @@ MonoBehaviour:
   recoil: 0
   reloadTime: 0
   magazineSize: 0
-  CooldownTime: 0.8
+  CooldownTime: 0.5
   isAutomatic: 0
   shotgunPellets: 6
   shotgunSpread: 0.15
@@ -35,4 +35,4 @@ MonoBehaviour:
   BulletSpreadVariance: {x: 0.1, y: 0.1, z: 0.1}
   Rarity: 0
   cost: 4
-  WeaponObj: {fileID: 7856189994000703166, guid: c5f1d55841173e04b84e196793351d05, type: 3}
+  WeaponObj: {fileID: 2930002961881972026, guid: 56b91673ebb08634885ce06090d39c52, type: 3}

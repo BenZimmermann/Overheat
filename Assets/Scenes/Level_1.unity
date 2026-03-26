@@ -6977,6 +6977,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3392352861340585085, guid: 1b94a14689898014a9f0394f3aed5c87, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3692472819934833311, guid: 1b94a14689898014a9f0394f3aed5c87, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -7112,6 +7116,10 @@ MonoBehaviour:
   inputActionAsset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   actionMapName: Player
   useItemActionName: UseItem
+  _throwOrigin: {fileID: 0}
+  _teleportMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &1930616647
 MonoBehaviour:
   m_ObjectHideFlags: 0

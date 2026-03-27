@@ -19,15 +19,21 @@ public class ItemController : MonoBehaviour
 
     private float _magneticFieldTimer;
     private float _goldenGunTimer;
-
+    private float _cooldownTimer;
 
     private GameObject _activeGrenade;
     private float _grenadeTimer;
     private float _grenadeExplosionRadius;
     private float _grenadeExplosionDamage;
 
+    private GameObject _activeShield;
+
+    private Material[] _originalMaterials;
+    private Renderer[] _weaponRenderers;
+
     public bool GoldenGunActive => _goldenGunTimer > 0f;
     public bool MagneticFieldActive => _magneticFieldTimer > 0f;
+    public bool OnCooldown => _cooldownTimer > 0f;
 
     private void OnEnable()
     {
@@ -46,6 +52,7 @@ public class ItemController : MonoBehaviour
     private void Update()
     {
         if (_useItemAction == null || !_useItemAction.WasPressedThisFrame()) return;
+        if (OnCooldown) return;
 
         ItemData item = GameManager.Instance.Data.CurrentItem;
         if (item == null) return;
@@ -59,37 +66,44 @@ public class ItemController : MonoBehaviour
         TickMagneticField();
         TickGoldenGun();
         TickGrenade();
+        TickCooldown();
     }
 
     // -------------------------------------------------------------------------
     // Timers
     // -------------------------------------------------------------------------
+    private void TickCooldown()
+    {
+        if (_cooldownTimer <= 0f) return;
+        _cooldownTimer -= Time.fixedDeltaTime;
+        if (_cooldownTimer < 0f) _cooldownTimer = 0f;
+    }
 
     private void TickMagneticField()
     {
         if (_magneticFieldTimer <= 0f) return;
-
         _magneticFieldTimer -= Time.fixedDeltaTime;
 
         if (_magneticFieldTimer <= 0f)
         {
             _magneticFieldTimer = 0f;
             GameManager.Instance.Data.MagneticFieldActive = false;
-            Debug.Log("[ItemUsageController] Magnetic Field abgelaufen.");
+            DestroyShield();
+            Debug.Log("[ItemController] Magnetic Field abgelaufen.");
         }
     }
 
     private void TickGoldenGun()
     {
         if (_goldenGunTimer <= 0f) return;
-
         _goldenGunTimer -= Time.fixedDeltaTime;
 
         if (_goldenGunTimer <= 0f)
         {
             _goldenGunTimer = 0f;
             GameManager.Instance.Data.GoldenGunActive = false;
-            Debug.Log("[ItemUsageController] Golden Gun abgelaufen.");
+            RestoreWeaponMaterials();
+            Debug.Log("[ItemController] Golden Gun abgelaufen.");
         }
     }
 
@@ -181,14 +195,25 @@ public class ItemController : MonoBehaviour
     {
         _magneticFieldTimer = item.effectDuration;
         GameManager.Instance.Data.MagneticFieldActive = true;
-        Debug.Log($"[ItemUsageController] Magnetic Field aktiv für {item.effectDuration}s");
+
+        if (item.shieldObject != null)
+        {
+            Transform origin = _throwOrigin != null ? _throwOrigin : transform;
+            _activeShield = Instantiate(item.shieldObject, origin.position, Quaternion.identity, origin);
+        }
+
+        _cooldownTimer = item.cooldown;
+        Debug.Log($"[ItemController] Magnetic Field aktiv für {item.effectDuration}s");
     }
 
     private void UseGoldenGun(ItemData item)
     {
         _goldenGunTimer = item.effectDuration;
         GameManager.Instance.Data.GoldenGunActive = true;
-        Debug.Log($"[ItemUsageController] Golden Gun aktiv für {item.effectDuration}s");
+
+        if (item.goldenGunMaterial != null)
+            ApplyWeaponMaterial(item.goldenGunMaterial);
+
         ConsumeItem();
     }
 
@@ -204,7 +229,8 @@ public class ItemController : MonoBehaviour
         else
             transform.position += ray.direction * item.effectRadius;
 
-        Debug.Log($"[ItemUsageController] Teleportiert zu {transform.position}");
+        _cooldownTimer = item.cooldown;
+        Debug.Log($"[ItemController] Teleportiert zu {transform.position}");
     }
 
     private void UseElexir(ItemData item)
@@ -216,6 +242,43 @@ public class ItemController : MonoBehaviour
         playerHealth.AddShield(item.shieldRegen);
         Debug.Log($"[ItemUsageController] Elexier: +{item.healthRegen} HP, +{item.shieldRegen} Shield");
         ConsumeItem();
+    }
+    private void ApplyWeaponMaterial(Material mat)
+    {
+        Transform weaponPivot = GameObject.FindGameObjectWithTag("weaponPivot")?.transform;
+        if (weaponPivot == null || weaponPivot.childCount == 0) return;
+
+        _weaponRenderers = weaponPivot.GetChild(0).GetComponentsInChildren<Renderer>();
+        _originalMaterials = new Material[_weaponRenderers.Length];
+
+        for (int i = 0; i < _weaponRenderers.Length; i++)
+        {
+            _originalMaterials[i] = _weaponRenderers[i].sharedMaterial;
+            _weaponRenderers[i].sharedMaterial = mat;
+        }
+    }
+
+    private void RestoreWeaponMaterials()
+    {
+        if (_weaponRenderers == null) return;
+
+        for (int i = 0; i < _weaponRenderers.Length; i++)
+        {
+            if (_weaponRenderers[i] != null && _originalMaterials[i] != null)
+                _weaponRenderers[i].sharedMaterial = _originalMaterials[i];
+        }
+
+        _weaponRenderers = null;
+        _originalMaterials = null;
+    }
+
+    private void DestroyShield()
+    {
+        if (_activeShield != null)
+        {
+            Destroy(_activeShield);
+            _activeShield = null;
+        }
     }
 
     private void ConsumeItem()

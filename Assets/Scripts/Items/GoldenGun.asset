@@ -26,5 +26,8 @@ MonoBehaviour:
   shieldRegen: 0
   healthRegen: 0
   itemType: 3
+  cooldown: 0
+  shieldObject: {fileID: 0}
+  goldenGunMaterial: {fileID: 2100000, guid: b4a40512b97bff24b950d22fea2821eb, type: 2}
   cost: 0
   Rarity: 0

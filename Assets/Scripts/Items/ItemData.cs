@@ -22,6 +22,11 @@ public class ItemData : ScriptableObject
     
     public ItemType itemType;
 
+    public float cooldown;
+
+    public GameObject shieldObject;
+    public Material goldenGunMaterial;
+
     public float cost;
     public RarityType Rarity;
 }

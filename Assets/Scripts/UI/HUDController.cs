@@ -28,6 +28,7 @@ public class HUDController : MonoBehaviour
     [SerializeField] public TextMeshProUGUI ShieldText;
     [SerializeField] public GameObject Item;
     [SerializeField] private Sprite DefaultItemSprite;
+    [SerializeField] private Image _cooldownOverlay;
 
     [Header("UI Panels")]
     public GameObject healthUI;
@@ -39,6 +40,10 @@ public class HUDController : MonoBehaviour
 
     [Header("GameOver")]
     [SerializeField] public GameObject GameOverMenu;
+
+    private float _cooldownTotal;
+    private float _cooldownRemaining;
+    private ItemData _trackedItem;
 
     void OnEnable()
     {
@@ -62,39 +67,85 @@ public class HUDController : MonoBehaviour
 
     private void Start()
     {
-
         FindAnyObjectByType<ShootController>()?.GetComponent<ShootController>();
         FindAnyObjectByType<MeleeController>()?.GetComponent<MeleeController>();
         ApplySettings();
-
         GameOverMenu.SetActive(false);
-
         RefreshStats();
 
         foreach (UpgradeData upgrade in GameManager.Instance.Data.Upgrades)
-        RefreshUpgrade(upgrade);
+            RefreshUpgrade(upgrade);
 
         RefreshItem(GameManager.Instance.Data.CurrentItem);
 
-
+        if (_cooldownOverlay != null)
+            _cooldownOverlay.fillAmount = 0f;
     }
+
     private void Update()
     {
+        // Ammo
         if (FindAnyObjectByType<ShootController>() != null)
         {
             ShootController shootController = FindAnyObjectByType<ShootController>();
             Ammo.text = $"{shootController.CurrentAmmo} / {shootController.MagazineSize}";
             if (shootController.IsReloading)
-            {
                 Ammo.text = "Reloading...";
-            }
-            
         }
         else if (FindAnyObjectByType<MeleeController>() != null)
         {
-            MeleeController meleeController = FindAnyObjectByType<MeleeController>();
             Ammo.text = "";
         }
+
+        // Cooldown tick
+        TickCooldown();
+    }
+
+    // -------------------------------------------------------------------------
+    // Cooldown
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Startet den Cooldown-Indicator. Wird vom ItemController aufgerufen.
+    /// </summary>
+    public void StartCooldown(float duration, ItemData item)
+    {
+        _cooldownTotal = duration;
+        _cooldownRemaining = duration;
+        _trackedItem = item;
+        UpdateCooldownOverlay(1f); // voll ausgegraut
+    }
+
+    private void TickCooldown()
+    {
+        if (_cooldownRemaining <= 0f) return;
+
+        // Item wurde gewechselt – Cooldown zurücksetzen
+        if (GameManager.Instance.Data.CurrentItem != _trackedItem)
+        {
+            _cooldownRemaining = 0f;
+            _trackedItem = null;
+            UpdateCooldownOverlay(0f);
+            return;
+        }
+
+        _cooldownRemaining -= Time.deltaTime;
+
+        if (_cooldownRemaining <= 0f)
+        {
+            _cooldownRemaining = 0f;
+            UpdateCooldownOverlay(0f);
+        }
+        else
+        {
+            UpdateCooldownOverlay(_cooldownRemaining / _cooldownTotal);
+        }
+    }
+
+    private void UpdateCooldownOverlay(float fill)
+    {
+        if (_cooldownOverlay == null) return;
+        _cooldownOverlay.fillAmount = fill;
     }
     void ApplySettings()
     {
@@ -125,10 +176,17 @@ public class HUDController : MonoBehaviour
         Image icon = Item.GetComponent<Image>();
         if (icon == null) return;
 
-        if (item != null && item.itemIcon != null)
-            icon.sprite = item.itemIcon;
-        else
-            icon.sprite = DefaultItemSprite;
+        icon.sprite = (item != null && item.itemIcon != null)
+            ? item.itemIcon
+            : DefaultItemSprite;
+
+        // Item gewechselt – Cooldown resetten
+        if (item != _trackedItem)
+        {
+            _cooldownRemaining = 0f;
+            _trackedItem = null;
+            UpdateCooldownOverlay(0f);
+        }
     }
     private void RefreshUpgrade(UpgradeData upgrade)
     {

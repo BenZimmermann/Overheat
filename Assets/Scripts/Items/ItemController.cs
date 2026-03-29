@@ -1,7 +1,6 @@
-using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 public class ItemController : MonoBehaviour
 {
     [Header("Input")]
@@ -11,23 +10,25 @@ public class ItemController : MonoBehaviour
 
     private InputAction _useItemAction;
 
-    [Header("Grenade")]
+    [Header("References")]
     [SerializeField] private Transform _throwOrigin;
-
-    [Header("Teleport")]
     [SerializeField] private LayerMask _teleportMask;
 
+    // Timers
     private float _magneticFieldTimer;
     private float _goldenGunTimer;
     private float _cooldownTimer;
 
+    // Grenade
     private GameObject _activeGrenade;
     private float _grenadeTimer;
     private float _grenadeExplosionRadius;
     private float _grenadeExplosionDamage;
 
+    // Shield
     private GameObject _activeShield;
 
+    // Golden Gun
     private Material[] _originalMaterials;
     private Renderer[] _weaponRenderers;
 
@@ -56,7 +57,7 @@ public class ItemController : MonoBehaviour
 
         ItemData item = GameManager.Instance.Data.CurrentItem;
         if (item == null) return;
-        if (item.isAutomatic) return; 
+        if (item.isAutomatic) return;
 
         UseItem(item);
     }
@@ -72,6 +73,7 @@ public class ItemController : MonoBehaviour
     // -------------------------------------------------------------------------
     // Timers
     // -------------------------------------------------------------------------
+
     private void TickCooldown()
     {
         if (_cooldownTimer <= 0f) return;
@@ -110,10 +112,8 @@ public class ItemController : MonoBehaviour
     private void TickGrenade()
     {
         if (_activeGrenade == null) return;
-
         _grenadeTimer -= Time.fixedDeltaTime;
         if (_grenadeTimer > 0f) return;
-
         Explode();
     }
 
@@ -128,7 +128,7 @@ public class ItemController : MonoBehaviour
             target?.TakeDamage(_grenadeExplosionDamage, "Grenade");
         }
 
-        Debug.Log($"[ItemUsageController] Explosion bei {_activeGrenade.transform.position}");
+        Debug.Log($"[ItemController] Explosion bei {_activeGrenade.transform.position}");
         Destroy(_activeGrenade);
         _activeGrenade = null;
     }
@@ -148,8 +148,6 @@ public class ItemController : MonoBehaviour
             case ItemType.Elexir: UseElexir(item); break;
             case ItemType.Revive: return;
         }
-
-        //ConsumeItem();
     }
 
     public void UseRevive(ItemData item)
@@ -159,7 +157,7 @@ public class ItemController : MonoBehaviour
 
         playerHealth.Heal(item.healthRegen);
         playerHealth.AddShield(item.shieldRegen);
-        Debug.Log($"[ItemUsageController] Revive: +{item.healthRegen} HP");
+        Debug.Log($"[ItemController] Revive: +{item.healthRegen} HP");
 
         ConsumeItem();
     }
@@ -170,9 +168,9 @@ public class ItemController : MonoBehaviour
 
     private void UseGrenade(ItemData item)
     {
-        if (item.itemModel == null)
+        if (item.itemGrenadeModel == null)
         {
-            Debug.LogWarning("[ItemUsageController] Grenade hat kein itemModel.");
+            Debug.LogWarning("[ItemController] Grenade hat kein itemGrenadeModel.");
             return;
         }
 
@@ -187,7 +185,7 @@ public class ItemController : MonoBehaviour
         _grenadeExplosionRadius = item.effectRadius;
         _grenadeExplosionDamage = item.explosionDamage;
 
-        Debug.Log("[ItemUsageController] Granate geworfen.");
+        Debug.Log("[ItemController] Granate geworfen.");
         ConsumeItem();
     }
 
@@ -202,7 +200,7 @@ public class ItemController : MonoBehaviour
             _activeShield = Instantiate(item.shieldObject, origin.position, Quaternion.identity, origin);
         }
 
-        _cooldownTimer = item.cooldown;
+        StartItemCooldown(item);
         Debug.Log($"[ItemController] Magnetic Field aktiv für {item.effectDuration}s");
     }
 
@@ -229,7 +227,7 @@ public class ItemController : MonoBehaviour
         else
             transform.position += ray.direction * item.effectRadius;
 
-        _cooldownTimer = item.cooldown;
+        StartItemCooldown(item);
         Debug.Log($"[ItemController] Teleportiert zu {transform.position}");
     }
 
@@ -240,9 +238,14 @@ public class ItemController : MonoBehaviour
 
         playerHealth.Heal(item.healthRegen);
         playerHealth.AddShield(item.shieldRegen);
-        Debug.Log($"[ItemUsageController] Elexier: +{item.healthRegen} HP, +{item.shieldRegen} Shield");
+        Debug.Log($"[ItemController] Elexier: +{item.healthRegen} HP, +{item.shieldRegen} Shield");
         ConsumeItem();
     }
+
+    // -------------------------------------------------------------------------
+    // Waffen-Material
+    // -------------------------------------------------------------------------
+
     private void ApplyWeaponMaterial(Material mat)
     {
         Transform weaponPivot = GameObject.FindGameObjectWithTag("weaponPivot")?.transform;
@@ -272,6 +275,10 @@ public class ItemController : MonoBehaviour
         _originalMaterials = null;
     }
 
+    // -------------------------------------------------------------------------
+    // Shield
+    // -------------------------------------------------------------------------
+
     private void DestroyShield()
     {
         if (_activeShield != null)
@@ -279,6 +286,19 @@ public class ItemController : MonoBehaviour
             Destroy(_activeShield);
             _activeShield = null;
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // Item verbrauchen
+    // -------------------------------------------------------------------------
+
+    private void StartItemCooldown(ItemData item)
+    {
+        if (item.cooldown <= 0f) return;
+        _cooldownTimer = item.cooldown;
+
+        HUDController hud = FindAnyObjectByType<HUDController>();
+        hud?.StartCooldown(item.cooldown, item);
     }
 
     private void ConsumeItem()

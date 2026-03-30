@@ -1,6 +1,7 @@
-using Mono.Cecil.Cil;
 using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
@@ -10,6 +11,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] private float _shieldDamageMultiplier = 2f; 
     [SerializeField] private float _bleedThroughPercent = 0.2f;
 
+    [SerializeField] private ScriptableRendererFeature _fullScreenDamage;
+    [SerializeField] private Material _material;
 
     void Start()
     {
@@ -31,6 +34,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         amount = ApplyDamageReduction(amount, data);
 
+        StartCoroutine(HurtEffect());
+
         if (data.PlayerShild > 0)
         {
             data.PlayerShild = (int)Mathf.Max(0, data.PlayerShild - _shieldDamageMultiplier);
@@ -47,6 +52,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             Die();
     }
 
+    private void StartCourutine(IEnumerator enumerator)
+    {
+        throw new NotImplementedException();
+    }
 
     private float ApplyDamageReduction(float amount, RuntimeGameData data)
     {
@@ -101,5 +110,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public void AddLifesteal(float percent)
     {
         GameManager.Instance.Data.LifestealPercent += percent;
+    }
+    private IEnumerator HurtEffect()
+    {
+        _fullScreenDamage.SetActive(true);
+        yield return new WaitForSeconds(0.25f);
+        _fullScreenDamage.SetActive(false);
     }
 }

@@ -12,7 +12,6 @@ public class UpgradeController : MonoBehaviour, IDamageable, IShopEntry
     public float Cost => _data.cost;
     public RarityType Rarity =>  _data.Rarity;
 
-
     [SerializeField] private TMP_Text _UpgradeName;
     [SerializeField] private TMP_Text _UpgradeDescription;
     [SerializeField] private GameObject _Icon;

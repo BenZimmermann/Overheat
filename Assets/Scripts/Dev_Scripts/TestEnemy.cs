@@ -31,6 +31,6 @@ public class TestEnemy : MonoBehaviour, IDamageable
     private void Die()
     {
         Destroy(gameObject);
-        GameManager.Instance.Data.EnemiesKilled += 1f;
+        GameManager.Instance.Data.EnemiesKilled++;
     }
 }

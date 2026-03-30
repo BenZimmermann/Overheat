@@ -1,68 +1,111 @@
+using NUnit.Framework.Internal;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Verwaltet einen Raum: Türen schließen, Enemies spawnen, Türen öffnen.
+/// -beinhaltet navmesh surface
+/// -beinhaltet nur die logik für roomcontroller
+/// -roomcontroller bekommt bescheid von RoomTrigger GetComponentInParent
 /// </summary>
+#region Serializable
+[System.Serializable]
+public class SpawnPointData
+{
+    public Transform spawnPoint;
+    public GameObject enemyPrefab;
+}
+
+[System.Serializable]
+public class Wave
+{
+    public List<SpawnPointData> spawns;
+}
+#endregion
 public class RoomController : MonoBehaviour
 {
     [Header("Doors")]
-    [SerializeField] private List<GameObject> _doors;
+    [SerializeField] private List<GameObject> _entryDoors;
+    [SerializeField] private List<GameObject> _exitDoors;
 
-    [Header("Spawn")]
-    [SerializeField] private List<Transform> _spawnPoints;
-    [SerializeField] private List<GameObject> _enemyPrefabs;
+    [Header("Waves")]
+    [SerializeField] private List<Wave> _waves;
+
+    [Header("Settings")]
+    [SerializeField] private bool _canReplay = false;
 
     private List<EnemyController> _aliveEnemies = new();
-    private bool _activated;
+    private int _currentWave = 0;
+    public bool _activated;
 
-    private void OnTriggerEnter(Collider other)
+
+    public void ActivateRoom()
     {
-        if (_activated) return;
-        if (!other.CompareTag("Player")) return;
+        if (_activated && !_canReplay) return;
 
-        ActivateRoom();
-    }
-
-    private void ActivateRoom()
-    {
         _activated = true;
-        CloseDoors();
-        SpawnEnemies();
+        _currentWave = 0;
+
+        CloseEntryDoors();
+        CloseExitDoors();
+
+        StartWave();
     }
 
-    private void SpawnEnemies()
+    private void StartWave()
     {
-        foreach (Transform spawnPoint in _spawnPoints)
+        if(_currentWave >=  _waves.Count)
         {
-            if (_enemyPrefabs.Count == 0) break;
+            OpenExitDoors();
+            return;
+        }
+        SpawnWave(_waves[_currentWave]);
+    }
+    private void SpawnWave(Wave wave)
+    {
+        foreach (var spawn in wave.spawns)
+        {
+            if (spawn.enemyPrefab == null || spawn.spawnPoint == null) continue;
 
-            GameObject prefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Count)];
-            GameObject enemy = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation, transform);
+            GameObject enemy = Instantiate(
+                spawn.enemyPrefab,
+                spawn.spawnPoint.position,
+                spawn.spawnPoint.rotation,
+                transform
+            );
 
             EnemyController ctrl = enemy.GetComponent<EnemyController>();
+
             if (ctrl != null)
+            {
+                ctrl.SetRoom(this);
                 _aliveEnemies.Add(ctrl);
+            }
         }
     }
-
     public void OnEnemyDied(EnemyController enemy)
     {
         _aliveEnemies.Remove(enemy);
 
         if (_aliveEnemies.Count == 0)
-            OpenDoors();
+        {
+            _currentWave++;
+            StartWave();
+        }
     }
 
-    private void CloseDoors()
+    private void CloseEntryDoors()
     {
-        foreach (GameObject door in _doors)
+        foreach (GameObject door in _entryDoors)
             door?.SetActive(true);
     }
-
-    private void OpenDoors()
+    private void CloseExitDoors()
     {
-        foreach (GameObject door in _doors)
+        foreach (GameObject door in _exitDoors)
+            door?.SetActive(true);
+    }
+    private void OpenExitDoors()
+    {
+        foreach (GameObject door in _exitDoors)
             door?.SetActive(false);
     }
 }

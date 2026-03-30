@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 
 public class ItemController : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class ItemController : MonoBehaviour
 
     // Shield
     private GameObject _activeShield;
+    [SerializeField] private ScriptableRendererFeature _fullScreenShield;
+    [SerializeField] private Material _material;
 
     // Golden Gun
     private Material[] _originalMaterials;
@@ -49,7 +52,10 @@ public class ItemController : MonoBehaviour
     {
         inputActionAsset?.FindActionMap(actionMapName, false)?.Disable();
     }
-
+    private void Start()
+    {
+        _fullScreenShield.SetActive(false);
+    }
     private void Update()
     {
         if (_useItemAction == null || !_useItemAction.WasPressedThisFrame()) return;
@@ -84,12 +90,14 @@ public class ItemController : MonoBehaviour
     private void TickMagneticField()
     {
         if (_magneticFieldTimer <= 0f) return;
+        _fullScreenShield.SetActive(true);
         _magneticFieldTimer -= Time.fixedDeltaTime;
 
         if (_magneticFieldTimer <= 0f)
         {
             _magneticFieldTimer = 0f;
             GameManager.Instance.Data.MagneticFieldActive = false;
+            _fullScreenShield.SetActive(false);
             DestroyShield();
             Debug.Log("[ItemController] Magnetic Field abgelaufen.");
         }
@@ -120,7 +128,7 @@ public class ItemController : MonoBehaviour
     private void Explode()
     {
         if (_activeGrenade == null) return;
-
+        //spawn explosion particles
         Collider[] hits = Physics.OverlapSphere(_activeGrenade.transform.position, _grenadeExplosionRadius);
         foreach (Collider col in hits)
         {
@@ -163,7 +171,7 @@ public class ItemController : MonoBehaviour
     }
 
     // -------------------------------------------------------------------------
-    // Item-Implementierungen
+    // Items
     // -------------------------------------------------------------------------
 
     private void UseGrenade(ItemData item)
@@ -194,11 +202,11 @@ public class ItemController : MonoBehaviour
         _magneticFieldTimer = item.effectDuration;
         GameManager.Instance.Data.MagneticFieldActive = true;
 
-        if (item.shieldObject != null)
-        {
-            Transform origin = _throwOrigin != null ? _throwOrigin : transform;
-            _activeShield = Instantiate(item.shieldObject, origin.position, Quaternion.identity, origin);
-        }
+        //if (item.shieldObject != null)
+        //{
+        //    Transform origin = _throwOrigin != null ? _throwOrigin : transform;
+        //    _activeShield = Instantiate(item.shieldObject, origin.position, Quaternion.identity, origin);
+        //}
 
         StartItemCooldown(item);
         Debug.Log($"[ItemController] Magnetic Field aktiv für {item.effectDuration}s");

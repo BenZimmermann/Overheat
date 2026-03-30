@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: testEnemystats
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   enemyName: TestEnemy
-  moneyDropChance: 0
-  moneyDropAmount: 0
+  moneyDropChance: 50
+  moneyDropAmount: 10
+  moneyObj: {fileID: 4045873163074478821, guid: d8016e98fd710af4594c663bdd069366, type: 3}
   maxHealth: 30
   headShotMultiplier: 2
-  moveSpeed: 10
+  moveSpeed: 12
   attackRange: 1
   repositionRange: 5
   damage: 5

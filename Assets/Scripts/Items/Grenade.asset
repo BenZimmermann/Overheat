@@ -18,6 +18,7 @@ MonoBehaviour:
   itemIcon: {fileID: 779885260, guid: ff71a0b0363c1304ab827c4240fbc101, type: 3}
   itemModel: {fileID: 5254103298976170000, guid: 6ae0196606b3b6a4991924f056ab8608, type: 3}
   itemGrenadeModel: {fileID: 2694589459060553379, guid: 8122ad2dc646ca044b5b619a7a86d2a0, type: 3}
+  Explosion: {fileID: 8448401644157864622, guid: 42efb97be74c7b14797779d6f75a95ed, type: 3}
   isAutomatic: 0
   isInputRequired: 1
   effectDuration: 0
@@ -26,5 +27,8 @@ MonoBehaviour:
   shieldRegen: 0
   healthRegen: 0
   itemType: 1
+  cooldown: 0
+  shieldObject: {fileID: 0}
+  goldenGunMaterial: {fileID: 0}
   cost: 0
   Rarity: 0

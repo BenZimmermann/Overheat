@@ -6,6 +6,7 @@ public class EnemyStats : ScriptableObject
     public string enemyName;
     public float moneyDropChance;
     public float moneyDropAmount;
+    public GameObject moneyObj;
 
     [Header("Health")]
     public float maxHealth;

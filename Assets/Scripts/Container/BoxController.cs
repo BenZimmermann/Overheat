@@ -29,7 +29,7 @@ public class BoxController : MonoBehaviour, IDamageable
             }
         }
 
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player") || collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             TakeDamage( 1f, collision.gameObject.name);
             CData.hitParticles.Play();

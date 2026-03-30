@@ -1,7 +1,9 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public enum EnemyState
 {
+    Idle,
     Chase,
     Attack,
     Reposition,
@@ -12,6 +14,7 @@ public class EnemyController : MonoBehaviour, IDamageable
     [SerializeField] private EnemyStats _stats;
 
     private EnemyMovement _movement;
+    private RoomController _room;
 
     private EnemyState _currentState = EnemyState.Chase;
     private float _currentHealth;
@@ -72,7 +75,7 @@ public class EnemyController : MonoBehaviour, IDamageable
 
             case EnemyState.Attack:
                 _movement.Stop();
-                
+                FacePlayer();
                 break;
 
             case EnemyState.Reposition:
@@ -104,12 +107,59 @@ public class EnemyController : MonoBehaviour, IDamageable
         TakeDamage(amount * _stats.headShotMultiplier, source);
     }
 
+    public void SetRoom(RoomController room)
+    {
+        _room = room;
+    }
     private void Die()
     {
-        RoomController room = GetComponentInParent<RoomController>();
-        room?.OnEnemyDied(this);
+        _room?.OnEnemyDied(this);
         GameManager.Instance.Data.EnemiesKilled++;
+        DropMoney();
         Destroy(gameObject);
+    }
+
+    private void DropMoney()
+    {
+        if (Random.value > _stats.moneyDropChance) return;
+
+        int amount = Mathf.RoundToInt(_stats.moneyDropAmount);
+
+        for (int i = 0; i < amount; i++)
+        {
+            GameObject coin = Instantiate(
+                _stats.moneyObj,
+                transform.position,
+                Random.rotation
+            );
+
+            if (coin.TryGetComponent(out Rigidbody rb))
+            {
+                Vector3 randomDirection = new Vector3(
+                    Random.Range(-1f, 1f),
+                    Random.Range(0.5f, 1f),
+                    Random.Range(-1f, 1f)
+                ).normalized;
+
+                float force = Random.Range(1f, 6f);
+                rb.AddForce(randomDirection * force, ForceMode.Impulse);
+
+                float torque = Random.Range(1f, 4f);
+                rb.AddTorque(Random.insideUnitSphere * torque, ForceMode.Impulse);
+            }
+        }
+    }
+    private void FacePlayer()
+    {
+        if (_player == null) return;
+        Vector3 dir = (_player.position - transform.position);
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.001f) return;
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            Quaternion.LookRotation(dir),
+            20f * Time.fixedDeltaTime
+        );
     }
 
     public EnemyStats Stats => _stats;

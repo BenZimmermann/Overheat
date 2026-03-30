@@ -10,6 +10,7 @@ public class ItemData : ScriptableObject
     public Sprite itemIcon;
     public GameObject itemModel;
     public GameObject itemGrenadeModel;
+    public GameObject Explosion;
 
     public bool isAutomatic;
     public bool isInputRequired;

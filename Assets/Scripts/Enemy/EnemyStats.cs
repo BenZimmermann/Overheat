@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 [CreateAssetMenu(menuName = "Enemy/Enemy Stats")]
 public class EnemyStats : ScriptableObject
 {
@@ -16,6 +16,11 @@ public class EnemyStats : ScriptableObject
     public float moveSpeed;
     public float attackRange;
     public float repositionRange;
+    public float detectionRange;
+
+    [Header("Hit Reaction")]
+    public float stunDuration = 0.25f;
+    public float slowOnHit = 0.5f;
 
     [Header("Attack")]
     public float damage;

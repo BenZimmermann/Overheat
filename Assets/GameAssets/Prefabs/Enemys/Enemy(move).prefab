@@ -386,6 +386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   _stats: {fileID: 11400000, guid: 9903a0977c61c174ebcbc0b1973e41a6, type: 2}
+  _repositionInterval: 6
 --- !u!114 &8071847868989594079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,15 +400,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
   _rotationSpeed: 20
-  _snapRotationAngle: 45
-  _accelerationBoost: 2
-  _dashRange: 15
+  _snapAngle: 50
   _dashForce: 18
   _dashCooldown: 3
-  _preferredDistance: 15
-  _retreatDistance: 5
-  _wanderStrength: 2
-  _wanderChangeRate: 1.5
+  _dashDuration: 1.5
+  _preferredDist: 10
+  _retreatDist: 3.5
+  _strafeSpeed: 1
+  _strafeChange: 2
+  _sniperRetreatDist: 5
+  _sniperRetreatSpeed: 1.4
+  _canFallOffEdges: 0
+  _edgeCheckDist: 1.2
 --- !u!195 &7708962362948192562
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -417,8 +421,8 @@ NavMeshAgent:
   m_GameObject: {fileID: 5579108334403601698}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1
-  m_Speed: 0
+  m_Radius: 0.1
+  m_Speed: 2
   m_Acceleration: 12
   avoidancePriority: 50
   m_AngularSpeed: 0

@@ -111,6 +111,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         GameManager.Instance.Data.LifestealPercent += percent;
     }
+    //change to a fixedupdate
     private IEnumerator HurtEffect()
     {
         _fullScreenDamage.SetActive(true);

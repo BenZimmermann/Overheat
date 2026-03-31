@@ -21,7 +21,10 @@ MonoBehaviour:
   moveSpeed: 12
   attackRange: 1
   repositionRange: 5
+  detectionRange: 50
+  stunDuration: 0.25
+  slowOnHit: 0.5
   damage: 5
   attackCooldown: 5
   shotsBeforeReposition: 5
-  enemyType: 1
+  enemyType: 2

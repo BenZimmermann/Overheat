@@ -821,6 +821,7 @@ GameObject:
   - component: {fileID: 8562664683689431686}
   - component: {fileID: 1415465334788801377}
   - component: {fileID: -2762050350991788444}
+  - component: {fileID: 5641353463864393792}
   m_Layer: 12
   m_Name: Sword_Shop
   m_TagString: Untagged
@@ -838,7 +839,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 0.35}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7643398023265114491}
@@ -900,6 +901,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponShopController
   _data: {fileID: 11400000, guid: aa1d132f497d95c41bbf5d9ef9d53a82, type: 2}
   _itemName: {fileID: 5238334110575967602}
+--- !u!95 &5641353463864393792
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2930002961881972026}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 53a6b874e25c6ad479a80794551a1b8f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2969025156930845545
 GameObject:
   m_ObjectHideFlags: 0

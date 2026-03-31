@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: db8cb860d0c06d1438e2fcce0e2c2e1d
+guid: 9f8c40d9971d8f648a90a63dcef2b487
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -7,13 +7,33 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: gemstone.png
-    second: {fileID: 2100000, guid: a9efd5401c3d03c48b1ee34b7bd2e5c6, type: 2}
+      name: GrenadeBase.png
+    second: {fileID: 2100000, guid: cb8574b740e1f5a469a5a399d9499500, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GrenadeHead.png
+    second: {fileID: 2100000, guid: 6e0619fe3b0fe2143897be0ecdb08f0b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: iron.png
+    second: {fileID: 2100000, guid: fc87f684e3c5c084c8dacac2a52c47ce, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: gemstone
-    second: {fileID: 2800000, guid: bf27a3b1046a7ca46ac8d86b6f14e1af, type: 3}
+      name: GrenadeBase
+    second: {fileID: 2800000, guid: f3ce9ef0996599f47a7b3702282d85ee, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: GrenadeHead
+    second: {fileID: 2800000, guid: 122470a1b6576ab4c9dc095e483043d7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: iron
+    second: {fileID: 2800000, guid: ea506fcbcceba8b4e8afe78458a513de, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

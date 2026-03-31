@@ -16,8 +16,9 @@ MonoBehaviour:
   itemID: 0
   itemDescription: 
   itemIcon: {fileID: -545286509, guid: ff71a0b0363c1304ab827c4240fbc101, type: 3}
-  itemModel: {fileID: 5254103298976170000, guid: e61000e7c16f8a146b41f96ea6dc3209, type: 3}
+  itemModel: {fileID: 2102774661209418739, guid: 21c8a29e76ee06a48a39873a54bff29b, type: 3}
   itemGrenadeModel: {fileID: 0}
+  Explosion: {fileID: 0}
   isAutomatic: 0
   isInputRequired: 1
   effectDuration: 10

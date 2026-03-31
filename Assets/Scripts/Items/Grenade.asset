@@ -16,8 +16,8 @@ MonoBehaviour:
   itemID: 0
   itemDescription: 
   itemIcon: {fileID: 779885260, guid: ff71a0b0363c1304ab827c4240fbc101, type: 3}
-  itemModel: {fileID: 5254103298976170000, guid: 6ae0196606b3b6a4991924f056ab8608, type: 3}
-  itemGrenadeModel: {fileID: 2694589459060553379, guid: 8122ad2dc646ca044b5b619a7a86d2a0, type: 3}
+  itemModel: {fileID: 6352145732502853965, guid: 191a4153261ee7e40a32c58719a24955, type: 3}
+  itemGrenadeModel: {fileID: 6352145732502853965, guid: 417b1ba7bac3e3843a71e3190eacdca2, type: 3}
   Explosion: {fileID: 8448401644157864622, guid: 42efb97be74c7b14797779d6f75a95ed, type: 3}
   isAutomatic: 0
   isInputRequired: 1

@@ -1,40 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-/// <summary>
-/// Enemy Movement – clean, snappy, Ultrakill-inspired.
-///
-/// Melee/Walker:
-/// - Rennt direkt auf Player zu
-/// - Dash nur wenn Player SEHR nah ist (< attackRange * 1.5) UND NavMesh-Pfad frei
-/// - Dash = kurzer flacher Forward-Boost (kein Bogen/Sprung)
-///
-/// Ranged (PostVoid Suits):
-/// - Hält mittlere Distanz
-/// - Bewegt sich IMMER seitwärts (strafe), niemals stehen
-/// - Weicht bei zu kurzem Abstand zurück
-/// - Dreht sich immer zum Player
-///
-/// Sniper (Ultrakill Stray):
-/// - Steht fast immer still
-/// - Weicht bei zu kurzem Abstand SCHNELL zurück
-/// - Rotiert smooth zum Player
-///
-/// Bomber:
-/// - Sprintet direkt drauf zu, kein Ausweichen
-///
-/// NavMesh Open Bounds:
-/// - NavMeshAgent.autoBraking = false
-/// - Kein stoppingDistance Puffer
-/// - Agent folgt blindlings dem Pfad – wenn Abgrund = kein NavMesh = Agent stoppt NICHT
-///   aktiv, fällt aber mit Gravity wenn Rigidbody vorhanden
-/// - Für echtes Herunterfallen: Agent deaktivieren sobald kein NavMesh unter Enemy,
-///   Rigidbody übernimmt (siehe CheckNavMeshEdge)
-///   
-/// todo:
-/// fix fall of edge
-/// 
-/// </summary>
+
 public class EnemyMovement : MonoBehaviour
 {
     private NavMeshAgent _agent;
@@ -61,10 +28,6 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private float _sniperRetreatDist = 5f;
     [SerializeField] private float _sniperRetreatSpeed = 1.4f;
 
-    [Header("NavMesh Edge")]
-    [SerializeField] private bool _canFallOffEdges = false;
-    [SerializeField] private float _edgeCheckDist = 1.2f;
-
 
     private float _physicsTimer;
     private float _dashCooldownTimer;
@@ -73,7 +36,8 @@ public class EnemyMovement : MonoBehaviour
 
     public bool CanDash => _dashCooldownTimer <= 0f && _physicsTimer <= 0f;
     public bool ReachedDestination =>
-        _agent == null || (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance + 0.1f);
+        _agent == null || !_agent.isOnNavMesh || !_agent.enabled ||
+        (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance + 0.1f);
 
 
     public void Init(EnemyStats stats)
@@ -91,16 +55,19 @@ public class EnemyMovement : MonoBehaviour
         _agent.autoBraking = true;
         _agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
         _agent.avoidancePriority = Random.Range(20, 80);
+
+        _agent.stoppingDistance = (stats.enemyType == EnemyType.Ranged || stats.enemyType == EnemyType.Sniper)
+        ? 0.3f
+        : Mathf.Max(0.3f, stats.attackRange * 0.75f);
     }
 
     private void FixedUpdate()
     {
+
         TickPhysics();
         TickTimers();
-
         if (_agent == null || !_agent.enabled) return;
 
-        if (_canFallOffEdges) CheckNavMeshEdge();
         HandleRotation();
         CheckStuck();
     }
@@ -134,7 +101,7 @@ public class EnemyMovement : MonoBehaviour
 
     public void Stop()
     {
-        if (_agent == null) return;
+        if (_agent == null || !_agent.isOnNavMesh || !_agent.enabled) return;
         _agent.isStopped = true;
         _agent.velocity = Vector3.zero;
     }
@@ -168,25 +135,24 @@ public class EnemyMovement : MonoBehaviour
     private void ChaseRanged(Vector3 playerPos)
     {
         float dist = Vector3.Distance(transform.position, playerPos);
+        Vector3 toPlayer = (playerPos - transform.position).normalized;
+        Vector3 lateral = new Vector3(-toPlayer.z, 0f, toPlayer.x) * _strafeDir;
         FacePlayer(playerPos);
 
         if (dist < _retreatDist)
         {
-
-            Vector3 away = (transform.position - playerPos).normalized;
-            Vector3 lateral = new Vector3(-away.z, 0f, away.x) * _strafeDir;
-            SetDest(transform.position + (away + lateral * 0.6f).normalized * _preferredDist);
+      
+            Vector3 escape = (-toPlayer + lateral).normalized * _preferredDist;
+            SetDest(transform.position + escape);
         }
-        else if (dist > _preferredDist + 3f)
+        else if (dist > _preferredDist + 2f)
         {
-
-            Vector3 toPlayer = (playerPos - transform.position).normalized;
-            Vector3 lateral = new Vector3(-toPlayer.z, 0f, toPlayer.x) * _strafeDir * 0.4f;
-            SetDest(playerPos + lateral * 2f);
+     
+            SetDest(playerPos + lateral * 3f);
         }
         else
         {
-
+        
             StrafeAround(playerPos);
         }
     }
@@ -199,14 +165,16 @@ public class EnemyMovement : MonoBehaviour
 
         if (dist < _sniperRetreatDist)
         {
+          
             _agent.speed = _stats.moveSpeed * _sniperRetreatSpeed;
             Vector3 away = (transform.position - playerPos).normalized;
-
             Vector3 lateral = new Vector3(-away.z, 0f, away.x) * (Random.value > 0.5f ? 1f : -1f);
-            SetDest(transform.position + (away * 0.7f + lateral * 0.3f).normalized * _sniperRetreatDist * 1.5f);
+            Vector3 escape = (away * 0.5f + lateral * 0.5f).normalized * _sniperRetreatDist * 2f;
+            SetDest(transform.position + escape);
         }
         else
         {
+        
             _agent.speed = _stats.moveSpeed;
             Stop();
         }
@@ -264,22 +232,6 @@ public class EnemyMovement : MonoBehaviour
         _rb.AddForce(new Vector3(dir.x, 0f, dir.z).normalized * force, ForceMode.Impulse);
     }
 
-
-    private void CheckNavMeshEdge()
-    {
-        if (_physicsTimer > 0f) return;
-
-
-        if (!NavMesh.SamplePosition(transform.position, out _, 0.5f, NavMesh.AllAreas))
-        {
-
-            _agent.enabled = false;
-            if (_rb != null) _rb.isKinematic = false;
-        }
-    }
-
-
-
     private void TickPhysics()
     {
         if (_physicsTimer <= 0f) return;
@@ -335,13 +287,13 @@ public class EnemyMovement : MonoBehaviour
             _rotationSpeed * Time.fixedDeltaTime);
     }
 
-
-
     private Vector3 _lastPos;
     private float _stuckTimer;
 
     private void CheckStuck()
     {
+        if (!_agent.isOnNavMesh) return;
+
         float moved = Vector3.Distance(transform.position, _lastPos);
         _lastPos = transform.position;
 
@@ -361,7 +313,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void SetDest(Vector3 target)
     {
-        if (_agent == null || !_agent.enabled) return;
+        if (_agent == null || !_agent.enabled || !_agent.isOnNavMesh) return;
         _agent.isStopped = false;
         _agent.SetDestination(target);
     }

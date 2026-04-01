@@ -52,16 +52,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             Die();
     }
 
-    private void StartCourutine(IEnumerator enumerator)
-    {
-        throw new NotImplementedException();
-    }
 
     private float ApplyDamageReduction(float amount, RuntimeGameData data)
     {
         if (data.LifestealPercent <= 0f) return amount;
 
-        //UnityEngine.Random.value was made by AI
         bool triggered = UnityEngine.Random.value <= 0.2f;
         if (!triggered) return amount;
 

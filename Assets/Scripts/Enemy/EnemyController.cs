@@ -1,13 +1,24 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public enum EnemyState { Idle, Chase, Attack, Reposition, Stunned }
+public enum EnemyState 
+{ 
+    Idle, 
+    Chase, 
+    Attack, 
+    Reposition, 
+    Stunned 
+}
 
 public class EnemyController : MonoBehaviour, IDamageable
 {
     [SerializeField] private EnemyStats _stats;
+    [SerializeField] private GameObject _explosionEffect;
+    [SerializeField] private Transform _headHitbox;      
 
     private EnemyMovement _movement;
     private RoomController _room;
+    private EnemyAttack _attack;
 
     private EnemyState _state = EnemyState.Idle;
     private float _currentHealth;
@@ -20,7 +31,11 @@ public class EnemyController : MonoBehaviour, IDamageable
     [Header("Reposition")]
     [SerializeField] private float _repositionInterval = 4f;
 
-    private void Awake() => _movement = GetComponent<EnemyMovement>();
+    private void Awake()
+    {
+        _movement = GetComponent<EnemyMovement>();
+        _attack = GetComponent<EnemyAttack>();
+    }
 
     private void Start()
     {
@@ -28,6 +43,7 @@ public class EnemyController : MonoBehaviour, IDamageable
         _player = GameObject.FindWithTag("Player")?.transform;
         _repositionTimer = _repositionInterval;
         _movement.Init(_stats);
+        _attack?.Init(_stats, _player);
     }
 
     private void FixedUpdate()
@@ -52,7 +68,10 @@ public class EnemyController : MonoBehaviour, IDamageable
                 break;
 
             case EnemyState.Chase:
-                if (dist <= _stats.attackRange) SetState(EnemyState.Attack);
+                bool inAttackRange = (_stats.enemyType == EnemyType.Ranged || _stats.enemyType == EnemyType.Sniper)
+                    ? dist <= _stats.attackRange
+                    : dist <= _stats.attackRange;  
+                if (inAttackRange) SetState(EnemyState.Attack);
                 break;
 
             case EnemyState.Attack:
@@ -121,21 +140,29 @@ public class EnemyController : MonoBehaviour, IDamageable
     }
 
 
+
+
     private void TryAttack()
     {
         if (_attackCooldown > 0f) return;
         _attackCooldown = _stats.attackCooldown;
 
-
-        if (_stats.enemyType == EnemyType.Meele || _stats.enemyType == EnemyType.Bomber)
+        switch (_stats.enemyType)
         {
-            IDamageable target = _player.GetComponentInParent<IDamageable>();
-            target?.TakeDamage(_stats.damage, gameObject.name);
+            case EnemyType.Meele:
+                IDamageable meleeTarget = _player.GetComponentInParent<IDamageable>();
+                meleeTarget?.TakeDamage(_stats.damage, gameObject.name);
+                break;
 
-            if (_stats.enemyType == EnemyType.Bomber)
-                Die(); 
+            case EnemyType.Bomber:
+                Explode();
+                break;
+
+            case EnemyType.Ranged:
+            case EnemyType.Sniper:
+                _attack?.Fire();
+                break;
         }
-
     }
 
     public void TakeDamage(float amount, string source)
@@ -146,7 +173,7 @@ public class EnemyController : MonoBehaviour, IDamageable
         _stunTimer = _stats.stunDuration;
         SetState(EnemyState.Stunned);
         _movement.SetSpeed(_stats.moveSpeed * _stats.slowOnHit);
-
+        SetState(EnemyState.Reposition);
         if (_currentHealth <= 0f)
             Die();
     }
@@ -199,6 +226,26 @@ public class EnemyController : MonoBehaviour, IDamageable
             20f * Time.fixedDeltaTime);
     }
 
+    private void Explode()
+    {
+        if (_explosionEffect != null)
+        {
+            GameObject fx = Instantiate(_explosionEffect, transform.position, Quaternion.identity);
+            foreach (ParticleSystem ps in fx.GetComponentsInChildren<ParticleSystem>())
+                ps.Play();
+            Destroy(fx, 3f);
+        }
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, _stats.attackRange * 1.5f);
+        foreach (Collider col in hits)
+        {
+            IDamageable t = col.GetComponentInParent<IDamageable>();
+            t?.TakeDamage(_stats.damage, gameObject.name);
+        }
+
+        Die();
+    }
+
     private void Die()
     {
         _room?.OnEnemyDied(this);
@@ -211,14 +258,29 @@ public class EnemyController : MonoBehaviour, IDamageable
     {
         if (Random.value > _stats.moneyDropChance) return;
 
-        for (int i = 0; i < Mathf.RoundToInt(_stats.moneyDropAmount); i++)
+        int amount = Mathf.RoundToInt(_stats.moneyDropAmount);
+
+        for (int i = 0; i < amount; i++)
         {
-            GameObject coin = Instantiate(_stats.moneyObj, transform.position, Random.rotation);
+            GameObject coin = Instantiate(
+                _stats.moneyObj,
+                transform.position,
+                Random.rotation
+            );
+
             if (coin.TryGetComponent(out Rigidbody rb))
             {
-                Vector3 dir = new Vector3(Random.Range(-1f, 1f), Random.Range(0.5f, 1f), Random.Range(-1f, 1f)).normalized;
-                rb.AddForce(dir * Random.Range(1f, 6f), ForceMode.Impulse);
-                rb.AddTorque(Random.insideUnitSphere * Random.Range(1f, 4f), ForceMode.Impulse);
+                Vector3 randomDirection = new Vector3(
+                    Random.Range(-1f, 1f),
+                    Random.Range(0.5f, 1f),  // immer leicht nach oben
+                    Random.Range(-1f, 1f)
+                ).normalized;
+
+                float force = Random.Range(1f, 6f);
+                rb.AddForce(randomDirection * force, ForceMode.Impulse);
+
+                float torque = Random.Range(1f, 4f);
+                rb.AddTorque(Random.insideUnitSphere * torque, ForceMode.Impulse);
             }
         }
     }

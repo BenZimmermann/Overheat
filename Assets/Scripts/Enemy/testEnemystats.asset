@@ -17,14 +17,14 @@ MonoBehaviour:
   moneyDropAmount: 10
   moneyObj: {fileID: 4045873163074478821, guid: d8016e98fd710af4594c663bdd069366, type: 3}
   maxHealth: 30
-  headShotMultiplier: 2
+  headShotMultiplier: 30
   moveSpeed: 12
-  attackRange: 1
-  repositionRange: 5
-  detectionRange: 50
+  attackRange: 50
+  repositionRange: 3
+  detectionRange: 100
   stunDuration: 0.25
   slowOnHit: 0.5
-  damage: 5
+  damage: 10
   attackCooldown: 5
-  shotsBeforeReposition: 5
+  shotsBeforeReposition: 3
   enemyType: 2

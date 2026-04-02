@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 /// <summary>
 /// todo:
-/// entferne trail speed
 /// bullet indicator genauer
 /// sniper repositioneren sich nicht
 /// </summary>

@@ -944,7 +944,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6301943768110861410}
   serializedVersion: 5
-  m_Mass: 3
+  m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 999
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -960,9 +960,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 1
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &-2055503941991513087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -994,14 +994,19 @@ MonoBehaviour:
   _rotationSpeed: 18
   _snapAngle: 50
   _dashForce: 20
-  _dashCooldown: 1
-  _dashDuration: 0.5
+  _dashCooldown: 2
+  _dashDuration: 0.25
   _preferredDist: 0
   _retreatDist: 0
   _strafeSpeed: 0
   _strafeChange: 0
   _sniperRetreatDist: 0
   _sniperRetreatSpeed: 0
+  _separationRadius: 5
+  _separationForce: 2
+  _enemyMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &-9144894288910249010
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-
+/// <summary>
+/// todo:
+/// dash fix
+/// </summary>
 public class EnemyMovement : MonoBehaviour
 {
     private NavMeshAgent _agent;
@@ -28,6 +31,10 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private float _sniperRetreatDist = 5f;
     [SerializeField] private float _sniperRetreatSpeed = 1.4f;
 
+    [Header("Crowd Separation")]
+    [SerializeField] private float _separationRadius = 2f;  
+    [SerializeField] private float _separationForce = 1.8f;
+    [SerializeField] private LayerMask _enemyMask;            
 
     private float _physicsTimer;
     private float _dashCooldownTimer;
@@ -114,10 +121,11 @@ public class EnemyMovement : MonoBehaviour
     private void ChaseMelee(Vector3 playerPos)
     {
         float dist = Vector3.Distance(transform.position, playerPos);
-        SetDest(playerPos);
+        Vector3 sep = GetSeparationOffset();
+        SetDest(playerPos + sep);
 
 
-        float dashTrigger = _stats.attackRange * 1.8f;
+        float dashTrigger = _stats.attackRange * 5f;
         if (CanDash && dist <= dashTrigger && dist > _stats.attackRange)
         {
             Vector3 dir = (playerPos - transform.position);
@@ -183,7 +191,8 @@ public class EnemyMovement : MonoBehaviour
     private void ChaseBomber(Vector3 playerPos)
     {
         _agent.speed = _stats.moveSpeed * 1.5f;
-        SetDest(playerPos);
+        Vector3 sep = GetSeparationOffset();
+        SetDest(playerPos + sep);
     }
 
 
@@ -199,7 +208,7 @@ public class EnemyMovement : MonoBehaviour
 
 
     private void DashFlat(Vector3 dir)
-    {
+     {
         if (_rb == null || _agent == null) return;
 
         _dashCooldownTimer = _dashCooldown;
@@ -317,4 +326,30 @@ public class EnemyMovement : MonoBehaviour
         _agent.isStopped = false;
         _agent.SetDestination(target);
     }
+    #region crowed controll
+    private Vector3 GetSeparationOffset()
+    {
+        Vector3 separation = Vector3.zero;
+        int count = 0;
+
+        Collider[] nearby = Physics.OverlapSphere(transform.position, _separationRadius, _enemyMask);
+        foreach (Collider col in nearby)
+        {
+            if (col.gameObject == gameObject) continue;
+
+            Vector3 away = transform.position - col.transform.position;
+            away.y = 0f;
+
+            float dist = away.magnitude;
+            if (dist < 0.01f) continue;
+
+            separation += away.normalized * (1f - dist / _separationRadius);
+            count++;
+        }
+
+        if (count == 0) return Vector3.zero;
+        return separation.normalized * _separationForce;
+    }
+
+    #endregion
 }

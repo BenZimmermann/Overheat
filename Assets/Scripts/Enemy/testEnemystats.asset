@@ -19,7 +19,7 @@ MonoBehaviour:
   maxHealth: 30
   headShotMultiplier: 30
   moveSpeed: 12
-  attackRange: 50
+  attackRange: 2
   repositionRange: 3
   detectionRange: 100
   stunDuration: 0.25
@@ -27,4 +27,4 @@ MonoBehaviour:
   damage: 10
   attackCooldown: 5
   shotsBeforeReposition: 3
-  enemyType: 2
+  enemyType: 0

@@ -3,7 +3,8 @@ using UnityEngine.AI;
 
 /// <summary>
 /// todo:
-/// dash fix
+/// dash funktoinert nicht, da agent gestoppt wird und dann nicht mehr weiterbewegt werden kann. Lösung: während Dash Agent deaktivieren, danach wieder aktivieren und Ziel neu setzen.
+/// der retreat vom ranged sollte immer einen punkt finden der vor dem player ligt, sodass der ranged nicht am player vorbeiläuft. Aktuell könnte er sich hinter dem player positionieren, wenn der player sich bewegt.
 /// </summary>
 public class EnemyMovement : MonoBehaviour
 {
@@ -16,25 +17,8 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private float _rotationSpeed = 18f;
     [SerializeField] private float _snapAngle = 50f;
 
-    [Header("Melee Dash")]
-    [SerializeField] private float _dashForce = 14f;
-    [SerializeField] private float _dashCooldown = 2f;
-    [SerializeField] private float _dashDuration = 0.12f;
-
-    [Header("Ranged Strafe")]
-    [SerializeField] private float _preferredDist = 9f;
-    [SerializeField] private float _retreatDist = 3.5f;
-    [SerializeField] private float _strafeSpeed = 1f;
-    [SerializeField] private float _strafeChange = 2f;
-
-    [Header("Sniper")]
-    [SerializeField] private float _sniperRetreatDist = 5f;
-    [SerializeField] private float _sniperRetreatSpeed = 1.4f;
-
     [Header("Crowd Separation")]
-    [SerializeField] private float _separationRadius = 2f;  
-    [SerializeField] private float _separationForce = 1.8f;
-    [SerializeField] private LayerMask _enemyMask;            
+    [SerializeField] private LayerMask _enemyMask;
 
     private float _physicsTimer;
     private float _dashCooldownTimer;
@@ -42,6 +26,7 @@ public class EnemyMovement : MonoBehaviour
     private float _strafeDir = 1f;
 
     public bool CanDash => _dashCooldownTimer <= 0f && _physicsTimer <= 0f;
+    public bool IsMoving => _agent != null && _agent.velocity.sqrMagnitude > 0.1f;
     public bool ReachedDestination =>
         _agent == null || !_agent.isOnNavMesh || !_agent.enabled ||
         (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance + 0.1f);
@@ -58,26 +43,27 @@ public class EnemyMovement : MonoBehaviour
         _agent.speed = stats.moveSpeed;
         _agent.angularSpeed = 0f;
         _agent.acceleration = stats.moveSpeed * 20f;
-        _agent.stoppingDistance = Mathf.Max(0.3f, stats.attackRange * 0.75f);
         _agent.autoBraking = true;
         _agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
         _agent.avoidancePriority = Random.Range(20, 80);
 
         _agent.stoppingDistance = (stats.enemyType == EnemyType.Ranged || stats.enemyType == EnemyType.Sniper)
-        ? 0.3f
-        : Mathf.Max(0.3f, stats.attackRange * 0.75f);
+            ? 0.3f
+            : Mathf.Max(0.3f, stats.attackRange * 0.75f);
     }
+
 
     private void FixedUpdate()
     {
-
         TickPhysics();
         TickTimers();
+
         if (_agent == null || !_agent.enabled) return;
 
         HandleRotation();
         CheckStuck();
     }
+
 
     public void Wander() => Stop();
 
@@ -117,29 +103,26 @@ public class EnemyMovement : MonoBehaviour
     public void ResetSpeed() { if (_agent != null && _stats != null) _agent.speed = _stats.moveSpeed; }
 
 
-
     private void ChaseMelee(Vector3 playerPos)
     {
         float dist = Vector3.Distance(transform.position, playerPos);
         Vector3 sep = GetSeparationOffset();
         SetDest(playerPos + sep);
 
+        float dashTrigger = _stats.attackRange * _stats.dashTriggerMult;
+        if (!CanDash || dist > dashTrigger || dist <= _stats.attackRange) return;
 
-        float dashTrigger = _stats.attackRange * 5f;
-        if (CanDash && dist <= dashTrigger && dist > _stats.attackRange)
-        {
-            Vector3 dir = (playerPos - transform.position);
-            dir.y = 0f;
-            dir = dir.normalized;
+        Vector3 dir = (playerPos - transform.position); dir.y = 0f; dir = dir.normalized;
+        Vector3 checkPos = transform.position + dir * (dist * 0.8f);
 
-
-            Vector3 checkPos = transform.position + dir * (dist * 0.8f);
-            if (NavMesh.SamplePosition(checkPos, out _, 1.5f, NavMesh.AllAreas))
-                DashFlat(dir);
-        }
+        if (NavMesh.SamplePosition(checkPos, out _, 1.5f, NavMesh.AllAreas))
+            DashFlat(dir);
     }
 
-
+    /// <summary>
+    /// Ranged: immer in Bewegung, hält Abstand, strafe seitwärts.
+    /// Weicht zurück wenn Player zu nah, kommt näher wenn zu weit.
+    /// </summary>
     private void ChaseRanged(Vector3 playerPos)
     {
         float dist = Vector3.Distance(transform.position, playerPos);
@@ -147,42 +130,38 @@ public class EnemyMovement : MonoBehaviour
         Vector3 lateral = new Vector3(-toPlayer.z, 0f, toPlayer.x) * _strafeDir;
         FacePlayer(playerPos);
 
-        if (dist < _retreatDist)
+        if (dist < _stats.retreatDist)
         {
-      
-            Vector3 escape = (-toPlayer + lateral).normalized * _preferredDist;
+            // Seitlich + rückwärts ausweichen
+            Vector3 escape = (-toPlayer + lateral * 0.8f).normalized * _stats.preferredDist;
             SetDest(transform.position + escape);
         }
-        else if (dist > _preferredDist + 2f)
+        else if (dist > _stats.preferredDist + 2f)
         {
-     
-            SetDest(playerPos + lateral * 3f);
+            // Näherkommen – leicht seitlich versetzt
+            SetDest(playerPos + lateral * 2f);
         }
-        else
-        {
-        
-            StrafeAround(playerPos);
-        }
+        //else
+        //{
+        //    // Komfortzone: dauerhaft strafe
+        //    StrafeAround(playerPos);
+        //}
     }
-
 
     private void ChaseSniper(Vector3 playerPos)
     {
         float dist = Vector3.Distance(transform.position, playerPos);
         FacePlayer(playerPos);
 
-        if (dist < _sniperRetreatDist)
+        if (dist < _stats.sniperRetreatDist)
         {
-          
-            _agent.speed = _stats.moveSpeed * _sniperRetreatSpeed;
+            _agent.speed = _stats.moveSpeed * _stats.sniperRetreatSpeed;
             Vector3 away = (transform.position - playerPos).normalized;
             Vector3 lateral = new Vector3(-away.z, 0f, away.x) * (Random.value > 0.5f ? 1f : -1f);
-            Vector3 escape = (away * 0.5f + lateral * 0.5f).normalized * _sniperRetreatDist * 2f;
-            SetDest(transform.position + escape);
+            SetDest(transform.position + (away * 0.5f + lateral * 0.5f).normalized * _stats.sniperRetreatDist * 2f);
         }
         else
         {
-        
             _agent.speed = _stats.moveSpeed;
             Stop();
         }
@@ -191,15 +170,13 @@ public class EnemyMovement : MonoBehaviour
     private void ChaseBomber(Vector3 playerPos)
     {
         _agent.speed = _stats.moveSpeed * 1.5f;
-        Vector3 sep = GetSeparationOffset();
-        SetDest(playerPos + sep);
+        SetDest(playerPos + GetSeparationOffset());
     }
-
 
     private void StrafeAround(Vector3 playerPos)
     {
         Vector3 toPlayer = (playerPos - transform.position).normalized;
-        Vector3 lateral = new Vector3(-toPlayer.z, 0f, toPlayer.x) * (_strafeDir * _strafeSpeed);
+        Vector3 lateral = new Vector3(-toPlayer.z, 0f, toPlayer.x) * (_strafeDir * _stats.strafeSpeed);
         Vector3 target = transform.position + lateral * 3f;
 
         if (NavMesh.SamplePosition(target, out NavMeshHit hit, 3f, NavMesh.AllAreas))
@@ -208,25 +185,22 @@ public class EnemyMovement : MonoBehaviour
 
 
     private void DashFlat(Vector3 dir)
-     {
+    {
         if (_rb == null || _agent == null) return;
 
-        _dashCooldownTimer = _dashCooldown;
-        _physicsTimer = _dashDuration;
+        _dashCooldownTimer = _stats.dashCooldown;
+        _physicsTimer = _stats.dashDuration;
 
         _agent.enabled = false;
         _rb.isKinematic = false;
         _rb.linearVelocity = Vector3.zero;
-
-        Vector3 flatDir = new Vector3(dir.x, 0f, dir.z).normalized;
-        _rb.AddForce(flatDir * _dashForce, ForceMode.Impulse);
+        _rb.AddForce(new Vector3(dir.x, 0f, dir.z).normalized * _stats.dashForce, ForceMode.Impulse);
     }
 
     public void TriggerCounterDash(Vector3 playerPos)
     {
         if (!CanDash) return;
-        Vector3 dir = (playerPos - transform.position);
-        dir.y = 0f;
+        Vector3 dir = (playerPos - transform.position); dir.y = 0f;
         DashFlat(dir.normalized);
         _dashCooldownTimer *= 0.5f;
     }
@@ -240,6 +214,7 @@ public class EnemyMovement : MonoBehaviour
         _rb.linearVelocity = Vector3.zero;
         _rb.AddForce(new Vector3(dir.x, 0f, dir.z).normalized * force, ForceMode.Impulse);
     }
+
 
     private void TickPhysics()
     {
@@ -261,17 +236,17 @@ public class EnemyMovement : MonoBehaviour
         _strafeTimer -= Time.fixedDeltaTime;
         if (_strafeTimer <= 0f)
         {
-            _strafeTimer = _strafeChange + Random.Range(-0.5f, 0.5f);
+            _strafeTimer = _stats != null
+                ? _stats.strafeChange + Random.Range(-0.5f, 0.5f)
+                : 2f;
             _strafeDir = Random.value > 0.5f ? 1f : -1f;
         }
     }
 
-
-
     private void HandleRotation()
     {
         if (_stats != null && (_stats.enemyType == EnemyType.Ranged || _stats.enemyType == EnemyType.Sniper))
-            return; 
+            return;
 
         Vector3 vel = _agent.velocity;
         if (vel.sqrMagnitude < 0.01f) return;
@@ -296,6 +271,7 @@ public class EnemyMovement : MonoBehaviour
             _rotationSpeed * Time.fixedDeltaTime);
     }
 
+
     private Vector3 _lastPos;
     private float _stuckTimer;
 
@@ -313,11 +289,32 @@ public class EnemyMovement : MonoBehaviour
         if (_stuckTimer >= 0.8f)
         {
             _stuckTimer = 0f;
-            Vector3 escape = new Vector3(Random.Range(-2f, 2f), 0f, Random.Range(-2f, 2f));
-            _agent.SetDestination(transform.position + escape);
+            _agent.SetDestination(transform.position + new Vector3(Random.Range(-2f, 2f), 0f, Random.Range(-2f, 2f)));
         }
     }
 
+
+    private Vector3 GetSeparationOffset()
+    {
+        if (_stats == null) return Vector3.zero;
+
+        Vector3 separation = Vector3.zero;
+        int count = 0;
+
+        Collider[] nearby = Physics.OverlapSphere(transform.position, _stats.separationRadius, _enemyMask);
+        foreach (Collider col in nearby)
+        {
+            if (col.gameObject == gameObject) continue;
+            Vector3 away = transform.position - col.transform.position;
+            away.y = 0f;
+            float dist = away.magnitude;
+            if (dist < 0.01f) continue;
+            separation += away.normalized * (1f - dist / _stats.separationRadius);
+            count++;
+        }
+
+        return count == 0 ? Vector3.zero : separation.normalized * _stats.separationForce;
+    }
 
 
     private void SetDest(Vector3 target)
@@ -326,30 +323,4 @@ public class EnemyMovement : MonoBehaviour
         _agent.isStopped = false;
         _agent.SetDestination(target);
     }
-    #region crowed controll
-    private Vector3 GetSeparationOffset()
-    {
-        Vector3 separation = Vector3.zero;
-        int count = 0;
-
-        Collider[] nearby = Physics.OverlapSphere(transform.position, _separationRadius, _enemyMask);
-        foreach (Collider col in nearby)
-        {
-            if (col.gameObject == gameObject) continue;
-
-            Vector3 away = transform.position - col.transform.position;
-            away.y = 0f;
-
-            float dist = away.magnitude;
-            if (dist < 0.01f) continue;
-
-            separation += away.normalized * (1f - dist / _separationRadius);
-            count++;
-        }
-
-        if (count == 0) return Vector3.zero;
-        return separation.normalized * _separationForce;
-    }
-
-    #endregion
 }

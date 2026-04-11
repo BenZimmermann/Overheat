@@ -1,24 +1,21 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public enum EnemyState 
-{ 
-    Idle, 
-    Chase, 
-    Attack, 
-    Reposition, 
-    Stunned 
-}
+/// <summary>
+/// todo:
+/// states sollten sich mit animationen abpassen -> attack nur dann wenn auch animation usw
+/// ranged sollte sich immer in die richtung drehen in die er geht.
+/// </summary>
+public enum EnemyState { Idle, Chase, Attack, Reposition, Stunned }
 
 public class EnemyController : MonoBehaviour, IDamageable
 {
     [SerializeField] private EnemyStats _stats;
     [SerializeField] private GameObject _explosionEffect;
-    [SerializeField] private Transform _headHitbox;      
 
     private EnemyMovement _movement;
-    private RoomController _room;
     private EnemyAttack _attack;
+    private RoomController _room;
+    private Animator _animator;
 
     private EnemyState _state = EnemyState.Idle;
     private float _currentHealth;
@@ -31,10 +28,16 @@ public class EnemyController : MonoBehaviour, IDamageable
     [Header("Reposition")]
     [SerializeField] private float _repositionInterval = 4f;
 
+
+    private static readonly int AnimIdle = Animator.StringToHash("Idle");
+    private static readonly int AnimRun = Animator.StringToHash("Run");
+    private static readonly int AnimAttack = Animator.StringToHash("Attack");
+
     private void Awake()
     {
         _movement = GetComponent<EnemyMovement>();
         _attack = GetComponent<EnemyAttack>();
+        _animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -49,11 +52,11 @@ public class EnemyController : MonoBehaviour, IDamageable
     private void FixedUpdate()
     {
         if (_player == null) return;
-
         TickTimers();
         UpdateState();
         ExecuteState();
     }
+
 
     private void UpdateState()
     {
@@ -68,10 +71,7 @@ public class EnemyController : MonoBehaviour, IDamageable
                 break;
 
             case EnemyState.Chase:
-                bool inAttackRange = (_stats.enemyType == EnemyType.Ranged || _stats.enemyType == EnemyType.Sniper)
-                    ? dist <= _stats.attackRange
-                    : dist <= _stats.attackRange;  
-                if (inAttackRange) SetState(EnemyState.Attack);
+                if (dist <= _stats.attackRange) SetState(EnemyState.Attack);
                 break;
 
             case EnemyState.Attack:
@@ -92,21 +92,31 @@ public class EnemyController : MonoBehaviour, IDamageable
         {
             case EnemyState.Idle:
                 _movement.Wander();
+                // ANIMATION: Idle
+                PlayAnim(AnimIdle);
                 break;
 
             case EnemyState.Chase:
                 _movement.ChasePlayer(_player.position);
+                // ANIMATION: Run (wenn bewegt), Idle (wenn stillsteht – Sniper)
+                PlayAnim(_movement.IsMoving ? AnimRun : AnimIdle);
                 break;
 
             case EnemyState.Attack:
                 _movement.AttackMovement(_player.position);
                 FacePlayer();
                 TryAttack();
+                // ANIMATION: Attack wird in TryAttack getriggert
+                // ANIMATION: Run während AttackMovement (Ranged strafe)
+                if (_stats.enemyType == EnemyType.Ranged && _movement.IsMoving)
+                    PlayAnim(AnimRun);
                 break;
 
             case EnemyState.Reposition:
                 _movement.MoveToReposition();
                 FacePlayer();
+                // ANIMATION: Run
+                PlayAnim(AnimRun);
                 break;
         }
     }
@@ -116,17 +126,16 @@ public class EnemyController : MonoBehaviour, IDamageable
     {
         if (_attackCooldown > 0f) _attackCooldown -= Time.fixedDeltaTime;
 
-
         if (_stunTimer > 0f)
         {
             _stunTimer -= Time.fixedDeltaTime;
             if (_stunTimer <= 0f)
             {
                 _stunTimer = 0f;
+                _movement.ResetSpeed();
                 SetState(EnemyState.Chase);
             }
         }
-
 
         if (_state == EnemyState.Stunned || _state == EnemyState.Reposition) return;
         if (_stats.enemyType != EnemyType.Ranged && _stats.enemyType != EnemyType.Sniper) return;
@@ -140,8 +149,6 @@ public class EnemyController : MonoBehaviour, IDamageable
     }
 
 
-
-
     private void TryAttack()
     {
         if (_attackCooldown > 0f) return;
@@ -150,20 +157,31 @@ public class EnemyController : MonoBehaviour, IDamageable
         switch (_stats.enemyType)
         {
             case EnemyType.Meele:
+                // ANIMATION: Attack trigger
+                PlayAnim(AnimAttack);
                 IDamageable meleeTarget = _player.GetComponentInParent<IDamageable>();
                 meleeTarget?.TakeDamage(_stats.damage, gameObject.name);
                 break;
 
             case EnemyType.Bomber:
+                // ANIMATION: Attack trigger (kurz bevor Explosion)
+                PlayAnim(AnimAttack);
                 Explode();
                 break;
 
             case EnemyType.Ranged:
+                // ANIMATION: Attack trigger (Schuss-Animation)
+                PlayAnim(AnimAttack);
+                _attack?.Fire();
+                break;
+
             case EnemyType.Sniper:
+                // ANIMATION: kein Attack-Trigger – Sniper hat keine Animations
                 _attack?.Fire();
                 break;
         }
     }
+
 
     public void TakeDamage(float amount, string source)
     {
@@ -171,9 +189,9 @@ public class EnemyController : MonoBehaviour, IDamageable
 
 
         _stunTimer = _stats.stunDuration;
-        SetState(EnemyState.Stunned);
         _movement.SetSpeed(_stats.moveSpeed * _stats.slowOnHit);
-        SetState(EnemyState.Reposition);
+        SetState(EnemyState.Stunned);
+
         if (_currentHealth <= 0f)
             Die();
     }
@@ -184,20 +202,15 @@ public class EnemyController : MonoBehaviour, IDamageable
     public void ApplyKnockback(Vector3 dir, float force)
         => _movement.ApplyKnockback(dir, force);
 
-    public void TriggerReposition()
-        => TriggerReposition(GetRepositionPoint());
 
+    public void TriggerReposition() => TriggerReposition(GetRepositionPoint());
     public void TriggerReposition(Vector3 target)
     {
         _movement.SetRepositionTarget(target);
         SetState(EnemyState.Reposition);
     }
 
-    public void NotifyShotFired()
-    {
-
-        TriggerReposition();
-    }
+    public void NotifyShotFired() => TriggerReposition();
 
     private Vector3 GetRepositionPoint()
     {
@@ -210,7 +223,6 @@ public class EnemyController : MonoBehaviour, IDamageable
              + lateral * side * range
              + toPlayer * Random.Range(-range * 0.4f, range * 0.4f);
     }
-
 
     public void SetState(EnemyState state) => _state = state;
 
@@ -226,6 +238,12 @@ public class EnemyController : MonoBehaviour, IDamageable
             20f * Time.fixedDeltaTime);
     }
 
+    private void PlayAnim(int hash)
+    {
+        if (_animator == null) return;
+        _animator.SetTrigger(hash);
+    }
+
     private void Explode()
     {
         if (_explosionEffect != null)
@@ -238,10 +256,7 @@ public class EnemyController : MonoBehaviour, IDamageable
 
         Collider[] hits = Physics.OverlapSphere(transform.position, _stats.attackRange * 1.5f);
         foreach (Collider col in hits)
-        {
-            IDamageable t = col.GetComponentInParent<IDamageable>();
-            t?.TakeDamage(_stats.damage, gameObject.name);
-        }
+            col.GetComponentInParent<IDamageable>()?.TakeDamage(_stats.damage, gameObject.name);
 
         Die();
     }
@@ -257,30 +272,14 @@ public class EnemyController : MonoBehaviour, IDamageable
     private void DropMoney()
     {
         if (Random.value > _stats.moneyDropChance) return;
-
-        int amount = Mathf.RoundToInt(_stats.moneyDropAmount);
-
-        for (int i = 0; i < amount; i++)
+        for (int i = 0; i < Mathf.RoundToInt(_stats.moneyDropAmount); i++)
         {
-            GameObject coin = Instantiate(
-                _stats.moneyObj,
-                transform.position,
-                Random.rotation
-            );
-
+            GameObject coin = Instantiate(_stats.moneyObj, transform.position, Random.rotation);
             if (coin.TryGetComponent(out Rigidbody rb))
             {
-                Vector3 randomDirection = new Vector3(
-                    Random.Range(-1f, 1f),
-                    Random.Range(0.5f, 1f),  // immer leicht nach oben
-                    Random.Range(-1f, 1f)
-                ).normalized;
-
-                float force = Random.Range(1f, 6f);
-                rb.AddForce(randomDirection * force, ForceMode.Impulse);
-
-                float torque = Random.Range(1f, 4f);
-                rb.AddTorque(Random.insideUnitSphere * torque, ForceMode.Impulse);
+                Vector3 dir = new Vector3(Random.Range(-1f, 1f), Random.Range(0.5f, 1f), Random.Range(-1f, 1f)).normalized;
+                rb.AddForce(dir * Random.Range(1f, 6f), ForceMode.Impulse);
+                rb.AddTorque(Random.insideUnitSphere * Random.Range(1f, 4f), ForceMode.Impulse);
             }
         }
     }

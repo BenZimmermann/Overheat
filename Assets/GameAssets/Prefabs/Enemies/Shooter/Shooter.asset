@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb8d4dcdaedbffc44bc959947c0a0140, type: 3}
+  m_Name: Shooter
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
+  enemyName: Shooter
+  moneyDropChance: 0.5
+  moneyDropAmount: 10
+  moneyObj: {fileID: 4045873163074478821, guid: d8016e98fd710af4594c663bdd069366, type: 3}
+  maxHealth: 50
+  headShotMultiplier: 1.5
+  moveSpeed: 10
+  attackRange: 99
+  repositionRange: 9
+  detectionRange: 99
+  dashForce: 14
+  dashCooldown: 2
+  dashDuration: 0.12
+  dashTriggerMult: 1.8
+  preferredDist: 9
+  retreatDist: 9
+  strafeSpeed: 20
+  strafeChange: 20
+  sniperRetreatDist: 5
+  sniperRetreatSpeed: 1.4
+  separationRadius: 2
+  separationForce: 1.8
+  stunDuration: 0.25
+  slowOnHit: 0.5
+  damage: 10
+  attackCooldown: 1.5
+  shotsBeforeReposition: 4
+  enemyType: 1

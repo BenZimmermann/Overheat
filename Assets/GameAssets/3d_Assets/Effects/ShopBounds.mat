@@ -52,7 +52,7 @@ Material:
     - _Cull: 0
     - _DstBlend: 10
     - _DstBlendAlpha: 10
-    - _IntersectionDepth: 1.6
+    - _IntersectionDepth: 1
     - _NoiseStrength: 15.19
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -66,7 +66,7 @@ Material:
     - _ZWriteControl: 0
     - _pulse: 2
     m_Colors:
-    - _Color: {r: 10.955553, g: 5.277142, b: 1.3952827, a: 1}
+    - _Color: {r: 9.841271, g: 64.30968, b: 139.08998, a: 1}
     - _Color_1: {r: 0.8773585, g: 0.21106264, b: 0.21106264, a: 1}
     - _ScrollDirection: {r: 0, g: -1, b: 0, a: 0}
   m_BuildTextureStacks: []

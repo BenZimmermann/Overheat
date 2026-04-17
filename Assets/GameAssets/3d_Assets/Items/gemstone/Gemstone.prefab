@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemShopController
   _data: {fileID: 11400000, guid: 13995ba32237e524784117d6bdb5c35c, type: 2}
-  _itemName: {fileID: 0}
+  _itemName: {fileID: 926055988906935055}
 --- !u!1 &3534823021110269425
 GameObject:
   m_ObjectHideFlags: 0

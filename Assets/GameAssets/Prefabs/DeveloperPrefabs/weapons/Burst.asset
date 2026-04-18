@@ -17,13 +17,13 @@ MonoBehaviour:
   isMelee: 0
   isShotgun: 0
   isSalve: 1
-  damage: 10
+  damage: 4
   range: 100
   attackRadius: 0
   fireRate: 0.2
   recoil: 0
   reloadTime: 1
-  magazineSize: 30
+  magazineSize: 12
   CooldownTime: 0
   isAutomatic: 0
   shotgunPellets: 0
@@ -32,7 +32,7 @@ MonoBehaviour:
   salveDelay: 0.1
   ShootDelay: 0.2
   AddBulletSpread: 0
-  BulletSpreadVariance: {x: 0.1, y: 0.1, z: 0.1}
+  BulletSpreadVariance: {x: 0.2, y: 0.2, z: 0.2}
   Rarity: 0
   cost: 0
   WeaponObj: {fileID: 5772202390202007179, guid: 85d8459e8c4dd9f45b2d10513254c325, type: 3}

@@ -902,6 +902,7 @@ GameObject:
   - component: {fileID: 1444867091791551159}
   - component: {fileID: 1124933579216990241}
   - component: {fileID: 3225741105271387132}
+  - component: {fileID: 1393894019929561382}
   m_Layer: 12
   m_Name: ItemText
   m_TagString: Untagged
@@ -1121,6 +1122,19 @@ BillboardRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Billboard: {fileID: 0}
+--- !u!114 &1393894019929561382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3505922363760599529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d44edbac18982234cab1d31d4b980355, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Billboard
+  _invertRotation: 0
 --- !u!1 &3989756496059686573
 GameObject:
   m_ObjectHideFlags: 0

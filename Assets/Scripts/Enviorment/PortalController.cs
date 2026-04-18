@@ -8,11 +8,17 @@ public class PortalController : MonoBehaviour
     [SerializeField, Tooltip("Only use when portals are linked inside one scene")]
     private GameObject _portalToTeleport;
     [SerializeField] private string _levelName;
+    [SerializeField] private bool _isEndPortal;
     [SerializeField] private float _exitOffset = 1.5f;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Player")) return;
+
+        if (_isEndPortal)
+        {
+            GameManager.Instance.FinishGame();
+        }
 
         if (_usePortalName)
         {
@@ -34,6 +40,7 @@ public class PortalController : MonoBehaviour
                 Debug.Log($"teleport to{_levelName}");
                 SceneManager.LoadScene(_levelName);
         }
+
     }
     private void OnDrawGizmos()
     {

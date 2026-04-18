@@ -40,6 +40,8 @@ public class HUDController : MonoBehaviour
 
     [Header("GameOver")]
     [SerializeField] public GameObject GameOverMenu;
+    [SerializeField] public GameObject FinishGameMenu;
+    [SerializeField] public TextMeshProUGUI FinishGameTime;
 
     private float _cooldownTotal;
     private float _cooldownRemaining;
@@ -52,6 +54,7 @@ public class HUDController : MonoBehaviour
         GameManager.Instance.Data.OnUpgradeAdded += RefreshUpgrade;
         GameManager.Instance.Data.OnItemChanged += RefreshItem;
         GameManager.Instance.OnGameOver += RefreshGameOver;
+        GameManager.Instance.OnFinishGame += RefreshFinishGame;
 
     }
 
@@ -62,6 +65,7 @@ public class HUDController : MonoBehaviour
         GameManager.Instance.Data.OnUpgradeAdded -= RefreshUpgrade;
         GameManager.Instance.Data.OnItemChanged -= RefreshItem;
         GameManager.Instance.OnGameOver -= RefreshGameOver;
+        GameManager.Instance.OnFinishGame -= RefreshFinishGame;
     }
     //Temporary method to update the HUD, should be replaced with events and listeners for better performance and decoupling
 
@@ -213,7 +217,17 @@ public class HUDController : MonoBehaviour
     {
         GameOverMenu.SetActive(true);
     }
-    // Only for GameOverMenu
+
+    void RefreshFinishGame()
+    {
+        FinishGameMenu.SetActive(true);
+        FinishGameTime.text = "Final Time: " + FormatTime(GameManager.Instance.Data.RunTime);
+    }
+    public void QuitToMainMenu()
+    {
+        GameManager.Instance.QuitToMainMenu();
+    }
+    // Only for GameOverMenu   
     public void Retry()
     {
         GameManager.Instance.StartGame();

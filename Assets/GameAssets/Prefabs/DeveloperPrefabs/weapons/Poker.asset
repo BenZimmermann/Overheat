@@ -23,7 +23,7 @@ MonoBehaviour:
   fireRate: 0.2
   recoil: 0
   reloadTime: 2
-  magazineSize: 50
+  magazineSize: 25
   CooldownTime: 0
   isAutomatic: 1
   shotgunPellets: 6

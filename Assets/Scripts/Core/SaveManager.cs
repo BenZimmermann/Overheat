@@ -30,9 +30,20 @@ public class SaveManager : MonoBehaviour
 
         if (run.Money > _data.Money) _data.Money = run.Money;
         if (run.OverallScore > _data.FinalScore) _data.FinalScore = run.OverallScore;
-        if (run.RunTime > _data.Time) _data.Time = run.RunTime;
+        _data.Time = 0;
         if (run.EnemiesKilled > _data.EnemiesKilled) _data.EnemiesKilled = (int)run.EnemiesKilled;
-
+       
+        string json = JsonUtility.ToJson(_data, prettyPrint: true);
+        File.WriteAllText(SavePath, json);
+        Debug.Log("Stats saved.");
+    }
+    public void SaveStatsFinishGame()
+        {
+        var run = GameManager.Instance.Data;
+        if (run.Money > _data.Money) _data.Money = run.Money;
+        if (run.OverallScore > _data.FinalScore) _data.FinalScore = run.OverallScore;
+        if (run.RunTime > _data.Time) _data.Time = run.RunTime;  
+        if (run.EnemiesKilled > _data.EnemiesKilled) _data.EnemiesKilled = (int)run.EnemiesKilled;
         string json = JsonUtility.ToJson(_data, prettyPrint: true);
         File.WriteAllText(SavePath, json);
         Debug.Log("Stats saved.");

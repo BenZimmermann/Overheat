@@ -18,12 +18,12 @@ MonoBehaviour:
   isShotgun: 1
   isSalve: 0
   damage: 5
-  range: 30
+  range: 20
   attackRadius: 0.5
   fireRate: 0.2
   recoil: 0
   reloadTime: 1
-  magazineSize: 30
+  magazineSize: 6
   CooldownTime: 0
   isAutomatic: 0
   shotgunPellets: 6

@@ -5816,7 +5816,7 @@ GameObject:
   - component: {fileID: 326312497}
   - component: {fileID: 326312496}
   m_Layer: 5
-  m_Name: Time
+  m_Name: FinishTime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17964,7 +17964,7 @@ GameObject:
   - component: {fileID: 1261870378}
   - component: {fileID: 1261870377}
   m_Layer: 5
-  m_Name: Time
+  m_Name: FinishTime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18009,7 +18009,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Longest Time
+  m_text: Finish Time
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 61a18849d253af346808c0e3babd1513, type: 2}
   m_sharedMaterial: {fileID: -3688908376643849416, guid: 61a18849d253af346808c0e3babd1513, type: 2}
@@ -18036,7 +18036,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 70.65
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

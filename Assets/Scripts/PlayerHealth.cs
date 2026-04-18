@@ -29,21 +29,22 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public void TakeDamage(float amount, string source)
     {
         var data = GameManager.Instance.Data;
-
         if (data.MagneticFieldActive) return;
 
         amount = ApplyDamageReduction(amount, data);
-
         StartCoroutine(HurtEffect());
 
         if (data.PlayerShild > 0)
         {
-            data.PlayerShild = (int)Mathf.Max(0, data.PlayerShild - _shieldDamageMultiplier);
-            data.PlayerHealth = (int)(data.PlayerHealth - _bleedThroughPercent);
+            float shieldDamage = amount * _shieldDamageMultiplier;
+            data.PlayerShild = (int)Mathf.Max(0, data.PlayerShild - shieldDamage);
+
+            float healthDamage = amount * _bleedThroughPercent;
+            data.PlayerHealth = (int)Mathf.Max(0, data.PlayerHealth - healthDamage);
         }
         else
         {
-            data.PlayerHealth = (int)(data.PlayerHealth - amount);
+            data.PlayerHealth = (int)Mathf.Max(0, data.PlayerHealth - amount);
         }
 
         Lifesteal(amount);
@@ -65,6 +66,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     }
     public void Die()
     {
+        _fullScreenDamage.SetActive(false);
         SaveManager.Instance.SaveStats();
         GameManager.Instance.GameOver();
     }

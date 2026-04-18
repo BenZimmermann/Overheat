@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public RuntimeGameData Data = new RuntimeGameData();
 
     public event System.Action OnGameOver;
+    public event System.Action OnFinishGame;
 
     public float _runTime;
     private bool _running = false;
@@ -61,6 +62,7 @@ public class GameManager : MonoBehaviour
     {
         //reset game data so when you start a new game, you start fresh
         Data = new RuntimeGameData();
+        //load the first level
         SceneManager.LoadScene("TestScene");
         ResumeGame();
         StartRun();
@@ -101,6 +103,15 @@ public class GameManager : MonoBehaviour
     public void EndRun()
     {
         _running = false;
+    }
+
+    public void FinishGame()
+    {
+        EndRun();
+        PauseGame();
+        SaveManager.Instance.SaveStatsFinishGame();
+        OnFinishGame?.Invoke();
+        //invoke game finish event for GameFinishMenu
     }
     #endregion
 

@@ -35,6 +35,7 @@ public class ItemController : MonoBehaviour
     private Material[] _originalMaterials;
     private Renderer[] _weaponRenderers;
 
+    private GameObject _explosionPrefab;
     public bool GoldenGunActive => _goldenGunTimer > 0f;
     public bool MagneticFieldActive => _magneticFieldTimer > 0f;
     public bool OnCooldown => _cooldownTimer > 0f;
@@ -128,7 +129,12 @@ public class ItemController : MonoBehaviour
     private void Explode()
     {
         if (_activeGrenade == null) return;
-        //spawn explosion particles
+
+        if (_explosionPrefab != null)
+        {
+            GameObject explosion = Instantiate(_explosionPrefab, _activeGrenade.transform.position, Quaternion.identity);
+            Destroy(explosion, 3f);
+        }
         Collider[] hits = Physics.OverlapSphere(_activeGrenade.transform.position, _grenadeExplosionRadius);
         foreach (Collider col in hits)
         {
@@ -139,6 +145,7 @@ public class ItemController : MonoBehaviour
         Debug.Log($"[ItemController] Explosion bei {_activeGrenade.transform.position}");
         Destroy(_activeGrenade);
         _activeGrenade = null;
+        _explosionPrefab = null;
     }
 
     // -------------------------------------------------------------------------
@@ -192,6 +199,8 @@ public class ItemController : MonoBehaviour
         _grenadeTimer = item.effectDuration > 0f ? item.effectDuration : 2f;
         _grenadeExplosionRadius = item.effectRadius;
         _grenadeExplosionDamage = item.explosionDamage;
+
+        _explosionPrefab = item.Explosion;
 
         Debug.Log("[ItemController] Granate geworfen.");
         ConsumeItem();

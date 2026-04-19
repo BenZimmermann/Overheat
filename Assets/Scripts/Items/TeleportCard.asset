@@ -18,6 +18,7 @@ MonoBehaviour:
   itemIcon: {fileID: 957668391, guid: ff71a0b0363c1304ab827c4240fbc101, type: 3}
   itemModel: {fileID: 5254103298976170000, guid: 53843783fd596e34c97ab37fcf8831e9, type: 3}
   itemGrenadeModel: {fileID: 0}
+  Explosion: {fileID: 0}
   isAutomatic: 0
   isInputRequired: 1
   effectDuration: 0
@@ -29,5 +30,5 @@ MonoBehaviour:
   cooldown: 60
   shieldObject: {fileID: 0}
   goldenGunMaterial: {fileID: 0}
-  cost: 0
+  cost: 1000
   Rarity: 0

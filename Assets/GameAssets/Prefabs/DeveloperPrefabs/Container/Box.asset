@@ -20,12 +20,12 @@ MonoBehaviour:
   health: 1
   rewardChance: 0.5
   rewardMoney: 25
-  rewardhealth: 0.5
+  rewardhealth: 0.25
   ItemDropChance: 0
   ItemsToDrop: []
   fallDamageMultiplier: 1
   fallDamageThreshold: 5
   MoneyObj: {fileID: 4045873163074478821, guid: d8016e98fd710af4594c663bdd069366, type: 3}
-  HealObj: {fileID: 0}
+  HealObj: {fileID: 8464757987065596020, guid: 5d1e127d528406548825fe0c02f875b8, type: 3}
   hitParticles: {fileID: 7024303965198524714, guid: c69aee12676d88b45adc1d0aa638e5a0, type: 3}
   destroyParticles: {fileID: 7024303965198524714, guid: c69aee12676d88b45adc1d0aa638e5a0, type: 3}

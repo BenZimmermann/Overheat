@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
 
     public float _runTime;
     private bool _running = false;
+
+    [SerializeField] private string StartSceneName;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -63,7 +65,7 @@ public class GameManager : MonoBehaviour
         //reset game data so when you start a new game, you start fresh
         Data = new RuntimeGameData();
         //load the first level
-        SceneManager.LoadScene("Level_1");
+        SceneManager.LoadScene(StartSceneName);
         ResumeGame();
         StartRun();
     }

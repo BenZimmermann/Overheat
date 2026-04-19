@@ -66,6 +66,7 @@ public class BoxController : MonoBehaviour, IDamageable
         float particleDuration = DestroyParticles.main.duration + DestroyParticles.main.startLifetime.constantMax;
         Destroy(DestroyParticles.gameObject, particleDuration);
         DropMoney();
+        DropHeal();
         Destroy(gameObject);
     }
     private void DropMoney()
@@ -98,13 +99,34 @@ public class BoxController : MonoBehaviour, IDamageable
             }
         }
     }
+    private void DropHeal()
+    {
+        if (Random.value > CData.rewardhealth) return;
+
+        Quaternion spawnRotation = Quaternion.Euler(-90f, 0f, 0f);
+
+        GameObject heal = Instantiate(
+            CData.HealObj,
+            transform.position + Vector3.up * 0.1f,
+            spawnRotation
+        );
+
+
+        if (heal.TryGetComponent(out Rigidbody rb))
+        {
+            Vector3 jumpDirection = new Vector3(
+                Random.Range(-0.5f, 0.5f),
+                1f,
+                Random.Range(-0.5f, 0.5f)
+            ).normalized;
+
+            rb.AddForce(jumpDirection * 3f, ForceMode.Impulse);
+        }
+    }
     private void DropItems()
     {
         //reward Money == amount of gameObjects to spawn
         //reawrd change == the odds to spawn the money
     }
-    private void DropHealth()
-    {
 
-    }
 }

@@ -34,5 +34,5 @@ MonoBehaviour:
   AddBulletSpread: 0
   BulletSpreadVariance: {x: 0.1, y: 0.1, z: 0.1}
   Rarity: 0
-  cost: 0
+  cost: 250
   WeaponObj: {fileID: 2282240317195959013, guid: 7542b1355d1827a4cba11c2ad0216c0b, type: 3}

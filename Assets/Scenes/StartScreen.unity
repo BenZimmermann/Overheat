@@ -26070,6 +26070,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _runTime: 0
+  StartSceneName: Level_1
 --- !u!1001 &1691143307
 PrefabInstance:
   m_ObjectHideFlags: 0

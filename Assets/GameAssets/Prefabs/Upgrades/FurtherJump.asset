@@ -17,7 +17,7 @@ MonoBehaviour:
   upgradeDescription: Your jumps are longer.
   upgradeIcon: {fileID: -2088982217, guid: ff71a0b0363c1304ab827c4240fbc101, type: 3}
   UpgradeObj: {fileID: 3429704375467712301, guid: dc5246f391106884993c71a9f53f2c0d, type: 3}
-  cost: 0
+  cost: 1000
   Rarity: 0
   type: 6
   value: 100

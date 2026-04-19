@@ -17,8 +17,8 @@ public class SettingsManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
     private void Start()
     {
@@ -28,13 +28,26 @@ public class SettingsManager : MonoBehaviour
     { 
         var data = SaveManager.Instance.Data;
         SetVolume(data.MasterVolume, data.MusicVolume, data.SFXVolume);
+
         OnSettingsChanged?.Invoke();
     }
     public void SetVolume(float master, float music, float sfx)
     {
-        _audioMixer.SetFloat("MasterVolume", Mathf.Log10(Mathf.Max(master, 0.0001f)) * 20);
-        _audioMixer.SetFloat("MusicVolume", Mathf.Log10(Mathf.Max(music, 0.0001f)) * 20);
-        _audioMixer.SetFloat("SFXVolume", Mathf.Log10(Mathf.Max(sfx, 0.0001f)) * 20);
+        ApplyLevel("MasterVolume", master);
+        ApplyLevel("MusicVolume", music);
+        ApplyLevel("SFXVolume", sfx);
+    }
+    private void ApplyLevel(string parameterName, float sliderValue)
+    {
+        if (sliderValue <= 0.001f)
+        {
+            _audioMixer.SetFloat(parameterName, -80f);
+        }
+        else
+        {
+            float dB = Mathf.Log10(sliderValue) * 20;
+            _audioMixer.SetFloat(parameterName, dB);
+        }
     }
     public void SetMasterVolume(Slider caller)
     {

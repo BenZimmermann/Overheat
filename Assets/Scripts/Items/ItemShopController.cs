@@ -31,7 +31,7 @@ public class ItemShopController : MonoBehaviour, IDamageable, IShopEntry
         if (_data == null) return;
         if (_isPurchasing) return;
         _isPurchasing = true;
-
+        SoundManager.Instance.Play3DSound(SoundType.BuyItem, transform.position);
         RuntimeGameData runtimeData = GameManager.Instance.Data;
 
         if (runtimeData.Money < _data.cost)

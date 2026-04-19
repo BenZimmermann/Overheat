@@ -65,6 +65,7 @@ public class CollectableController : MonoBehaviour, ICollectable
     }
     public void Collect(float amount)
     {
+        SoundManager.Instance.Play3DSound(SoundType.CollectMoney, transform.position);
         GameManager.Instance.Data.Money += amount;
         Destroy(gameObject);
     }

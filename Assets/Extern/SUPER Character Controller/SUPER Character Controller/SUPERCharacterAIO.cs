@@ -691,6 +691,7 @@ namespace SUPERCharacter
             cachedDirPreSlide = transform.forward;
             cachedPosPreSlide = transform.position;
             capsule.sharedMaterial = _ZeroFriction;
+            SoundManager.Instance.PlaySound(SoundType.Slide);
             isSliding = true;
         }
 
@@ -721,7 +722,7 @@ namespace SUPERCharacter
             _dashTimer = 0f;
             _dashCooldownTimer = dashCooldown;
             capsule.sharedMaterial = _ZeroFriction;
-
+            SoundManager.Instance.PlaySound(SoundType.Dash);
             // Direction: player input or fallback to forward
             _dashDirection = (dashUsesInputDirection && InputDir.magnitude > 0.1f)
                 ? InputDir.normalized

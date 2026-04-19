@@ -32,6 +32,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         if (data.MagneticFieldActive) return;
 
         amount = ApplyDamageReduction(amount, data);
+        SoundManager.Instance.PlaySound(SoundType.DamagePlayer);
         StartCoroutine(HurtEffect());
 
         if (data.PlayerShild > 0)
@@ -66,6 +67,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     }
     public void Die()
     {
+        SoundManager.Instance.PlaySound(SoundType.PlayerDeath);
         _fullScreenDamage.SetActive(false);
         SaveManager.Instance.SaveStats();
         GameManager.Instance.GameOver();

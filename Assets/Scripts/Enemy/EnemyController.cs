@@ -185,6 +185,7 @@ public class EnemyController : MonoBehaviour, IDamageable
 
     public void TakeDamage(float amount, string source)
     {
+        SoundManager.Instance.Play3DSound(SoundType.DamageEnemy, transform.position);
         _currentHealth -= amount;
 
 
@@ -263,6 +264,7 @@ public class EnemyController : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        SoundManager.Instance.Play3DSound(SoundType.EnemyDeath, transform.position);
         _room?.OnEnemyDied(this);
         GameManager.Instance.Data.EnemiesKilled++;
         DropMoney();

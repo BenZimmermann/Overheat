@@ -132,6 +132,7 @@ public class ItemController : MonoBehaviour
 
         if (_explosionPrefab != null)
         {
+            SoundManager.Instance.Play3DSound(SoundType.Exposion, _activeGrenade.transform.position);
             GameObject explosion = Instantiate(_explosionPrefab, _activeGrenade.transform.position, Quaternion.identity);
             Destroy(explosion, 3f);
         }
@@ -167,6 +168,7 @@ public class ItemController : MonoBehaviour
 
     public void UseRevive(ItemData item)
     {
+        SoundManager.Instance.PlaySound(SoundType.UseItem);
         PlayerHealth playerHealth = FindAnyObjectByType<PlayerHealth>();
         if (playerHealth == null) return;
 
@@ -188,7 +190,7 @@ public class ItemController : MonoBehaviour
             Debug.LogWarning("[ItemController] Grenade hat kein itemGrenadeModel.");
             return;
         }
-
+        SoundManager.Instance.PlaySound(SoundType.UseItem);
         Transform origin = _throwOrigin != null ? _throwOrigin : transform;
         _activeGrenade = Instantiate(item.itemGrenadeModel, origin.position, origin.rotation);
 
@@ -208,6 +210,7 @@ public class ItemController : MonoBehaviour
 
     private void UseMagneticField(ItemData item)
     {
+        SoundManager.Instance.PlaySound(SoundType.UseItem);
         _magneticFieldTimer = item.effectDuration;
         GameManager.Instance.Data.MagneticFieldActive = true;
 
@@ -223,6 +226,7 @@ public class ItemController : MonoBehaviour
 
     private void UseGoldenGun(ItemData item)
     {
+        SoundManager.Instance.PlaySound(SoundType.UseItem);
         _goldenGunTimer = item.effectDuration;
         GameManager.Instance.Data.GoldenGunActive = true;
 
@@ -234,6 +238,7 @@ public class ItemController : MonoBehaviour
 
     private void UseTeleport(ItemData item)
     {
+        SoundManager.Instance.PlaySound(SoundType.UseItem);
         Camera cam = Camera.main;
         if (cam == null) return;
 
@@ -250,6 +255,7 @@ public class ItemController : MonoBehaviour
 
     private void UseElexir(ItemData item)
     {
+        SoundManager.Instance.PlaySound(SoundType.UseItem);
         PlayerHealth playerHealth = FindAnyObjectByType<PlayerHealth>();
         if (playerHealth == null) return;
 

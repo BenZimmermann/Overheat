@@ -60,6 +60,7 @@ public class SettingsController : MonoBehaviour
         }
 
         _currentMenu = targetMenu;
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         _currentMenu.SetActive(true);
     }
 
@@ -74,6 +75,8 @@ public class SettingsController : MonoBehaviour
             _currentMenu = _menuStack.Pop();
             _currentMenu.SetActive(true);
         }
+        //testing
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
     }
     private void UpdateMenuSettings()
     {
@@ -93,44 +96,53 @@ public class SettingsController : MonoBehaviour
     }
     public void SetMasterVolume(Slider caller)
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.SetMasterVolume(caller);
     }
 
     public void SetMusicVolume(Slider caller)
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.SetMusicVolume(caller);
     }
 
     public void SetSFXVolume(Slider caller)
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.SetSFXVolume(caller);
     }
 
     public void SetSensitivity(Slider caller)
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.SetMouseSensitivity(caller);
     }
 
     public void ToggleInvertX(Toggle value)
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.ToggleInvertX(value);
     }
 
     public void ToggleInvertY(Toggle value)
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.ToggleInvertY(value);
     }
 
     public void ToggleShowUpgrades(Toggle value)
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.ToggleShowUpgrades(value);
     }
     public void ToggleShowStats(Toggle value)
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.ToggleShowStats(value);
     }
     public void ToggleShowHealth(Toggle value)
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.ToggleShowHealth(value);
     }
 }

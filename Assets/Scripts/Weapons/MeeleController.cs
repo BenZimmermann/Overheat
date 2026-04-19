@@ -67,7 +67,7 @@ public class MeleeController : MonoBehaviour
         Collider[] hits = Physics.OverlapSphere(center, CurrentRadius, Damageable);
 
         HashSet<IDamageable> already = new HashSet<IDamageable>();
-
+        SoundManager.Instance.PlaySound(SoundType.Melee);
         foreach (Collider col in hits)
         {
             if ((Ignore.value & (1 << col.gameObject.layer)) != 0) continue;

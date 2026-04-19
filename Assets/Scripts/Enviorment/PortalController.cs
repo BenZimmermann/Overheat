@@ -42,7 +42,7 @@ public class PortalController : MonoBehaviour
             Debug.LogWarning("Portal: kein Ziel-Portal gesetzt!");
             return;
         }
-
+        SoundManager.Instance.Play3DSound(SoundType.PortalWarp, playerTransform.position);
         Vector3 directionVector = Vector3.zero;
         float yRotation = 0f;
 

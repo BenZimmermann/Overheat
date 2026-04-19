@@ -43,7 +43,7 @@ public class UpgradeController : MonoBehaviour, IDamageable, IShopEntry
     private void TryBuyUpgrade()
     {
         if (_data == null) return;
-
+        SoundManager.Instance.Play3DSound(SoundType.BuyItem, transform.position);
         RuntimeGameData Data = GameManager.Instance.Data;
 
         if (Data == null)

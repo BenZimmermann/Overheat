@@ -51,7 +51,7 @@ public class BoxController : MonoBehaviour, IDamageable
     {
         _currentHealth -= amount;
         CData.hitParticles.Play();
-
+        SoundManager.Instance.Play3DSound(SoundType.DestroyBox, transform.position);
         if (_currentHealth <= 0)
         {
             Die();

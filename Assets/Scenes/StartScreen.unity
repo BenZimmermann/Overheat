@@ -28567,6 +28567,109 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3116a5c3556d9a8498b377474f6bc56b, type: 3}
+--- !u!1 &1896329520
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1896329522}
+  - component: {fileID: 1896329521}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1896329521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1896329520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20f0639d196cadd408d9f5068e4b987e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoundManager
+  _audioMixer: {fileID: 24100000, guid: ede9285d8956f014ba6e9ff801faf8ca, type: 2}
+  _sfxGroup: {fileID: -7245556967309917282, guid: ede9285d8956f014ba6e9ff801faf8ca, type: 2}
+  _musicGroup: {fileID: 954817244831218383, guid: ede9285d8956f014ba6e9ff801faf8ca, type: 2}
+  _sfxEffects:
+  - name: UIClick
+    clip: {fileID: 8300000, guid: 87adfa6420bcd88448e67d5d0f943fb9, type: 3}
+    volumeScale: 1
+  - name: Shoot
+    clip: {fileID: 8300000, guid: 4d74f99d93f1c8b47b08a4d8aec8362f, type: 3}
+    volumeScale: 0.2
+  - name: Meele
+    clip: {fileID: 8300000, guid: 444bb9377cf860b4fb2773567cce61f8, type: 3}
+    volumeScale: 0.2
+  - name: Reload
+    clip: {fileID: 8300000, guid: af17e35e27acfeb458b986d50cd41878, type: 3}
+    volumeScale: 0.1
+  - name: DamagePlayer
+    clip: {fileID: 8300000, guid: 23e8a6ba82fffc542b89afbf832a16b4, type: 3}
+    volumeScale: 0.2
+  - name: DamageEnemy
+    clip: {fileID: 8300000, guid: 23e8a6ba82fffc542b89afbf832a16b4, type: 3}
+    volumeScale: 0.5
+  - name: DestroyBox
+    clip: {fileID: 8300000, guid: 12a04f30618778a4fb4d3f2b705adf9f, type: 3}
+    volumeScale: 0.8
+  - name: EnemyDeath
+    clip: {fileID: 8300000, guid: 23e8a6ba82fffc542b89afbf832a16b4, type: 3}
+    volumeScale: 0.4
+  - name: PlayerDeath
+    clip: {fileID: 8300000, guid: 23e8a6ba82fffc542b89afbf832a16b4, type: 3}
+    volumeScale: 0.4
+  - name: BuyItem
+    clip: {fileID: 8300000, guid: 031d562361dea17478dee8ef4fb8c45b, type: 3}
+    volumeScale: 0.8
+  - name: UseItem
+    clip: {fileID: 8300000, guid: 70252a3b47c7e3e4c91bb7f91ad5c1a6, type: 3}
+    volumeScale: 0.2
+  - name: CollectMoney
+    clip: {fileID: 8300000, guid: b6d45c15007c59d4f9f86743ee9d49af, type: 3}
+    volumeScale: 0.1
+  - name: PortalWarp
+    clip: {fileID: 8300000, guid: 80f7a3df423d875408b742a2aa7c30aa, type: 3}
+    volumeScale: 0.4
+  - name: Exposion
+    clip: {fileID: 8300000, guid: bd68b294c19fe14488cc5209b291aeec, type: 3}
+    volumeScale: 0.4
+  - name: Slide
+    clip: {fileID: 8300000, guid: b90525803f4a7514fa46130e883af480, type: 3}
+    volumeScale: 0.2
+  - name: Dash
+    clip: {fileID: 8300000, guid: 7dd8ea3a5f53db84598c2eea9af3ef8b, type: 3}
+    volumeScale: 0.2
+  - name: Footstep
+    clip: {fileID: 8300000, guid: 80f7a3df423d875408b742a2aa7c30aa, type: 3}
+    volumeScale: 0.2
+  _menuSceneName: StartScreen
+  _menuMusic: {fileID: 8300000, guid: e6977ede6210ea845be29e3b8aff6b14, type: 3}
+  _gamePlaylist:
+  - {fileID: 8300000, guid: edcfe699388c48d43ae5d288b23601b0, type: 3}
+--- !u!4 &1896329522
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1896329520}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1901968544 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2180626964800172579, guid: 3116a5c3556d9a8498b377474f6bc56b, type: 3}
@@ -38399,3 +38502,4 @@ SceneRoots:
   - {fileID: 1689455512}
   - {fileID: 925533679}
   - {fileID: 303373955}
+  - {fileID: 1896329522}

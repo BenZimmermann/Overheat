@@ -153,6 +153,7 @@ public class ShootController : MonoBehaviour
         if (_currentAmmo <= 0) return;
         _currentAmmo--;
         ShootingSystem.Play();
+        SoundManager.Instance.PlaySound(SoundType.Shoot);
         _lastShootTime = Time.time;
 
         // Schaden pro IDamageable akkumulieren – nah treffen mehr Pellets = mehr Schaden
@@ -203,6 +204,7 @@ public class ShootController : MonoBehaviour
         if (_currentAmmo <= 0) return;
         _currentAmmo--;
         ShootingSystem.Play();
+        SoundManager.Instance.PlaySound(SoundType.Shoot);
         FireRay(GetGunDirection());
     }
 
@@ -279,6 +281,7 @@ public class ShootController : MonoBehaviour
 
     private IEnumerator ReloadCoroutine()
     {
+        SoundManager.Instance.PlaySound(SoundType.Reload);
         animator.SetTrigger("Reload");
         _isReloading = true;
         yield return new WaitForSeconds(CurrentReloadTime);

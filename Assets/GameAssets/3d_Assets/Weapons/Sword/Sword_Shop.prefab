@@ -1325,6 +1325,7 @@ GameObject:
   - component: {fileID: 7643398023265114491}
   - component: {fileID: 6057928658233655116}
   - component: {fileID: 5238334110575967602}
+  - component: {fileID: 3188758542821556296}
   m_Layer: 12
   m_Name: Description
   m_TagString: Untagged
@@ -1495,6 +1496,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 6057928658233655116}
   m_maskType: 0
+--- !u!114 &3188758542821556296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5016026584624465271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d44edbac18982234cab1d31d4b980355, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Billboard
+  _invertRotation: 0
 --- !u!1 &5511095706472410075
 GameObject:
   m_ObjectHideFlags: 0

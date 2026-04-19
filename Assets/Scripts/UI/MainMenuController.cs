@@ -68,24 +68,29 @@ public class MainMenuController : MonoBehaviour
     }
     public void StartGame()
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         HideStats();
         GameManager.Instance.StartGame();
     }
     public void OpenSettings()
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         HideStats();
         settingsController.OpenMenu(SettingsMenu); 
     }
     public void QuitGame()
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         GameManager.Instance.QuitGame();
     }
     public void GitHubButton()
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         Application.OpenURL("https://github.com/BenZimmermann");
     }
     public void Stats()
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         _statsVisible = !_statsVisible;
         //load the stats from the SaveManager and show them in the StatsMenu
 
@@ -105,10 +110,12 @@ public class MainMenuController : MonoBehaviour
     }
     public void CreditsBack()
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         fadein = true;
     }
     public void Credits()
     {
+        SoundManager.Instance.PlaySound(SoundType.UIClick);
         HideStats();
         // Credits-Text auf Startposition zurücksetzen
         CreditsText.transform.localPosition = _creditsStartPosition;

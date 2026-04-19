@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Shooter
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   enemyName: Shooter
-  moneyDropChance: 0.5
-  moneyDropAmount: 10
+  moneyDropChance: 0.75
+  moneyDropAmount: 50
   moneyObj: {fileID: 4045873163074478821, guid: d8016e98fd710af4594c663bdd069366, type: 3}
-  maxHealth: 50
-  headShotMultiplier: 1.5
+  maxHealth: 40
+  headShotMultiplier: 3
   moveSpeed: 10
   attackRange: 99
   repositionRange: 9

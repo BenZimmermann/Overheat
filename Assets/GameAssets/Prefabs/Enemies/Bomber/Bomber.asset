@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Bomber
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   enemyName: Bomber
-  moneyDropChance: 1
-  moneyDropAmount: 50
+  moneyDropChance: 0.5
+  moneyDropAmount: 15
   moneyObj: {fileID: 4045873163074478821, guid: d8016e98fd710af4594c663bdd069366, type: 3}
   maxHealth: 30
   headShotMultiplier: 2

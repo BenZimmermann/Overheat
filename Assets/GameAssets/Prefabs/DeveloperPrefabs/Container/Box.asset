@@ -18,10 +18,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 23
   health: 1
-  rewardChance: 75
+  rewardChance: 0.5
   rewardMoney: 25
   rewardhealth: 0.5
-  ItemDropChance: 0.3
+  ItemDropChance: 0
   ItemsToDrop: []
   fallDamageMultiplier: 1
   fallDamageThreshold: 5

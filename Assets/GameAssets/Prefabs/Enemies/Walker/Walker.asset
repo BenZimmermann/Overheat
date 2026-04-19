@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Walker
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   enemyName: walker
-  moneyDropChance: 10
-  moneyDropAmount: 10
+  moneyDropChance: 0.25
+  moneyDropAmount: 25
   moneyObj: {fileID: 4045873163074478821, guid: d8016e98fd710af4594c663bdd069366, type: 3}
   maxHealth: 30
   headShotMultiplier: 2
-  moveSpeed: 4
+  moveSpeed: 6
   attackRange: 1.25
   repositionRange: 0
   detectionRange: 100

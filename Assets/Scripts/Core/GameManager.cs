@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
         //reset game data so when you start a new game, you start fresh
         Data = new RuntimeGameData();
         //load the first level
-        SceneManager.LoadScene("TestScene");
+        SceneManager.LoadScene("Level_1");
         ResumeGame();
         StartRun();
     }

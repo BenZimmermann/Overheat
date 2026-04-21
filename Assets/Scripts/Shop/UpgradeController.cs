@@ -16,8 +16,6 @@ public class UpgradeController : MonoBehaviour, IDamageable, IShopEntry
     [SerializeField] private TMP_Text _UpgradeDescription;
     [SerializeField] private GameObject _Icon;
 
-
-
     public UpgradeData Data => _data;
 
     private void Start()
@@ -29,6 +27,7 @@ public class UpgradeController : MonoBehaviour, IDamageable, IShopEntry
         if (iconRenderer != null)
             iconRenderer.sprite = _data.upgradeIcon;
     }
+    //take damage = buy upgrade, checks for money and applies upgrade effects to player stats
     public void TakeDamage(float amount, string source)
     {
 
@@ -39,7 +38,7 @@ public class UpgradeController : MonoBehaviour, IDamageable, IShopEntry
             TryBuyUpgrade();
         }
     }
-
+    //trys to buy the upgrade, if player has enough money it applies the upgrade and destroys the gameobject, if not it resets health to 1 so player can try again
     private void TryBuyUpgrade()
     {
         if (_data == null) return;
@@ -48,22 +47,18 @@ public class UpgradeController : MonoBehaviour, IDamageable, IShopEntry
 
         if (Data == null)
         {
-            Debug.LogWarning("[UpgradeController] RuntimeGameData not found.");
             return;
         }
 
         if (Data.Money < _data.cost)
         {
-            Debug.Log($"[UpgradeController] Not enough money to buy '{_data.upgradeName}'. " +
-                      $"Cost: {_data.cost} | Money: {Data.Money}");
-
             _currentHealth = 1;
             return;
         }
 
         BuyUpgrade(Data);
     }
-
+    //buys the upgrade, applies the upgrade effects to player stats and destroys the gameobject
     private void BuyUpgrade(RuntimeGameData runtimeData)
     {
         runtimeData.Money -= _data.cost;
@@ -76,6 +71,9 @@ public class UpgradeController : MonoBehaviour, IDamageable, IShopEntry
 
         Destroy(gameObject);
     }
+    /// <summary>
+    /// all upgrade effects are applied here, it checks the upgrade type and applies the corresponding effect to player stats using the RuntimeGameData and PlayerHealth/PlayerController references
+    /// </summary>
     private void ApplyUpgrade(RuntimeGameData runtimeData)
     {
         PlayerHealth playerHealth = FindAnyObjectByType<PlayerHealth>();

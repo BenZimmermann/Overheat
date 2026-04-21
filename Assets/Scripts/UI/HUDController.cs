@@ -105,13 +105,7 @@ public class HUDController : MonoBehaviour
         TickCooldown();
     }
 
-    // -------------------------------------------------------------------------
-    // Cooldown
-    // -------------------------------------------------------------------------
-
-    /// <summary>
-    /// Startet den Cooldown-Indicator. Wird vom ItemController aufgerufen.
-    /// </summary>
+    #region Cooldown Indicator
     public void StartCooldown(float duration, ItemData item)
     {
         _cooldownTotal = duration;
@@ -124,7 +118,7 @@ public class HUDController : MonoBehaviour
     {
         if (_cooldownRemaining <= 0f) return;
 
-        // Item wurde gewechselt – Cooldown zurücksetzen
+        // reset item cooldown, wenn der Spieler das Item wechselt oder es ablegt
         if (GameManager.Instance.Data.CurrentItem != _trackedItem)
         {
             _cooldownRemaining = 0f;
@@ -145,12 +139,13 @@ public class HUDController : MonoBehaviour
             UpdateCooldownOverlay(_cooldownRemaining / _cooldownTotal);
         }
     }
-
+    //updates the cooldown overlay fill amount based on the remaining cooldown time, where 1 means fully on cooldown (overlay fully visible) and 0 means ready to use (overlay hidden).
     private void UpdateCooldownOverlay(float fill)
     {
         if (_cooldownOverlay == null) return;
         _cooldownOverlay.fillAmount = fill;
     }
+    #endregion
     void ApplySettings()
     {
         var data = SaveManager.Instance.Data;
@@ -160,6 +155,7 @@ public class HUDController : MonoBehaviour
         upgradesUI.SetActive(data.showUpgrades);
 
     }
+    //refreshes the stats in the hud
     private void RefreshStats()
     {
         var data = GameManager.Instance.Data;
@@ -173,6 +169,7 @@ public class HUDController : MonoBehaviour
         ShieldBar.value = data.PlayerShild;
         ShieldText.text = $"{data.PlayerShild} %";
     }
+    //refreshes the item icon in the hud
     private void RefreshItem(ItemData item)
     {
         if (Item == null) return;
@@ -184,7 +181,7 @@ public class HUDController : MonoBehaviour
             ? item.itemIcon
             : DefaultItemSprite;
 
-        // Item gewechselt – Cooldown resetten
+        // if the item has changed and is not the tracked item, reset cooldown
         if (item != _trackedItem)
         {
             _cooldownRemaining = 0f;
@@ -192,6 +189,7 @@ public class HUDController : MonoBehaviour
             UpdateCooldownOverlay(0f);
         }
     }
+    //refreshes the upgrade icons in the hud, should be called for each upgrade in the player's data when they are added or changed
     private void RefreshUpgrade(UpgradeData upgrade)
     {
         GameObject iconObj = Instantiate(_upgradeIconPrefab, UpgradeHolder.transform);
@@ -200,6 +198,7 @@ public class HUDController : MonoBehaviour
         if (iconImage != null)
             iconImage.sprite = upgrade.upgradeIcon;
     }
+    #region forrmating
     private string FormatUI(float amount)
     {
         if (amount >= 1000000f) return $"{amount / 1000000f:0.#}M";
@@ -213,7 +212,8 @@ public class HUDController : MonoBehaviour
         int seconds = Mathf.FloorToInt(time % 60f);
         return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
     }
-     void RefreshGameOver()
+    #endregion
+    void RefreshGameOver()
     {
         GameOverMenu.SetActive(true);
     }
@@ -233,26 +233,4 @@ public class HUDController : MonoBehaviour
         GameManager.Instance.StartGame();
     }
 
-
-
-
-    //private void UpdateHealth(float currentHealth, float maxHealth)
-    //{
-    //}
-    //private void UpdateShield(float currentShield, float maxShield)
-    //{
-    //}
-    //private void UpdateStats(string levelName, float time, int enemiesKilled, int money, int finalScore)
-    //{
-
-    //}
-    //private void UpdateUpgrades(List<string> upgrades)
-    //{
-    //}
-    //private void UpdateItem(string itemName)
-    //{
-    //}
-    //private void UpdateAmmo(int currentAmmo, int magazineSize, bool isReloading)
-    //{
-    //}
 }

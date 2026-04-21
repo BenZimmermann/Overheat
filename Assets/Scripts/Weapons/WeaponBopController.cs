@@ -20,7 +20,7 @@ public class WeaponBobController : MonoBehaviour
             virtualCamera = FindFirstObjectByType<CinemachineCamera>();
         _lastCamRot = CamRot();
     }
-
+    // updates the position and rotation of the weapon based on the camera's movement, creating a bobbing and tilting effect to enhance immersion.
     void LateUpdate()
     {
         if (virtualCamera == null) return;

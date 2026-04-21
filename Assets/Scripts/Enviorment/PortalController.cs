@@ -3,9 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class PortalController : MonoBehaviour
 {
-    [SerializeField, Tooltip("Only use when portals are linked inside one scene")]
+    [SerializeField]
     private bool _usePortalName;
-    [SerializeField, Tooltip("Only use when portals are linked inside one scene")]
+    [SerializeField]
     private GameObject _portalToTeleport;
     [SerializeField] private string _levelName;
     [SerializeField] private bool _isEndPortal;
@@ -35,18 +35,18 @@ public class PortalController : MonoBehaviour
             }
         }
     }
+    //teleports the player to the linked portal and orients them based on the exit direction, also plays a sound effect when teleporting
     private void TeleportPlayer(Transform playerTransform)
     {
         if (_portalToTeleport == null)
         {
-            Debug.LogWarning("Portal: kein Ziel-Portal gesetzt!");
             return;
         }
         SoundManager.Instance.Play3DSound(SoundType.PortalWarp, playerTransform.position);
         Vector3 directionVector = Vector3.zero;
         float yRotation = 0f;
 
-
+        // Determine the direction vector and rotation based on the exit direction
         switch (_exitDirection)
         {
             case PortalDirection.North:

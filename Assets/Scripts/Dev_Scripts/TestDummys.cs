@@ -1,6 +1,6 @@
 using UnityEngine;
 using TMPro;
-
+//this will be not used in the final game
 public class TestDummy : MonoBehaviour, IDamageable
 {
     [SerializeField] private TMP_Text damageText;

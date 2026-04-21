@@ -25,7 +25,7 @@ public class ItemShopController : MonoBehaviour, IDamageable, IShopEntry
         if (_currentHealth <= 0)
             TryBuyItem();
     }
-
+    // Tries to buy the item, if player has enough money it applies the item effects to player stats and destroys the gameobject, if not it resets health to 1 so player can try again
     private void TryBuyItem()
     {
         if (_data == null) return;
@@ -43,7 +43,7 @@ public class ItemShopController : MonoBehaviour, IDamageable, IShopEntry
 
         BuyItem(runtimeData);
     }
-
+    // Buys the item, applies the item effects to player stats and destroys the gameobject
     private void BuyItem(RuntimeGameData runtimeData)
     {
         runtimeData.Money -= _data.cost;

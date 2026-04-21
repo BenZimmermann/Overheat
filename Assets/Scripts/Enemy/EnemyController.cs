@@ -57,7 +57,7 @@ public class EnemyController : MonoBehaviour, IDamageable
         ExecuteState();
     }
 
-
+    //cases for state changes:
     private void UpdateState()
     {
         if (_state == EnemyState.Stunned) return;
@@ -83,7 +83,7 @@ public class EnemyController : MonoBehaviour, IDamageable
                 break;
         }
     }
-
+    //execute behavior based on state (movement, attack, animations)
     private void ExecuteState()
     {
         if (_state == EnemyState.Stunned) return;
@@ -98,7 +98,7 @@ public class EnemyController : MonoBehaviour, IDamageable
 
             case EnemyState.Chase:
                 _movement.ChasePlayer(_player.position);
-                // ANIMATION: Run (wenn bewegt), Idle (wenn stillsteht – Sniper)
+                // ANIMATION: Run, Idle
                 PlayAnim(_movement.IsMoving ? AnimRun : AnimIdle);
                 break;
 
@@ -106,8 +106,7 @@ public class EnemyController : MonoBehaviour, IDamageable
                 _movement.AttackMovement(_player.position);
                 FacePlayer();
                 TryAttack();
-                // ANIMATION: Attack wird in TryAttack getriggert
-                // ANIMATION: Run während AttackMovement (Ranged strafe)
+                // ANIMATION: Attack getriggert TryAttack 
                 if (_stats.enemyType == EnemyType.Ranged && _movement.IsMoving)
                     PlayAnim(AnimRun);
                 break;
@@ -121,7 +120,7 @@ public class EnemyController : MonoBehaviour, IDamageable
         }
     }
 
-
+    #region timers
     private void TickTimers()
     {
         if (_attackCooldown > 0f) _attackCooldown -= Time.fixedDeltaTime;
@@ -147,8 +146,8 @@ public class EnemyController : MonoBehaviour, IDamageable
             TriggerReposition();
         }
     }
-
-
+    #endregion
+    //try to attack player if in range and cooldown is over, behavior depends on enemy type (meele, ranged, bomber, sniper)
     private void TryAttack()
     {
         if (_attackCooldown > 0f) return;
@@ -164,25 +163,25 @@ public class EnemyController : MonoBehaviour, IDamageable
                 break;
 
             case EnemyType.Bomber:
-                // ANIMATION: Attack trigger (kurz bevor Explosion)
+                // ANIMATION: Attack trigger
                 PlayAnim(AnimAttack);
                 Explode();
                 break;
 
             case EnemyType.Ranged:
-                // ANIMATION: Attack trigger (Schuss-Animation)
+                // ANIMATION: Attack trigger
                 PlayAnim(AnimAttack);
                 _attack?.Fire();
                 break;
 
             case EnemyType.Sniper:
-                // ANIMATION: kein Attack-Trigger – Sniper hat keine Animations
+                //not finished yet
                 _attack?.Fire();
                 break;
         }
     }
 
-
+    // take damage, apply stun and slow effect, if health drops to 0 or below, die and drop money
     public void TakeDamage(float amount, string source)
     {
         SoundManager.Instance.Play3DSound(SoundType.DamageEnemy, transform.position);
@@ -196,7 +195,7 @@ public class EnemyController : MonoBehaviour, IDamageable
         if (_currentHealth <= 0f)
             Die();
     }
-
+    // headshot takes more damage and triggers reposition
     public void TakeHeadshotDamage(float amount, string source)
         => TakeDamage(amount * _stats.headShotMultiplier, source);
 
@@ -205,6 +204,7 @@ public class EnemyController : MonoBehaviour, IDamageable
 
 
     public void TriggerReposition() => TriggerReposition(GetRepositionPoint());
+    // set a new random reposition target and switch to reposition state, used for ranged enemies to keep distance and avoid being predictable, also triggered when they shoot
     public void TriggerReposition(Vector3 target)
     {
         _movement.SetRepositionTarget(target);
@@ -212,7 +212,7 @@ public class EnemyController : MonoBehaviour, IDamageable
     }
 
     public void NotifyShotFired() => TriggerReposition();
-
+    //calculate a random point around the enemy to reposition
     private Vector3 GetRepositionPoint()
     {
         Vector3 toPlayer = (_player.position - transform.position).normalized;
@@ -238,30 +238,31 @@ public class EnemyController : MonoBehaviour, IDamageable
             Quaternion.LookRotation(dir),
             20f * Time.fixedDeltaTime);
     }
-
+    // play animation based on hash, checks if animator is assigned to avoid errors
     private void PlayAnim(int hash)
     {
         if (_animator == null) return;
         _animator.SetTrigger(hash);
     }
-
+    //only for bomber enemy: play explosion effect, deal damage in an area around it, then die
     private void Explode()
     {
         if (_explosionEffect != null)
         {
+            //instanciate explosion effect and play all particle systems, then destroy the effect after 3 seconds to clean up
             GameObject fx = Instantiate(_explosionEffect, transform.position, Quaternion.identity);
             foreach (ParticleSystem ps in fx.GetComponentsInChildren<ParticleSystem>())
                 ps.Play();
             Destroy(fx, 3f);
         }
-
+        //damages all damageable objects in a radius around the enemy, using OverlapSphere to find colliders and applying damage to any IDamageable components found in their parents
         Collider[] hits = Physics.OverlapSphere(transform.position, _stats.attackRange * 1.5f);
         foreach (Collider col in hits)
             col.GetComponentInParent<IDamageable>()?.TakeDamage(_stats.damage, gameObject.name);
 
         Die();
     }
-
+    //kills the enemy, plays death sound, notifies the room, increments kill count, drops money and destroys the game object
     private void Die()
     {
         SoundManager.Instance.Play3DSound(SoundType.EnemyDeath, transform.position);
@@ -270,7 +271,7 @@ public class EnemyController : MonoBehaviour, IDamageable
         DropMoney();
         Destroy(gameObject);
     }
-
+    //handles dropping money on death, chance and amount based on stats, instantiates money objects and applies random force and torque to them for a natural scatter effect
     private void DropMoney()
     {
         if (Random.value > _stats.moneyDropChance) return;

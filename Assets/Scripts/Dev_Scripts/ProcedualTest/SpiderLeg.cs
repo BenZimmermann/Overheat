@@ -1,22 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-/// <summary>
-/// Steuert einen einzelnen Spinnenbein-IK-Target.
-/// Auf das IK-Target-GameObject jedes Beins legen.
-///
-/// SCHRITT-REGEL (garantiert kein Nachbar gleichzeitig in der Luft):
-///   Jedes Bein kennt seine "blockingLegs" – alle Beine die NICHT gleichzeitig
-///   schreiten dürfen. Ein Bein wartet, bis ALLE blockingLegs am Boden sind.
-///
-///   Zuweisung im SpiderController:
-///     FL blockiert: FR, BL        (linke Seite + vordere Reihe)
-///     FR blockiert: FL, BR        (rechte Seite + vordere Reihe)
-///     BL blockiert: BR, FL        (linke Seite + hintere Reihe)
-///     BR blockiert: BL, FR        (rechte Seite + hintere Reihe)
-///
-///   Erlaubte gleichzeitige Schritte: nur FL+BR oder FR+BL (echtes Überkreuz).
-/// </summary>
+
+// this script was made by using claude code
 public class SpiderLeg : MonoBehaviour
 {
     [Header("Schritt-Einstellungen")]
@@ -35,7 +21,7 @@ public class SpiderLeg : MonoBehaviour
     [Tooltip("Vorausversatz in Laufrichtung beim Schritt.")]
     public float stepOvershoot = 0.15f;
 
-    // ── Vom Controller gesetzt ────────────────────────────────────────────────
+    //---
     [HideInInspector] public Transform bodyTransform;
     [HideInInspector] public Vector3 bodyVelocity;
 
@@ -45,7 +31,7 @@ public class SpiderLeg : MonoBehaviour
     /// </summary>
     [HideInInspector] public List<SpiderLeg> blockingLegs = new List<SpiderLeg>();
 
-    // ── Zustand ───────────────────────────────────────────────────────────────
+    //---
     private Vector3 _currentGroundPos;
     private Vector3 _targetGroundPos;
     private Vector3 _stepStartPos;
@@ -56,7 +42,7 @@ public class SpiderLeg : MonoBehaviour
     public bool IsStepping => _isStepping;
     public Vector3 CurrentIKPos => transform.position;
 
-    // ─────────────────────────────────────────────────────────────────────────
+    //---
 
     public void Initialize()
     {
@@ -85,7 +71,7 @@ public class SpiderLeg : MonoBehaviour
             transform.position = _currentGroundPos;
     }
 
-    // ── Schritt-Check ─────────────────────────────────────────────────────────
+    //---
     void CheckForStep()
     {
         // Kein Schritt solange ein blockierendes Nachbarbein in der Luft ist
@@ -103,7 +89,7 @@ public class SpiderLeg : MonoBehaviour
         _isStepping = true;
     }
 
-    // ── Schritt-Animation ─────────────────────────────────────────────────────
+    //---
     void AnimateStep()
     {
         _stepProgress += Time.deltaTime * stepSpeed;
@@ -120,7 +106,7 @@ public class SpiderLeg : MonoBehaviour
         }
     }
 
-    // ── Hilfsmethoden ─────────────────────────────────────────────────────────
+    //---
 
     Vector3 GetRestWorldPos()
     {
@@ -143,7 +129,7 @@ public class SpiderLeg : MonoBehaviour
         return false;
     }
 
-    // ── Gizmos ────────────────────────────────────────────────────────────────
+    #region Gizmos
     void OnDrawGizmos()
     {
         if (bodyTransform != null)
@@ -169,4 +155,5 @@ public class SpiderLeg : MonoBehaviour
             Gizmos.DrawLine(transform.position, _targetGroundPos);
         }
     }
+    #endregion
 }

@@ -1,32 +1,17 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-/// <summary>
-/// Hauptskript der prozeduralen Spinnen-Animation.
-/// Auf den Körper der Spinne legen.
-///
-/// BLOCKING-REGELN (wer darf NICHT gleichzeitig schreiten):
-///
-///   FL blockiert: FR, BL   → FL darf nur schreiten wenn FR und BL am Boden sind
-///   FR blockiert: FL, BR   → FR darf nur schreiten wenn FL und BR am Boden sind
-///   BL blockiert: FL, BR   → BL darf nur schreiten wenn FL und BR am Boden sind
-///   BR blockiert: FR, BL   → BR darf nur schreiten wenn FR und BL am Boden sind
-///
-///   Erlaubt:   FL+BR gleichzeitig  ✓   FR+BL gleichzeitig  ✓
-///   Verboten:  FL+FR               ✗   BL+BR               ✗   FL+BL  ✗   FR+BR  ✗
-///
-///   Das sind genau die diagonalen Überkreuz-Paare einer Spinne.
-/// </summary>
+/// this script was made by using claude code
 public class SpiderController : MonoBehaviour
 {
-    // ── Beine ─────────────────────────────────────────────────────────────────
+    //---
     [Header("Beine (IK-Targets)")]
     public SpiderLeg legFrontLeft;
     public SpiderLeg legFrontRight;
     public SpiderLeg legBackLeft;
     public SpiderLeg legBackRight;
 
-    // ── Körper ────────────────────────────────────────────────────────────────
+    //---
     [Header("Körper")]
     [Tooltip("Mesh-Transform des Körpers (für Bob und Tilt)")]
     public Transform bodyMesh;
@@ -42,7 +27,7 @@ public class SpiderController : MonoBehaviour
     public float groundAlignSpeed = 5f;
     public float bodyHeightOffset = 0.4f;
 
-    // ── Privat ────────────────────────────────────────────────────────────────
+    //---
     private List<SpiderLeg> _allLegs;
     private Vector3 _velocity;
     private Vector3 _lastPosition;
@@ -50,7 +35,7 @@ public class SpiderController : MonoBehaviour
     private float _currentRoll;
     private float _currentPitch;
 
-    // ─────────────────────────────────────────────────────────────────────────
+ 
     void Start()
     {
         _allLegs = new List<SpiderLeg>
@@ -60,11 +45,9 @@ public class SpiderController : MonoBehaviour
         foreach (var leg in _allLegs)
             if (leg != null) leg.bodyTransform = transform;
 
-        // ── Blocking-Regeln definieren ────────────────────────────────────────
+        //----
         //
         //  Erlaubt gleichzeitig:  FL+BR  und  FR+BL
-        //  → jedes Bein blockiert alle ausser seinem diagonalen Partner
-        //
         SetBlocking(legFrontLeft, legFrontRight, legBackLeft);   // FL wartet auf FR und BL
         SetBlocking(legFrontRight, legFrontLeft, legBackRight);  // FR wartet auf FL und BR
         SetBlocking(legBackLeft, legBackRight, legFrontLeft);  // BL wartet auf BR und FL
@@ -94,7 +77,7 @@ public class SpiderController : MonoBehaviour
             AlignBodyToGround();
     }
 
-    // ── Hilfsmethode: Blocking-Liste befüllen ──────────────────────────────────
+    //---
     static void SetBlocking(SpiderLeg leg, params SpiderLeg[] blockers)
     {
         if (leg == null) return;
@@ -103,7 +86,7 @@ public class SpiderController : MonoBehaviour
             if (b != null) leg.blockingLegs.Add(b);
     }
 
-    // ── Körper-Höhe ───────────────────────────────────────────────────────────
+    //---
     void UpdateBodyHeight()
     {
         if (bodyMesh == null) return;
@@ -121,7 +104,7 @@ public class SpiderController : MonoBehaviour
         bodyMesh.localPosition = p;
     }
 
-    // ── Körper-Bob ────────────────────────────────────────────────────────────
+    //---
     void UpdateBodyBob(float speed)
     {
         if (bodyMesh == null) return;
@@ -132,7 +115,7 @@ public class SpiderController : MonoBehaviour
         bodyMesh.localPosition = p;
     }
 
-    // ── Körper-Neigung ────────────────────────────────────────────────────────
+    //---
     void UpdateBodyTilt(float speed)
     {
         if (bodyMesh == null) return;
@@ -147,7 +130,7 @@ public class SpiderController : MonoBehaviour
             Time.deltaTime * bodyTiltSmoothing);
     }
 
-    // ── Boden-Ausrichtung ─────────────────────────────────────────────────────
+    //---
     void AlignBodyToGround()
     {
         if (legFrontLeft == null || legFrontRight == null ||
@@ -166,7 +149,7 @@ public class SpiderController : MonoBehaviour
             Time.deltaTime * groundAlignSpeed);
     }
 
-    // ── Gizmos ────────────────────────────────────────────────────────────────
+    #region Gizmos
     void OnDrawGizmos()
     {
         if (!Application.isPlaying || _allLegs == null) return;
@@ -182,4 +165,5 @@ public class SpiderController : MonoBehaviour
         Gizmos.color = c;
         Gizmos.DrawLine(a.CurrentIKPos, b.CurrentIKPos);
     }
+    #endregion
 }

@@ -1,6 +1,11 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+/// <summary>
+/// only exists during a run, holds all the data that is relevant for the current run, 
+/// like player stats, upgrades, current level, etc. It also has events that can be subscribed to for when data changes, 
+/// so that the UI can update accordingly.
+/// </summary>
 public class RuntimeGameData
 {
     public event System.Action OnDataChanged;

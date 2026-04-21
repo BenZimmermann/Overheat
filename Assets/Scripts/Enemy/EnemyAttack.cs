@@ -56,7 +56,7 @@ public class EnemyAttack : MonoBehaviour
         TickWindup();
         UpdateIndicator();
     }
-
+    
     public void Fire()
     {
         if (_stats == null || _player == null) return;
@@ -74,7 +74,7 @@ public class EnemyAttack : MonoBehaviour
                 break;
         }
     }
-
+    #region Windup
     private void StartWindup()
     {
         _isWindingUp = true;
@@ -103,26 +103,26 @@ public class EnemyAttack : MonoBehaviour
             _controller.NotifyShotFired();
         }
     }
+    #endregion
     private void UpdateIndicator()
     {
         if (_bulletIndicator == null || !_bulletIndicator.enabled || _firePoint == null || _player == null) return;
-
+        // Calculate the direction from the fire point to the player and determine the end point of the indicator based on raycast hits or max range
         Vector3 dir = (_player.position - _firePoint.position).normalized;
         Vector3 endPoint = _firePoint.position + dir * _range;
 
 
         if (Physics.Raycast(_firePoint.position, dir, out RaycastHit hit, _range, _hitMask))
             endPoint = hit.point;
-
+        // Update the LineRenderer positions to draw the bullet indicator from the fire point to the hit point or max range
         _bulletIndicator.SetPosition(0, _firePoint.position);
         _bulletIndicator.SetPosition(1, endPoint);
     }
-
+    // This method handles the shooting logic for both ranged and sniper enemies, including raycasting to detect hits, playing muzzle flash and impact effects, and applying damage to hit targets.
     private void ShootRaycast(Vector3 targetPos)
     {
         if (_firePoint == null)
         {
-            Debug.LogWarning($"[EnemyAttack] {name} hat keinen FirePoint.");
             return;
         }
 
@@ -130,7 +130,7 @@ public class EnemyAttack : MonoBehaviour
             _muzzleFlash.Play();
 
         Vector3 dir = (targetPos - _firePoint.position).normalized;
-
+        // Perform raycast to detect hits
         bool didHit = Physics.Raycast(_firePoint.position, dir, out RaycastHit hit, _range, _hitMask);
         Vector3 endPoint = didHit ? hit.point : _firePoint.position + dir * _range;
 
@@ -139,19 +139,19 @@ public class EnemyAttack : MonoBehaviour
             TrailRenderer trail = Instantiate(_bulletTrail, _firePoint.position, Quaternion.identity);
             StartCoroutine(MoveTrail(trail, endPoint));
         }
-
+        //debug ray to visualize the shot in the editor
         Debug.DrawRay(_firePoint.position, dir * _range, Color.red, 0.5f);
 
         if (!didHit) return;
 
         if (_impactParticle != null)
             Instantiate(_impactParticle, hit.point, Quaternion.LookRotation(hit.normal));
-
+        // Check if the hit object has an IDamageable component and apply damage
         IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
         target?.TakeDamage(_stats.damage, gameObject.name);
     }
 
-
+    //moves the bullet trail from the fire point to the hit point over time, creating a visual effect of the bullet traveling through space.
     private IEnumerator MoveTrail(TrailRenderer trail, Vector3 endPoint)
     {
         float time = 0f;

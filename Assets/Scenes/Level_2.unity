@@ -13572,6 +13572,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2422479538312584993, guid: 79e211cbf60ffd041b78e0dc1940e15f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2422479538312584993, guid: 79e211cbf60ffd041b78e0dc1940e15f, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5853675955606793376, guid: 79e211cbf60ffd041b78e0dc1940e15f, type: 3}
       propertyPath: m_Name
       value: _portal

@@ -25,16 +25,16 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             data.PlayerShild = (int)_maxShield;
     }
 
-
+    // damages the player, applies shield and health damage, and checks for death
     public void TakeDamage(float amount, string source)
     {
         var data = GameManager.Instance.Data;
         if (data.MagneticFieldActive) return;
-
+        // Apply damage reduction from lifesteal before applying damage
         amount = ApplyDamageReduction(amount, data);
         SoundManager.Instance.PlaySound(SoundType.DamagePlayer);
         StartCoroutine(HurtEffect());
-
+        //shield absorbs damage first, then health takes bleed-through damage, if shield is depleted then health takes full damage
         if (data.PlayerShild > 0)
         {
             float shieldDamage = amount * _shieldDamageMultiplier;
@@ -54,7 +54,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             Die();
     }
 
-
+    // Applies damage reduction based on lifesteal percentage, with a 20% chance to trigger
     private float ApplyDamageReduction(float amount, RuntimeGameData data)
     {
         if (data.LifestealPercent <= 0f) return amount;
@@ -65,6 +65,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         float reduced = amount * (1f - data.LifestealPercent);
         return reduced;
     }
+    // handles player death, plays sound, saves stats, and triggers game over
     public void Die()
     {
         SoundManager.Instance.PlaySound(SoundType.PlayerDeath);
@@ -72,13 +73,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         SaveManager.Instance.SaveStats();
         GameManager.Instance.GameOver();
     }
-
+    //heals the player
     public void Heal(float amount)
     {
         var data = GameManager.Instance.Data;
         data.PlayerHealth = (int)Mathf.Min(_maxHealth, data.PlayerHealth + amount);
     }
-
+    
     public void AddShield(float amount)
     {
         var data = GameManager.Instance.Data;
@@ -110,7 +111,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         GameManager.Instance.Data.LifestealPercent += percent;
     }
-    //change to a fixedupdate
+    //effect
     private IEnumerator HurtEffect()
     {
         _fullScreenDamage.SetActive(true);

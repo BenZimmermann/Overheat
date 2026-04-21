@@ -24,6 +24,7 @@ public class SaveManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         LoadSettings();
     }
+    // This method saves the player's stats at the end of a run, comparing current run data with saved data and updating if the current run has better stats. It then writes the updated data to a JSON file.
     public void SaveStats()
     {
         var run = GameManager.Instance.Data;
@@ -37,6 +38,7 @@ public class SaveManager : MonoBehaviour
         File.WriteAllText(SavePath, json);
         Debug.Log("Stats saved.");
     }
+    // This method is similar to SaveStats but is specifically called at the end of a game, ensuring that the final stats are saved. It updates the saved data with the current run's stats if they are better and writes it to a JSON file.
     public void SaveStatsFinishGame()
         {
         var run = GameManager.Instance.Data;

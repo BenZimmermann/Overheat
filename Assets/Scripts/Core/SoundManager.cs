@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// this script is responsible for managing all sound effects and music in the game. It uses a singleton pattern to allow easy access from other scripts. It handles playing UI sounds, 
+/// 3D sound effects, and background music based on the current scene. It also allows for volume control and ensures that music transitions smoothly when changing scenes.
+/// </summary>
 public enum SoundType
 {
     UIClick,
@@ -23,6 +27,7 @@ public enum SoundType
     Footstep
 }
 [System.Serializable]
+// This struct represents a sound effect, containing its name, audio clip, and volume scale for adjusting the sound's loudness when played.
 public struct SoundEffect
 {
     public string name; 
@@ -76,6 +81,7 @@ public class SoundManager : MonoBehaviour
             }
         }
     }
+    //checks the name of the loaded scene and decides whether to play the menu music or continue playing game tracks based on the current track index.
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == _menuSceneName)
@@ -88,6 +94,7 @@ public class SoundManager : MonoBehaviour
                 PlayNextGameTrack();
         }
     }
+    
     private void PlayMenuMusic()
     {
         _currentGameTrackIndex = -1;
@@ -107,7 +114,7 @@ public class SoundManager : MonoBehaviour
         _musicSource.loop = false;
         _musicSource.Play();
     }
-
+    //music playback, if the slider value is very low, it pauses the music, otherwise it unpauses it if it's not already playing and has a clip assigned.
     public void UpdateMusicStatus(float sliderValue)
     {
         if (sliderValue <= 0.001f)
@@ -119,9 +126,11 @@ public class SoundManager : MonoBehaviour
             if (!_musicSource.isPlaying && _musicSource.clip != null) _musicSource.UnPause();
         }
     }
+    //plays a 2D sound effect.
     public void PlaySound(SoundType type, float globalVolume = 1f)
     {
         int index = (int)type;
+        // Check if the index is within bounds and the clip is assigned before attempting to play the sound
         if (index < _sfxEffects.Length && _sfxEffects[index].clip != null)
         {
          
@@ -129,7 +138,7 @@ public class SoundManager : MonoBehaviour
             _uiSource.PlayOneShot(_sfxEffects[index].clip, finalVolume);
         }
     }
-
+    //plays 3D sound effects at a specific position in the game world, creating a temporary GameObject with an AudioSource component to play the sound and then destroying it after the clip finishes playing.
     public void Play3DSound(SoundType type, Vector3 position, float globalVolume = 1f)
     {
         int index = (int)type;
@@ -139,6 +148,7 @@ public class SoundManager : MonoBehaviour
         temp.transform.position = position;
         AudioSource s = temp.AddComponent<AudioSource>();
 
+        // Configure the AudioSource for 3D sound
         s.clip = _sfxEffects[index].clip;
         s.outputAudioMixerGroup = _sfxGroup;
         s.spatialBlend = 1f;

@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// modular damage script for environmental hazards like spikes, fire, acid, etc. It can be set to apply damage on collision or trigger, 
+/// and can optionally apply damage over time. The damage type can be specified by name for use in damage calculations or effects.
+/// </summary>
 public class EnviormentDamage : MonoBehaviour
 {
     // later SOs
@@ -39,7 +42,7 @@ public class EnviormentDamage : MonoBehaviour
         if (!_useTrigger) return;
         ClearTarget();
     }
-
+    // Checks if the target can be damaged based on layer and if it has an IDamageable component, then applies damage immediately or starts damage over time.
     private void TryApplyDamage(GameObject target)
     {
         if ((_canDamage.value & (1 << target.layer)) == 0) return;

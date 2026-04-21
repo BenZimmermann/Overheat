@@ -18,7 +18,7 @@ public class WeaponShopController : MonoBehaviour, IDamageable, IShopEntry
         _weaponPivot = GameObject.FindGameObjectWithTag("weaponPivot")?.transform;
         _itemName.text = _data.weaponName.ToString();
     }
-
+    //same as upgrade controller but for weapons, takes damage to buy weapon, checks for money, applies weapon to player and destroys shop object
     public void TakeDamage(float amount, string source)
     {
         _currentHealth -= amount;
@@ -26,7 +26,7 @@ public class WeaponShopController : MonoBehaviour, IDamageable, IShopEntry
         if (_currentHealth <= 0)
             TryBuyWeapon();
     }
-
+    //same as upgrade controller but for weapons
     private void TryBuyWeapon()
     {
         if (_data == null) return;
@@ -54,7 +54,7 @@ public class WeaponShopController : MonoBehaviour, IDamageable, IShopEntry
         SwitchWeapon(_data);
         Destroy(gameObject);
     }
-
+    //switches the weapon model in the player's hand to the new weapon, assumes the weapon pivot is set up correctly and that the weapon prefab has the correct position and rotation
     private void SwitchWeapon(WeaponData currentData)
     {
         if (_data?.WeaponObj == null) return;
@@ -68,7 +68,7 @@ public class WeaponShopController : MonoBehaviour, IDamageable, IShopEntry
 
         if (_weaponPivot.childCount > 0)
             Destroy(_weaponPivot.GetChild(0).gameObject);
-
+        // Instantiate the new weapon as a child of the weapon pivot
         GameObject newWeapon = Instantiate(_data.WeaponObj, _weaponPivot);
         newWeapon.transform.localPosition = _data.WeaponObj.transform.localPosition;
         newWeapon.transform.localRotation = _data.WeaponObj.transform.localRotation;

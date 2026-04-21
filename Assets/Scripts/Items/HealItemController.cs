@@ -23,13 +23,13 @@ public class HealthItemController : MonoBehaviour
 
         _spawnTime = Time.time;
     }
-
+    // This method is called at fixed intervals and handles the attraction of the health item towards the player and its collection when close enough.
     private void FixedUpdate()
     {
         if (_player == null) return;
 
         if (Time.time - _spawnTime < _pickupDelay) return;
-
+        // Check distance to player
         float distance = Vector3.Distance(transform.position, _player.position);
 
         if (distance <= AttractRadius)
@@ -42,7 +42,7 @@ public class HealthItemController : MonoBehaviour
             _rb.linearVelocity = Vector3.zero;
             _rb.angularVelocity = Vector3.zero;
 
-   
+            // Move towards the player
             Vector3 direction = (_player.position - transform.position).normalized;
             float moveSpeed = 10f; 
             _rb.MovePosition(transform.position + direction * moveSpeed * Time.fixedDeltaTime);
@@ -53,12 +53,13 @@ public class HealthItemController : MonoBehaviour
             }
         }
     }
-
+    // This method handles the collection of the health item by the player.
     private void Collect()
     {
         PlayerHealth health = _player.GetComponent<PlayerHealth>();
         if (health != null)
         {
+            // Heal the player
             health.Heal(_healAmount); 
             SoundManager.Instance.Play3DSound(SoundType.UseItem, transform.position);
             Destroy(gameObject);

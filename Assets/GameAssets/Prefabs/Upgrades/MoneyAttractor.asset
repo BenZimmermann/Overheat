@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   upgradeName: Money Attractor
   id: 1
-  upgradeDescription: Attrack money further
+  upgradeDescription: attracts more money
   upgradeIcon: {fileID: -1984531063, guid: ff71a0b0363c1304ab827c4240fbc101, type: 3}
   UpgradeObj: {fileID: 4588607063662546363, guid: de633b99404314e4d88aca870354880a, type: 3}
   cost: 1000

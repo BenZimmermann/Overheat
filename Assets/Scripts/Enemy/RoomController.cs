@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// -beinhaltet navmesh surface
-/// -beinhaltet nur die logik für roomcontroller
-/// -roomcontroller bekommt bescheid von RoomTrigger GetComponentInParent
+/// use navmesh surface
+/// gets activated by RoomTrigger, spawns waves of enemies, and opens exit doors when all waves are cleared. It also handles replayability if enabled.
 /// </summary>
 #region Serializable
 [System.Serializable]
@@ -50,7 +49,7 @@ public class RoomController : MonoBehaviour
 
         StartWave();
     }
-
+    //starts the current wave of enemies. If all waves have been completed, it opens the exit doors.
     private void StartWave()
     {
         if(_currentWave >=  _waves.Count)
@@ -60,6 +59,7 @@ public class RoomController : MonoBehaviour
         }
         SpawnWave(_waves[_currentWave]);
     }
+    //spawns enemies based on the provided wave data, and adds them to the list of alive enemies.
     private void SpawnWave(Wave wave)
     {
         foreach (var spawn in wave.spawns)
@@ -82,6 +82,7 @@ public class RoomController : MonoBehaviour
             }
         }
     }
+    //called by enemies when they die, removes the enemy from the list of alive enemies and checks if the wave is cleared.
     public void OnEnemyDied(EnemyController enemy)
     {
         _aliveEnemies.Remove(enemy);
@@ -92,7 +93,7 @@ public class RoomController : MonoBehaviour
             StartWave();
         }
     }
-
+    #region door control
     private void CloseEntryDoors()
     {
         foreach (GameObject door in _entryDoors)
@@ -108,4 +109,5 @@ public class RoomController : MonoBehaviour
         foreach (GameObject door in _exitDoors)
             door?.SetActive(false);
     }
+    #endregion
 }

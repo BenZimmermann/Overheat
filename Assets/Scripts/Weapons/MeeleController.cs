@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+/// <summary>
+/// similar as the shoot controller, but for melee weapons. It checks for input, and if the attack button is pressed and the cooldown has passed, 
+/// it performs an overlap sphere check to find damageable targets within range, applies damage to them, and plays impact effects. 
+/// It also has a gizmo to visualize the attack radius when attacking.
+/// </summary>
 public class MeleeController : MonoBehaviour
 {
     [SerializeField] private WeaponData Wdata;

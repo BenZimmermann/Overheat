@@ -45,7 +45,7 @@ public class SettingsController : MonoBehaviour
         UpdateMenuSettings();
         ShowMenu(targetMenu, true);
     }
-
+    //shows the menu and adds the current menu to the stack if addToStack is true. If addToStack is false, it simply shows the new menu without adding the current one to the stack.
     private void ShowMenu(GameObject targetMenu, bool addToStack)
     {
         if (targetMenu == null || targetMenu == _currentMenu) return;
@@ -63,7 +63,7 @@ public class SettingsController : MonoBehaviour
         SoundManager.Instance.PlaySound(SoundType.UIClick);
         _currentMenu.SetActive(true);
     }
-
+    // Pops the last menu from the stack and shows it. If the stack is empty, it does nothing.
     public void Back()
     {
         if (_menuStack.Count > 0)
@@ -75,9 +75,9 @@ public class SettingsController : MonoBehaviour
             _currentMenu = _menuStack.Pop();
             _currentMenu.SetActive(true);
         }
-        //testing
         SoundManager.Instance.PlaySound(SoundType.UIClick);
     }
+    //updates the settings to match the current values in the SaveData.
     private void UpdateMenuSettings()
     {
         var data = SaveManager.Instance.Data;
@@ -94,6 +94,7 @@ public class SettingsController : MonoBehaviour
         hideUpgrades.isOn = data.showUpgrades;
         hideStats.isOn = data.showStats;
     }
+    #region Sounds
     public void SetMasterVolume(Slider caller)
     {
         SoundManager.Instance.PlaySound(SoundType.UIClick);
@@ -111,7 +112,8 @@ public class SettingsController : MonoBehaviour
         SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.SetSFXVolume(caller);
     }
-
+    #endregion
+    #region Mouse
     public void SetSensitivity(Slider caller)
     {
         SoundManager.Instance.PlaySound(SoundType.UIClick);
@@ -129,7 +131,8 @@ public class SettingsController : MonoBehaviour
         SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.ToggleInvertY(value);
     }
-
+    #endregion
+    #region UI
     public void ToggleShowUpgrades(Toggle value)
     {
         SoundManager.Instance.PlaySound(SoundType.UIClick);
@@ -145,5 +148,6 @@ public class SettingsController : MonoBehaviour
         SoundManager.Instance.PlaySound(SoundType.UIClick);
         SettingsManager.Instance.ToggleShowHealth(value);
     }
+    #endregion
 }
 

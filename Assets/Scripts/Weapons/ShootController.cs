@@ -3,7 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
-//[RequireComponent(typeof(Animator))]
+/// <summary>
+/// uses raycasts to detect hits and apply damage, spawns bullet trails and impact particles, 
+/// and manages ammo and reloading. It also supports different firing modes like salve and shotgun. 
+/// Input is handled via the new Input System.
+/// </summary>
 public class ShootController : MonoBehaviour
 {
     [SerializeField] private WeaponData Wdata;

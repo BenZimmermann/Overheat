@@ -26,7 +26,10 @@ public class CollectableController : MonoBehaviour, ICollectable
         if (_trail != null)
             _trail.positionCount = 0;
     }
-
+    /// <summary>
+    /// update method that handles the attraction of the collectable towards the player and its collection when close enough, 
+    /// also updates the trail renderer to create a visual effect of the collectable being attracted to the player
+    /// </summary>
     private void FixedUpdate()
     {
         if (_player == null) return;
@@ -63,6 +66,7 @@ public class CollectableController : MonoBehaviour, ICollectable
         _trail.SetPosition(0, transform.position);
         _trail.SetPosition(1, _player.position);
     }
+    // method that handles the collection of the collectable, plays a sound effect, adds the value of the collectable to the player's money, and destroys the collectable object
     public void Collect(float amount)
     {
         SoundManager.Instance.Play3DSound(SoundType.CollectMoney, transform.position);

@@ -1,11 +1,11 @@
 using TMPro;
 using UnityEngine;
-
+// This script is for testing purposes only, it represents a simple enemy that can take damage
+//this will be not used in the final game
 public class TestEnemy : MonoBehaviour, IDamageable
 {
     [SerializeField] private TMP_Text HealthText;
     [SerializeField] private float MaxHealth = 50f;
-    //this will be part of the enemy base class later on, but for testing purposes, it's here for now
     private float _currentHealth;
     private void Start()
     {

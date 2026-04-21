@@ -1,6 +1,8 @@
 using UnityEngine;
 
-
+/// <summary>
+/// collection of all interfaces
+/// </summary>
 public interface IDamageable
 {
     void TakeDamage(float amount, string Source);

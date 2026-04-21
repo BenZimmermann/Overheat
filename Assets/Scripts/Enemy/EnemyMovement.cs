@@ -2,9 +2,7 @@
 using UnityEngine.AI;
 
 /// <summary>
-/// todo:
-/// dash funktoinert nicht, da agent gestoppt wird und dann nicht mehr weiterbewegt werden kann. Lösung: während Dash Agent deaktivieren, danach wieder aktivieren und Ziel neu setzen.
-/// der retreat vom ranged sollte immer einen punkt finden der vor dem player ligt, sodass der ranged nicht am player vorbeiläuft. Aktuell könnte er sich hinter dem player positionieren, wenn der player sich bewegt.
+/// handles the movement for all enemy types, including pathfinding, dashing, strafing, and separation from other enemies. It also handles rotation and stuck detection to ensure smooth navigation.
 /// </summary>
 public class EnemyMovement : MonoBehaviour
 {
@@ -39,7 +37,7 @@ public class EnemyMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
 
         if (_agent == null) return;
-
+        // Configure NavMeshAgent based on stats
         _agent.speed = stats.moveSpeed;
         _agent.angularSpeed = 0f;
         _agent.acceleration = stats.moveSpeed * 20f;
@@ -66,7 +64,9 @@ public class EnemyMovement : MonoBehaviour
 
 
     public void Wander() => Stop();
-
+    /// <summary>
+    /// case use for all types, but with different logic:
+    /// </summary>
     public void ChasePlayer(Vector3 playerPos)
     {
         if (_stats == null) return;
@@ -78,7 +78,7 @@ public class EnemyMovement : MonoBehaviour
             case EnemyType.Bomber: ChaseBomber(playerPos); break;
         }
     }
-
+    // attack movement is used when the enemy is in attack range, but may want to strafe or reposition (especially for ranged types)
     public void AttackMovement(Vector3 playerPos)
     {
         switch (_stats.enemyType)
@@ -102,7 +102,9 @@ public class EnemyMovement : MonoBehaviour
     public void SetSpeed(float s) { if (_agent != null) _agent.speed = s; }
     public void ResetSpeed() { if (_agent != null && _stats != null) _agent.speed = _stats.moveSpeed; }
 
-
+    /// <summary>
+    /// Handles the movement logic for melee enemies, including dashing towards the player when within a certain range.
+    /// </summary>
     private void ChaseMelee(Vector3 playerPos)
     {
         float dist = Vector3.Distance(transform.position, playerPos);
@@ -120,8 +122,8 @@ public class EnemyMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Ranged: immer in Bewegung, hält Abstand, strafe seitwärts.
-    /// Weicht zurück wenn Player zu nah, kommt näher wenn zu weit.
+    /// ranged: constantly moving, maintains distance, strafes sideways.
+    /// if the player is within a comfortable range, it strafes around them to make itself a harder target, while still facing them to attack.
     /// </summary>
     private void ChaseRanged(Vector3 playerPos)
     {
@@ -132,22 +134,22 @@ public class EnemyMovement : MonoBehaviour
 
         if (dist < _stats.retreatDist)
         {
-            // Seitlich + rückwärts ausweichen
+            // dodge backwards + laterally to make it harder for the player to hit them, while still maintaining some movement to avoid being a stationary target
             Vector3 escape = (-toPlayer + lateral * 0.8f).normalized * _stats.preferredDist;
             SetDest(transform.position + escape);
         }
         else if (dist > _stats.preferredDist + 2f)
         {
-            // Näherkommen – leicht seitlich versetzt
+            //closer – slightly laterally offset to avoid being a direct target
             SetDest(playerPos + lateral * 2f);
         }
         //else
         //{
-        //    // Komfortzone: dauerhaft strafe
+        //
         //    StrafeAround(playerPos);
         //}
     }
-
+    // siper: tries to maintain distance, but if the player gets too close, it will try to quickly reposition away and to the side, then resuming normal behavior
     private void ChaseSniper(Vector3 playerPos)
     {
         float dist = Vector3.Distance(transform.position, playerPos);
@@ -155,6 +157,7 @@ public class EnemyMovement : MonoBehaviour
 
         if (dist < _stats.sniperRetreatDist)
         {
+            // retreat quickly in a direction away from the player, with a random lateral offset to make it less predictable and harder to hit, then resume normal behavior
             _agent.speed = _stats.moveSpeed * _stats.sniperRetreatSpeed;
             Vector3 away = (transform.position - playerPos).normalized;
             Vector3 lateral = new Vector3(-away.z, 0f, away.x) * (Random.value > 0.5f ? 1f : -1f);
@@ -166,13 +169,13 @@ public class EnemyMovement : MonoBehaviour
             Stop();
         }
     }
-
+    // bomber: runs towards the player at high speed, ignoring separation, trying to get in melee range to explode. If it gets within a certain range, it will stop and detonate.
     private void ChaseBomber(Vector3 playerPos)
     {
         _agent.speed = _stats.moveSpeed * 1.5f;
         SetDest(playerPos + GetSeparationOffset());
     }
-
+    // used by ranged enemies when the player is within a comfortable range, strafes around them to make itself a harder target, while still facing them to attack.
     private void StrafeAround(Vector3 playerPos)
     {
         Vector3 toPlayer = (playerPos - transform.position).normalized;
@@ -183,7 +186,7 @@ public class EnemyMovement : MonoBehaviour
             SetDest(hit.position);
     }
 
-
+    #region dash
     private void DashFlat(Vector3 dir)
     {
         if (_rb == null || _agent == null) return;
@@ -196,7 +199,7 @@ public class EnemyMovement : MonoBehaviour
         _rb.linearVelocity = Vector3.zero;
         _rb.AddForce(new Vector3(dir.x, 0f, dir.z).normalized * _stats.dashForce, ForceMode.Impulse);
     }
-
+    
     public void TriggerCounterDash(Vector3 playerPos)
     {
         if (!CanDash) return;
@@ -204,7 +207,7 @@ public class EnemyMovement : MonoBehaviour
         DashFlat(dir.normalized);
         _dashCooldownTimer *= 0.5f;
     }
-
+    #endregion
     public void ApplyKnockback(Vector3 dir, float force)
     {
         if (_rb == null || _agent == null) return;
@@ -215,7 +218,7 @@ public class EnemyMovement : MonoBehaviour
         _rb.AddForce(new Vector3(dir.x, 0f, dir.z).normalized * force, ForceMode.Impulse);
     }
 
-
+    #region timers
     private void TickPhysics()
     {
         if (_physicsTimer <= 0f) return;
@@ -242,7 +245,8 @@ public class EnemyMovement : MonoBehaviour
             _strafeDir = Random.value > 0.5f ? 1f : -1f;
         }
     }
-
+    #endregion
+    // Handles the rotation of the enemy to face the direction of movement, with special handling for ranged and sniper types to always face the player.
     private void HandleRotation()
     {
         if (_stats != null && (_stats.enemyType == EnemyType.Ranged || _stats.enemyType == EnemyType.Sniper))
@@ -259,7 +263,7 @@ public class EnemyMovement : MonoBehaviour
             ? target
             : Quaternion.Slerp(transform.rotation, target, _rotationSpeed * Time.fixedDeltaTime);
     }
-
+    //looks at the player
     public void FacePlayer(Vector3 playerPos)
     {
         Vector3 dir = playerPos - transform.position;
@@ -274,7 +278,7 @@ public class EnemyMovement : MonoBehaviour
 
     private Vector3 _lastPos;
     private float _stuckTimer;
-
+    //checks if the enemy is stuck (not moving for a certain amount of time) and tries to get unstuck by moving in a random direction. This helps prevent enemies from getting permanently stuck on obstacles or terrain.
     private void CheckStuck()
     {
         if (!_agent.isOnNavMesh) return;
@@ -292,7 +296,7 @@ public class EnemyMovement : MonoBehaviour
             _agent.SetDestination(transform.position + new Vector3(Random.Range(-2f, 2f), 0f, Random.Range(-2f, 2f)));
         }
     }
-
+    #region separation
 
     private Vector3 GetSeparationOffset()
     {
@@ -323,4 +327,5 @@ public class EnemyMovement : MonoBehaviour
         _agent.isStopped = false;
         _agent.SetDestination(target);
     }
+    #endregion
 }

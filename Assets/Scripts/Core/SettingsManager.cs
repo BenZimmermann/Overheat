@@ -24,6 +24,7 @@ public class SettingsManager : MonoBehaviour
     {
         ApplySettings();
     }
+   
     public void ApplySettings()
     { 
         var data = SaveManager.Instance.Data;
@@ -49,6 +50,7 @@ public class SettingsManager : MonoBehaviour
             _audioMixer.SetFloat(parameterName, dB);
         }
     }
+    #region Sound Settings
     public void SetMasterVolume(Slider caller)
     {
         var data = SaveManager.Instance.Data;
@@ -82,7 +84,8 @@ public class SettingsManager : MonoBehaviour
         SaveManager.Instance.SaveSettings();
         OnSettingsChanged?.Invoke();
     }
-
+    #endregion
+    #region Mouse Settings
     public void SetMouseSensitivity(Slider caller)
     {
         SaveManager.Instance.Data.MouseSensitivity = caller.value;
@@ -106,7 +109,8 @@ public class SettingsManager : MonoBehaviour
         SaveManager.Instance.SaveSettings();
         OnSettingsChanged?.Invoke();
     }
-
+    #endregion
+    #region UI Settings
     public void ToggleShowUpgrades(Toggle value)
     {
         SaveManager.Instance.Data.showUpgrades = value.isOn;
@@ -125,5 +129,5 @@ public class SettingsManager : MonoBehaviour
         SaveManager.Instance.SaveSettings();
         OnSettingsChanged?.Invoke();
     }
-    //settings change event
+    #endregion
 }

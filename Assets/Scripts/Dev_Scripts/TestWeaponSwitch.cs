@@ -1,10 +1,8 @@
 using TMPro;
 using UnityEngine;
-
+//this will be not used in the final game
 public class TestWeaponSwitch : MonoBehaviour, IDamageable
 {
-    //toDo:
-    // - dont use Start() to find the weapon pivot
     [SerializeField] GameObject WeaponToSwitch;
     private Transform WeaponPivot;
 

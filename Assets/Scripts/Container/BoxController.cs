@@ -17,6 +17,7 @@ public class BoxController : MonoBehaviour, IDamageable
         //change later to a more dynamic solution
         Physics.IgnoreLayerCollision(8, 13);
     }
+    // Checks for collisions with the floor to apply fall damage and with players or enemies to apply hit damage.
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == CData.floorMask)
@@ -35,6 +36,7 @@ public class BoxController : MonoBehaviour, IDamageable
             CData.hitParticles.Play();
         }
     }
+    //physic
     private void FixedUpdate()
     {
         FallDamage();
@@ -47,6 +49,7 @@ public class BoxController : MonoBehaviour, IDamageable
             TakeDamage(CData.fallDamageThreshold, name);
         }
     }
+    //takes damage from all sources and checks for death
     public void TakeDamage(float amount, string Source)
     {
         _currentHealth -= amount;
@@ -57,6 +60,7 @@ public class BoxController : MonoBehaviour, IDamageable
             Die();
         }
     }
+    //handles the death of the box, plays particles, drops rewards and destroys the gameobject
     private void Die()
     {
         //could destroy some other particles
@@ -69,6 +73,7 @@ public class BoxController : MonoBehaviour, IDamageable
         DropHeal();
         Destroy(gameObject);
     }
+    //drops money based on the CData
     private void DropMoney()
     {
         if (Random.value > CData.rewardChance) return;
@@ -77,6 +82,7 @@ public class BoxController : MonoBehaviour, IDamageable
 
         for (int i = 0; i < amount; i++)
         {
+            // Instantiate the coin prefab at the box's position with a random rotation
             GameObject coin = Instantiate(
                 CData.MoneyObj,
                 transform.position,
@@ -85,26 +91,28 @@ public class BoxController : MonoBehaviour, IDamageable
 
             if (coin.TryGetComponent(out Rigidbody rb))
             {
+                // Apply a random force to the coin to make it jump up and scatter around
                 Vector3 randomDirection = new Vector3(
                     Random.Range(-1f, 1f),
                     Random.Range(0.5f, 1f),  // immer leicht nach oben
                     Random.Range(-1f, 1f)
                 ).normalized;
-
+                // Randomize the force magnitude for more variety
                 float force = Random.Range(1f, 6f);
                 rb.AddForce(randomDirection * force, ForceMode.Impulse);
-
+                // Apply random torque to make the coin spin
                 float torque = Random.Range(1f, 4f);
                 rb.AddTorque(Random.insideUnitSphere * torque, ForceMode.Impulse);
             }
         }
     }
+    //drops health based on the CData
     private void DropHeal()
     {
         if (Random.value > CData.rewardhealth) return;
 
         Quaternion spawnRotation = Quaternion.Euler(-90f, 0f, 0f);
-
+        // Instantiate the heal prefab at the box's position with a fixed rotation
         GameObject heal = Instantiate(
             CData.HealObj,
             transform.position + Vector3.up * 0.1f,
@@ -114,6 +122,7 @@ public class BoxController : MonoBehaviour, IDamageable
 
         if (heal.TryGetComponent(out Rigidbody rb))
         {
+            // Apply a random force to the heal item to make it jump up and scatter around
             Vector3 jumpDirection = new Vector3(
                 Random.Range(-0.5f, 0.5f),
                 1f,
@@ -122,11 +131,6 @@ public class BoxController : MonoBehaviour, IDamageable
 
             rb.AddForce(jumpDirection * 3f, ForceMode.Impulse);
         }
-    }
-    private void DropItems()
-    {
-        //reward Money == amount of gameObjects to spawn
-        //reawrd change == the odds to spawn the money
     }
 
 }

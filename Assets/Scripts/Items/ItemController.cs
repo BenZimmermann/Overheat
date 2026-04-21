@@ -77,10 +77,7 @@ public class ItemController : MonoBehaviour
         TickCooldown();
     }
 
-    // -------------------------------------------------------------------------
-    // Timers
-    // -------------------------------------------------------------------------
-
+    #region Timers
     private void TickCooldown()
     {
         if (_cooldownTimer <= 0f) return;
@@ -125,7 +122,8 @@ public class ItemController : MonoBehaviour
         if (_grenadeTimer > 0f) return;
         Explode();
     }
-
+    #endregion
+    //explosion logic
     private void Explode()
     {
         if (_activeGrenade == null) return;
@@ -133,9 +131,11 @@ public class ItemController : MonoBehaviour
         if (_explosionPrefab != null)
         {
             SoundManager.Instance.Play3DSound(SoundType.Exposion, _activeGrenade.transform.position);
+            //explosion effect
             GameObject explosion = Instantiate(_explosionPrefab, _activeGrenade.transform.position, Quaternion.identity);
             Destroy(explosion, 3f);
         }
+        //damages all damageable objects in radius
         Collider[] hits = Physics.OverlapSphere(_activeGrenade.transform.position, _grenadeExplosionRadius);
         foreach (Collider col in hits)
         {
@@ -149,10 +149,7 @@ public class ItemController : MonoBehaviour
         _explosionPrefab = null;
     }
 
-    // -------------------------------------------------------------------------
-    // Item-Dispatch
-    // -------------------------------------------------------------------------
-
+    #region item usage
     private void UseItem(ItemData item)
     {
         switch (item.itemType)
@@ -165,7 +162,7 @@ public class ItemController : MonoBehaviour
             case ItemType.Revive: return;
         }
     }
-
+    //uses the revive item, witch revives the player
     public void UseRevive(ItemData item)
     {
         SoundManager.Instance.PlaySound(SoundType.UseItem);
@@ -178,11 +175,8 @@ public class ItemController : MonoBehaviour
 
         ConsumeItem();
     }
-
-    // -------------------------------------------------------------------------
-    // Items
-    // -------------------------------------------------------------------------
-
+    #endregion
+    #region item implementations
     private void UseGrenade(ItemData item)
     {
         if (item.itemGrenadeModel == null)
@@ -190,6 +184,7 @@ public class ItemController : MonoBehaviour
             Debug.LogWarning("[ItemController] Grenade hat kein itemGrenadeModel.");
             return;
         }
+        //Instantiate and throw the grenade
         SoundManager.Instance.PlaySound(SoundType.UseItem);
         Transform origin = _throwOrigin != null ? _throwOrigin : transform;
         _activeGrenade = Instantiate(item.itemGrenadeModel, origin.position, origin.rotation);
@@ -197,7 +192,7 @@ public class ItemController : MonoBehaviour
         Rigidbody rb = _activeGrenade.GetComponent<Rigidbody>();
         if (rb != null)
             rb.AddForce(origin.forward * 15f + Vector3.up * 5f, ForceMode.Impulse);
-
+        // grenade timer, radius and damage
         _grenadeTimer = item.effectDuration > 0f ? item.effectDuration : 2f;
         _grenadeExplosionRadius = item.effectRadius;
         _grenadeExplosionDamage = item.explosionDamage;
@@ -223,7 +218,7 @@ public class ItemController : MonoBehaviour
         StartItemCooldown(item);
         Debug.Log($"[ItemController] Magnetic Field aktiv für {item.effectDuration}s");
     }
-
+    //uses the golden gun item, which applies a special material to the player's weapon and increases damage for a duration
     private void UseGoldenGun(ItemData item)
     {
         SoundManager.Instance.PlaySound(SoundType.UseItem);
@@ -235,13 +230,13 @@ public class ItemController : MonoBehaviour
 
         ConsumeItem();
     }
-
+    //telepots the player to a point in front of them within a certain radius, if there is no obstacle in the way
     private void UseTeleport(ItemData item)
     {
         SoundManager.Instance.PlaySound(SoundType.UseItem);
         Camera cam = Camera.main;
         if (cam == null) return;
-
+        //uses raycast to find a point in front of the player within the effect radius, if there is an obstacle it teleports to the hit point, otherwise it teleports to the max distance
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
 
         if (Physics.Raycast(ray, out RaycastHit hit, item.effectRadius, _teleportMask))
@@ -252,7 +247,7 @@ public class ItemController : MonoBehaviour
         StartItemCooldown(item);
         Debug.Log($"[ItemController] Teleportiert zu {transform.position}");
     }
-
+    //heals the player and adds shield based on the item's properties
     private void UseElexir(ItemData item)
     {
         SoundManager.Instance.PlaySound(SoundType.UseItem);
@@ -264,11 +259,8 @@ public class ItemController : MonoBehaviour
         Debug.Log($"[ItemController] Elexier: +{item.healthRegen} HP, +{item.shieldRegen} Shield");
         ConsumeItem();
     }
-
-    // -------------------------------------------------------------------------
-    // Waffen-Material
-    // -------------------------------------------------------------------------
-
+    #endregion
+    //applies the given material to all weapon renderers, storing the original materials to restore later
     private void ApplyWeaponMaterial(Material mat)
     {
         Transform weaponPivot = GameObject.FindGameObjectWithTag("weaponPivot")?.transform;
@@ -283,7 +275,7 @@ public class ItemController : MonoBehaviour
             _weaponRenderers[i].sharedMaterial = mat;
         }
     }
-
+    //restores the original materials to the weapon renderers after the golden gun effect expires
     private void RestoreWeaponMaterials()
     {
         if (_weaponRenderers == null) return;
@@ -298,10 +290,6 @@ public class ItemController : MonoBehaviour
         _originalMaterials = null;
     }
 
-    // -------------------------------------------------------------------------
-    // Shield
-    // -------------------------------------------------------------------------
-
     private void DestroyShield()
     {
         if (_activeShield != null)
@@ -311,10 +299,7 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Item verbrauchen
-    // -------------------------------------------------------------------------
-
+    //starts the cooldown for the used item and updates the HUD to show the cooldown timer
     private void StartItemCooldown(ItemData item)
     {
         if (item.cooldown <= 0f) return;

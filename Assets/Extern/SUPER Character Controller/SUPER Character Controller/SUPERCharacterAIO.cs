@@ -1,5 +1,6 @@
 ﻿// Original Code Author: Aedan Graves
 // Modified: New Input System (Action Maps), Cinemachine, stripped to walk/jump/slide/headbob/footsteps
+// Added: Double Jump, Coyote Time, Dash, and various improvements to movement feel and configurability.
 
 using System.Collections;
 using System.Collections.Generic;

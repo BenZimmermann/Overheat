@@ -38,7 +38,7 @@ public class ShopController : MonoBehaviour
         }
         _spawnedObjects.Clear();
     }
-
+    //spawns items in the shop based on the spawn points and the shop pool, also considers rarity and already owned items
     private void SpawnShopItems()
     {
         if (_spawnPoints == null || _spawnPoints.Count == 0)
@@ -94,7 +94,8 @@ public class ShopController : MonoBehaviour
             _spawnedObjects.Add(spawned);
         }
     }
-
+    
+    //picks a random item from the pool based on their rarity weights currently not used ingame
     private GameObject PickByRarity(List<GameObject> pool)
     {
         float totalWeight = 0f;
@@ -107,7 +108,7 @@ public class ShopController : MonoBehaviour
             weighted.Add((obj, w));
             totalWeight += w;
         }
-        //not my idea
+
         float roll = UnityEngine.Random.Range(0f, totalWeight);
         float cumulative = 0f;
 
@@ -120,7 +121,7 @@ public class ShopController : MonoBehaviour
 
         return pool[pool.Count - 1];
     }
-
+    //returns the weight of the rarity type for the random selection
     private float GetRarityWeight(RarityType rarity)
     {
         switch (rarity)

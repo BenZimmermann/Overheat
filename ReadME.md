@@ -1,12 +1,12 @@
-Overheat
+# Overheat
 
-**Overview**
+# Overview
 
 The mystery of infinite energy has been solved. In the halls of a gigantic factory, it is compressed into spherical shapes. Your mission: to eliminate the mutants- a grotesque side effect of our domination over the laws of nature. But the question arises: Is this reality, or just a bizarre trip?
 
 **Overheat** was developed as a dedicated learning project over the course of two months (02.03.26 - 22.04.26). 
 
-**Gameplay Loop**
+# Gameplay Loop
 
 - **Navigate:** Explore vast, atmospheric levels designed for high-speed movement.
 - **High Stakes:** Every move counts - there are **no checkpoints**.
@@ -15,7 +15,7 @@ The mystery of infinite energy has been solved. In the halls of a gigantic facto
 - **Tracked Performance:** Every action is recorded in your endgame statistics.
 - **The Goal:** Master the mechanics to rush through 3 levels as fast as possible.
 
-**Controls**
+# Controls
 
 - WASD - Move
 - Mouse - Look around
@@ -27,7 +27,7 @@ The mystery of infinite energy has been solved. In the halls of a gigantic facto
 - ESC - Pause
 - Left Mouse Button - Attack
 
-**Features**
+# Features
 
 - 3 Different levels
 - 3 different enemies
@@ -44,7 +44,7 @@ The mystery of infinite energy has been solved. In the halls of a gigantic facto
 - shops at the end of each level
 - Low-poly, pixel 3D world with pixel-art UI elements
 
-**Used Tools**
+# Used Tools
 
 - Unity 6.3 LTS
 - C#
@@ -54,28 +54,21 @@ The mystery of infinite energy has been solved. In the halls of a gigantic facto
 - Aseprite
 - DaVinci Resolve
 
-**Known Issues**
+# Known Issues
 
 - **Animations:** Some enemy animations and weapon reload sequences are currently missing.
 - **UI Bug:** Quitting the game while taking damage may persist the "damage indicator" into the Main Menu.
 - **Level Design:** Collision issues in specific corners may cause the player to get stuck.
 - **Audio:** Occasional randomization errors in UI sound triggers.
 
-**Author**
+# Author
 
 Developed and designed by Ben Zimmermann
 
-**Try It**
+# Try It
 
 -Clone the project repository
 -open via Unity Hub
 -enter Play Mode
 
-**Note**
-If there is interest in showcasing this game at gamescom, I would add the following:
-
-- Easter eggs
-- Fix enemy animations
-- Price text for shop items
-- Enemy outlines
-- Additional quality-of-life changes
+# Gallery

@@ -5,7 +5,7 @@
 The mystery of infinite energy has been solved. In the halls of a gigantic factory, it is compressed into spherical shapes. Your mission: to eliminate the mutants- a grotesque side effect of our domination over the laws of nature. But the question arises: Is this reality, or just a bizarre trip?
 
 **Overheat** was developed as a dedicated learning project over the course of two months (02.03.26 - 22.04.26). 
-
+![](Overheat_Img/image1.png)
 # Gameplay Loop
 
 - **Navigate:** Explore vast, atmospheric levels designed for high-speed movement.
@@ -43,7 +43,8 @@ The mystery of infinite energy has been solved. In the halls of a gigantic facto
 - collectable coins and heal items
 - shops at the end of each level
 - Low-poly, pixel 3D world with pixel-art UI elements
-
+  
+![](Overheat_Img/image9.png)
 # Used Tools
 
 - Unity 6.3 LTS
@@ -72,3 +73,10 @@ Developed and designed by Ben Zimmermann
 -enter Play Mode
 
 # Gallery
+![](Overheat_Img/image2.png)
+![](Overheat_Img/image3.png)
+![](Overheat_Img/image4.png)
+![](Overheat_Img/image5.png)
+![](Overheat_Img/image6.png)
+![](Overheat_Img/image7.png)
+![](Overheat_Img/image8.png)
